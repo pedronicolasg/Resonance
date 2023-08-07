@@ -1,11 +1,10 @@
 <div align="center" id="top"> 
   <img src="./logos/logo.jpg" alt="Resonance" width="250" heigth="250" style="border-radius: 10px;" />
 
-  <a href=" https://discord.com/oauth2/authorize?client_id=1129229235811254362&scope=bot&permissions=8">Convide o bot (Demo)</a>
+  [Convidar](https://discord.com/oauth2/authorize?client_id=1129229235811254362&scope=bot&permissions=8)
 </div>
 
 <h1 align="center">Resonance</h1>
-
 <p align="center">
   <img alt="Principal linguagem do projeto" src="https://img.shields.io/github/languages/top/pedronicolasg/resonance?color=56BEB8">
 
