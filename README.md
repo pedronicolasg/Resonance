@@ -68,7 +68,7 @@ Antes de começar :checkered_flag:, você precisa ter o [Git](https://git-scm.co
 
 ```bash
 # Clone este repositório
-$ git clone https://github.com/pedronicolasg/resonance
+$ git clone https://github.com/pedronicolasg/Resonance
 
 # Entre na pasta
 $ cd resonance
