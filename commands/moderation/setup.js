@@ -71,12 +71,13 @@ module.exports = {
         serverSettings = new ServerSettings({ serverId });
       }
 
-      if (logchannelId) serverSettings.logchannelId = logchannelId;
-      if (adschannelId) serverSettings.adschannelId = adschannelId;
-      if (exitchannelId) serverSettings.exitchannelId = exitchannelId;
-      if (ruleschannelId) serverSettings.ruleschannelId = ruleschannelId;
-      if (welcomechannelId) serverSettings.welcomechannelId = welcomechannelId;
-      if (suggestionchannelId) serverSettings.suggestionchannelId = suggestionchannelId;
+      // Adicione verificações para cada campo antes de defini-los em serverSettings
+      if (logchannelId !== undefined) serverSettings.logchannelId = logchannelId;
+      if (adschannelId !== undefined) serverSettings.adschannelId = adschannelId;
+      if (exitchannelId !== undefined) serverSettings.exitchannelId = exitchannelId;
+      if (ruleschannelId !== undefined) serverSettings.ruleschannelId = ruleschannelId;
+      if (welcomechannelId !== undefined) serverSettings.welcomechannelId = welcomechannelId;
+      if (suggestionchannelId !== undefined) serverSettings.suggestionchannelId = suggestionchannelId;
 
       await serverSettings.save();
 
