@@ -1,6 +1,6 @@
 const ServerCfg = require("../../models/servercfg.js");
 const themes = require('../../themes/chalk-themes');
-const logger = require('../../events/app/logger');
+const { logger } = require('../../events/app/logger');
 const config = require("../../config.json");
 const Discord = require("discord.js");
 
@@ -96,7 +96,7 @@ module.exports = {
                         { name: "Canal de Sugestões", value: `<#${suggestionchannelId}>`, inline: true },
                     );
                 } else {
-                    embed.addField("Configurações", "As informações do servidor não foram configuradas ainda.", false);
+                    embed.addFields({ name: "Configurações", value: `As informações do servidor não foram configuradas ainda.`, inline: true })
                 }
             }
 

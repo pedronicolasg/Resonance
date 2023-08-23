@@ -75,10 +75,18 @@ module.exports = {
                 name: interaction.user.username,
                 iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
             })
-            .setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
+
+        if (interaction.user.id === config.owner) {
+            embed_debug.setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
             /bugreport - Reporta um bug do bot para o desenvolvedor.
-            /setchannel - Define os IDs dos canais no servidor.
+            /setstatus - Define o status do bot.
         `);
+        } else {
+            embed_debug.setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
+            /bugreport - Reporta um bug do bot para o desenvolvedor.
+            `)
+        }
+
 
         const embed_mod = new Discord.EmbedBuilder()
             .setColor("Aqua")
@@ -97,13 +105,14 @@ module.exports = {
             /lock - Bloqueia o canal desejado.
             /removeitem - Remove o item escolhido da loja.
             /rpb - Entrega cargos clicando nos botões.
+            /setup - Define os IDs dos canais no servidor.
             /transcript - Exporta as mensagens do canal escolhido.
             /unban - Revoga o banimento do usuário selecionado.
             /unlock - Desbloqueia o canal desejado.
         `);
 
         const painel = new Discord.ActionRowBuilder().addComponents(
-            new Discord.SelectMenuBuilder()
+            new Discord.StringSelectMenuBuilder()
                 .setCustomId("painel_help")
                 .setPlaceholder("Clique aqui!")
                 .addOptions(

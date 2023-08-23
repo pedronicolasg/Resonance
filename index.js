@@ -3,7 +3,7 @@ const themes = require('./themes/chalk-themes');
 const Discord = require('discord.js');
 const mongoose = require('mongoose')
 const config = require('./config.json');
-const logger = require('./events/app/logger');
+const { logger } = require('./events/app/logger');
 
 console.log(themes.success("Sucesso ") + "ao carregar as configurações do bot.")
 logger.info(`Sucesso ao carregar as configurações do bot.`);

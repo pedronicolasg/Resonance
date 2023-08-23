@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const ServerSettings = require('../../models/servercfg');
 const StoreItem = require('../../models/storeItem');
 const Wallet = require('../../models/wallet');
+const themes = require('../../themes/chalk-themes');
+const { logger } = require('../../events/app/logger');
 
 module.exports = {
     name: "buy",

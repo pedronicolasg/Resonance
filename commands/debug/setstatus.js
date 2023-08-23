@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const config = require("../../config.json");
 const themes = require('../../themes/chalk-themes');
-const logger = require('../../events/app/logger');
+const { logger } = require('../../events/app/logger');
 
 module.exports = {
     name: "setstatus",
@@ -9,7 +9,7 @@ module.exports = {
     options: [
         {
             type: Discord.ApplicationCommandOptionType.String,
-            name: "tipo_de_status",
+            name: "status-type",
             description: "Qual estilo você deseja aplicar (online, dnd, idle, invisible)?",
             required: true,
         },
@@ -34,7 +34,7 @@ module.exports = {
         }
 
         try {
-            const status = interaction.options.getString("status");
+            const status = interaction.options.getString("status-type");
             const desc = interaction.options.getString("descrição");
 
             client.user.setStatus(status);

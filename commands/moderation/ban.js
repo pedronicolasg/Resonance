@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const themes = require('../../themes/chalk-themes');
-const logger = require('../../events/app/logger');
+const { logger } = require('../../events/app/logger');
 const ServerSettings = require('../../models/servercfg');
 
 module.exports = {
@@ -40,7 +40,7 @@ module.exports = {
     let embed = new Discord.EmbedBuilder()
       .setColor("#48deff")
       .setAuthor({
-        name: interaction.user,
+        name: interaction.user.username,
         iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
       })
       .setDescription(

@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const themes = require('../../themes/chalk-themes');
-const logger = require('../../events/app/logger');
+const { logger } = require('../../events/app/logger');
 const config = require("../../config.json");
 
 module.exports = {

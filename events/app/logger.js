@@ -36,4 +36,29 @@ const logger = winston.createLogger({
   ]
 });
 
-module.exports = logger;
+const logger_economy = winston.createLogger({
+  level: 'info',
+  format: format.combine(
+    format.timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss'
+    }),
+    format.json()
+  ),
+  defaultMeta: { service: config.name },
+  transports: [
+    new winston.transports.File({
+      filename: path.join(logsDirectory, 'economy.json'),
+      format: format.combine(
+        format.timestamp({
+          format: 'YYYY-MM-DD HH:mm:ss'
+        }),
+        format.json()
+      )
+    })
+  ]
+});
+
+module.exports = {
+  logger,
+  logger_economy
+};

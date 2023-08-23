@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const { ApplicationCommandType } = require("discord.js");
 const { EmbedBuilder } = require("discord.js");
 const themes = require('../../themes/chalk-themes');
-const logger = require('../../events/app/logger');
+const { logger } = require('../../events/app/logger');
 const API = "https://api.nasa.gov/planetary/apod?api_key=" + process.env.NASAKEY;
 const NASALogo = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/2449px-NASA_logo.svg.png";
 const ErrorImg = "https://www.wallpaperflare.com/static/765/775/653/errors-minimalism-typography-x-wallpaper.jpg";

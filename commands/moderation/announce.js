@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const themes = require('../../themes/chalk-themes');
-const logger = require('../../events/app/logger');
+const { logger } = require('../../events/app/logger');
 const ServerSettings = require('../../models/servercfg');
 
 module.exports = {
@@ -87,7 +87,7 @@ module.exports = {
           const logembed = new Discord.EmbedBuilder()
             .setColor('#48deff')
             .setDescription(`Um anúncio foi enviado em ${channel} por ${interaction.user}`);
-          logchannel.send({ embeds: [logembed], files: [attachement] });
+          logchannel.send({ embeds: [logembed] });
         }
       }).catch((e) => {
         let errorembed = new Discord.EmbedBuilder()

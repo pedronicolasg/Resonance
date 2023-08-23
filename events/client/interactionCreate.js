@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const client = require("../../index");
 const config = require("../../config.json");
 const themes = require('../../themes/chalk-themes');
-const logger = require('../app/logger');
+const { logger } = require('../app/logger');
 
 client.on("interactionCreate", (interaction) => {
     if (interaction.type === Discord.InteractionType.ApplicationCommand) {

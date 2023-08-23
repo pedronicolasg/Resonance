@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const config = require("../../config.json");
 const themes = require('../../themes/chalk-themes');
-const logger = require('../../events/app/logger');
+const { logger, logger_economy } = require('../../events/app/logger');
 const Wallet = require('../../models/wallet');
 
 module.exports = {
@@ -26,6 +26,19 @@ module.exports = {
     run: async (client, interaction, args) => {
         const senderId = interaction.user.id;
         const recipientId = interaction.options.getUser("usuário").id;
+
+        const recipientUser = await interaction.client.users.fetch(recipientId);
+
+        if (recipientUser.bot) {
+            const embed = new Discord.EmbedBuilder()
+                .setColor("Red")
+                .setTitle("❌ Destinatário é um bot!")
+                .setDescription("Você não pode enviar moedas para um bot.");
+
+            interaction.reply({ embeds: [embed], ephemeral: true });
+            return;
+        }
+
         const amount = interaction.options.getInteger("quantidade");
 
         if (amount <= 0) {
@@ -65,6 +78,7 @@ module.exports = {
                 .setDescription(`Você enviou \`${amount} Resobytes\` para <@${recipientId}>.\nSeu saldo atual: \`${sender.coins} Resobytes\``);
 
             interaction.reply({ embeds: [embed] });
+            logger_economy.info(`${interaction.user.id} transferiu RB$:${amount} para ${recipientId} no servidor ${interaction.guild.id}`)
         } catch (e) {
             console.log(themes.error("Erro ") + `ao enviar RB$:${amount} de ${senderId} para ${recipientId} devido à:\n ${e}`);
             logger.error(`Erro ao enviar RB$:${amount} de ${senderId} para ${recipientId} devido à:\n ${e}`);

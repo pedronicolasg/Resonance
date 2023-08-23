@@ -1,7 +1,7 @@
 const Discord = require("discord.js")
 const ServerSettings = require('../../models/servercfg');
 const themes = require('../../themes/chalk-themes');
-const logger = require('../../events/app/logger');
+const { logger } = require('../../events/app/logger');
 
 module.exports = {
     name: "lock",

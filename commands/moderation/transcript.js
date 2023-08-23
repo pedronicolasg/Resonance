@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const transcript = require('discord-html-transcripts');
 const themes = require('../../themes/chalk-themes');
-const logger = require('../../events/app/logger');
+const { logger } = require('../../events/app/logger');
 const config = require("../../config.json");
 const ServerSettings = require('../../models/servercfg');
 

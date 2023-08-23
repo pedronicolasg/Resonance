@@ -37,7 +37,7 @@
 
 ## :dart: Sobre ##
 
-Resonance é um bot feito usando como base o meu primeiro bot para Discord o [Nexcenture](https://github.com/pedronicolasg/Nexcenture) mas com grandes melhorias, melhorias essas que incluem utilizar o MongoDB como banco de dados invés do Quick.DB ou BetterSQLite3.
+Resonance é um bot feito usando com base no meu primeiro bot para Discord o [Nexcenture](https://github.com/pedronicolasg/Nexcenture) mas com grandes melhorias, melhorias essas que incluem utilizar o MongoDB como banco de dados invés do Quick.DB ou BetterSQLite3.
 
 ## :sparkles: Comandos ##
 
