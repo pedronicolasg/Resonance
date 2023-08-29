@@ -3,6 +3,7 @@ squarecloud.app
 json.sqlite
 ignore.txt
 config.json
+economycfg.json
 package-lock.json
 
 # Windows files

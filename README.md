@@ -1,7 +1,8 @@
 <div align="center" id="top"> 
   <img src="./logos/logo.jpg" alt="Resonance" width="250" heigth="250" style="border-radius: 10px;" />
 
-  [Convidar](https://discord.com/oauth2/authorize?client_id=1129229235811254362&scope=bot&permissions=8)
+[Convidar](https://discord.com/oauth2/authorize?client_id=1129229235811254362&scope=bot&permissions=8)
+
 </div>
 
 <h1 align="center">Resonance</h1>
@@ -35,11 +36,11 @@
 
 <br>
 
-## :dart: Sobre ##
+## :dart: Sobre
 
 Resonance é um bot feito usando com base no meu primeiro bot para Discord o [Nexcenture](https://github.com/pedronicolasg/Nexcenture) mas com grandes melhorias, melhorias essas que incluem utilizar o MongoDB como banco de dados invés do Quick.DB ou BetterSQLite3.
 
-## :sparkles: Comandos ##
+## :sparkles: Comandos
 
 :heavy_check_mark: 3 comandos de debug;\
 :heavy_check_mark: 9 comandos de economia;\
@@ -47,7 +48,7 @@ Resonance é um bot feito usando com base no meu primeiro bot para Discord o [Ne
 :heavy_check_mark: 12 comandos de moderação/administração;\
 :heavy_check_mark: 5 comandos de utilidade;
 
-## :rocket: Tecnologias ##
+## :rocket: Tecnologias
 
 As seguintes ferramentas foram usadas na construção do projeto:
 
@@ -60,11 +61,11 @@ As seguintes ferramentas foram usadas na construção do projeto:
 - [Node.js](https://nodejs.org/en/)
 - [winston](https://www.npmjs.com/package/winston)
 
-## :white_check_mark: Pré requisitos ##
+## :white_check_mark: Pré requisitos
 
 Antes de começar :checkered_flag:, você precisa ter o [Git](https://git-scm.com), [MongoDB](https://www.mongodb.com/) e o [Node](https://nodejs.org/en/) instalados em sua maquina.
 
-## :checkered_flag: Começando ##
+## :checkered_flag: Começando
 
 ```bash
 # Clone este repositório
@@ -76,31 +77,45 @@ $ cd resonance
 # Instale as dependências
 $ npm install
 ```
-Depois disso é necessário criar um arquivo de configuração pro bot na pasta raiz do projeto (```config.json```)
+
+Depois disso é necessário criar três arquivos de configuração pro bot, um na pasta raiz do projeto `config.json`
+
 ```json
 {
   "version": "", // Versão do seu bot
   "name": "", // Nome do bot
   "owner": "", // Seu ID
-  "technologies": "", // Tecnológias usadas no bot
-  "coinicon": "" // URL do icone da moeda do bot
+  "technologies": "" // Tecnologias usadas no bot
 }
-
 ```
-Em seguida é necessário criar um arquivo ```.env``` na pasta raiz do projeto para colocar as configurações secretas do bot
+
+Em seguida outro em .src/commands/economy/`economycfg.json`
+
+```json
+{
+  "coinname": "", // Nome da moeda
+  "coinsymb": "", // Símbolo da moeda
+  "coinicon": "" // Ícone da moeda
+}
+```
+
+Em seguida é necessário criar um arquivo `.env` na pasta raiz do projeto para colocar as configurações secretas do bot
+
 ```env
 TOKEN=Token do bot
 NASAKEY=Sua chave da API da NASA para o comando /apod
 MONGODB_URI=URI do MongoDB para conexão
 ```
+
 Agora basta inicializar o bot usando o comando:
+
 ```bash
 $ node .
 ```
-## :memo: Licença ##
+
+## :memo: Licença
 
 Este projeto está sob licença MIT. Veja o arquivo [LICENSE](LICENSE.md) para mais detalhes.
-
 
 Feito por <a href="https://github.com/pedronicolasg" target="_blank">Pedro Nícolas</a>
 
