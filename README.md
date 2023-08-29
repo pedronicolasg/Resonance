@@ -1,5 +1,5 @@
 <div align="center" id="top"> 
-  <img src="./logos/logo.jpg" alt="Resonance" width="250" heigth="250" style="border-radius: 10px;" />
+  <img src="./src/images/logo.jpg" alt="Resonance" width="250" heigth="250" style="border-radius: 10px;" />
 
 [Convidar](https://discord.com/oauth2/authorize?client_id=1129229235811254362&scope=bot&permissions=8)
 
