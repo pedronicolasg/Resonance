@@ -36,6 +36,6 @@ module.exports = {
             
             
 
-        interaction.reply({ embeds: [Embed] });
+        interaction.reply({ embeds: [Embed], ephemeral: true });
     },
 };
