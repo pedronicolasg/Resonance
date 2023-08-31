@@ -46,7 +46,7 @@ Resonance é um bot feito usando com base no meu primeiro bot para Discord o [Ne
 :heavy_check_mark: 9 comandos de economia;\
 :heavy_check_mark: 2 comandos de diversão;\
 :heavy_check_mark: 12 comandos de moderação/administração;\
-:heavy_check_mark: 5 comandos de utilidade;
+:heavy_check_mark: 6 comandos de utilidade;
 
 ## :rocket: Tecnologias
 
