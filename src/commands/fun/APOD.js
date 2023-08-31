@@ -22,7 +22,7 @@ module.exports = {
   ],
   run: async (client, interaction) => {
 
-    let res, data, date = interaction.options.getString("data");;
+    let res, data, date = interaction.options.getString("data");
     if (date === null) {
       res = await fetch(`${API}`);
       data = await res.json();

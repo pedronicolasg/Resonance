@@ -38,6 +38,7 @@ module.exports = {
             .setDescription(`Olá ${interaction.user}, veja meus comandos de **utilidade** abaixo:
             /botinfo - Fornece informações sobre o bot.
             /help - Mostra a lista de comandos do bot.
+            /qr - Cria um QR Code que dura 72 horas.
             /ping - Mostra o ping do bot.
             /serverinfo - Mostra as informações do servidor atual.
             /suggest - Envia sua sugestão para o canal de sugestões.
