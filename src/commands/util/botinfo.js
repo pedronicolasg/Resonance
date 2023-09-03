@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
-const themes = require('../../themes/chalk-themes');
-const apptheme = require('../../themes/theme.json');
-const { logger } = require('../../events/app/logger');
+const themes = require("../../themes/chalk-themes");
+const apptheme = require("../../themes/theme.json");
+const { logger } = require("../../events/client/logger");
 const config = require("../../config.json");
 
 module.exports = {
@@ -23,7 +23,9 @@ module.exports = {
       .setColor(apptheme.maincolor)
       .setAuthor({ name: bot.tag, iconURL: avatarBot })
       .setThumbnail(avatarBot)
-      .setDescription(`Olá ${interaction.user}, abaixo estão as informações sobre mim:\n\n`)
+      .setDescription(
+        `Olá ${interaction.user}, abaixo estão as informações sobre mim:\n\n`
+      )
       .addFields(
         { name: "🤖 Nome", value: `\`${bot.tag}\``, inline: true },
         { name: "🤖 Dono", value: `${owner}`, inline: true },

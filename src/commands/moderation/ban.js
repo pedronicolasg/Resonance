@@ -1,8 +1,8 @@
 const Discord = require("discord.js");
-const themes = require('../../themes/chalk-themes');
-const apptheme = require('../../themes/theme.json');
-const { logger } = require('../../events/app/logger');
-const ServerSettings = require('../../database/models/servercfg');
+const themes = require("../../themes/chalk-themes");
+const apptheme = require("../../themes/theme.json");
+const { logger } = require("../../events/client/logger");
+const ServerSettings = require("../../database/models/servercfg");
 
 module.exports = {
   name: "ban",
@@ -24,16 +24,24 @@ module.exports = {
   ],
 
   run: async (client, interaction) => {
-    if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.BanMembers)) {
+    if (
+      !interaction.member.permissions.has(
+        Discord.PermissionFlagsBits.BanMembers
+      )
+    ) {
       let permembed = new Discord.EmbedBuilder()
         .setColor("Red")
         .setTitle("❌ Você não possui permissão para utilizar este comando.")
-        .setDescription(`Você precisa da permissão "Banir Membros" para usar esse comando`);
+        .setDescription(
+          `Você precisa da permissão "Banir Membros" para usar esse comando`
+        );
 
       return interaction.reply({ embeds: [permembed], ephemeral: true });
     }
 
-    const serverSettings = await ServerSettings.findOne({ serverId: interaction.guild.id });
+    const serverSettings = await ServerSettings.findOne({
+      serverId: interaction.guild.id,
+    });
 
     const user = interaction.options.getUser("user");
     const reason = interaction.options.getString("motivo") || "Não definido.";
@@ -66,10 +74,9 @@ module.exports = {
       }
 
       interaction.reply({ embeds: [embed], ephemeral: true });
-
     } catch (e) {
       interaction.reply({ embeds: [error], ephemeral: true });
-      console.log(themes.error(`Erro `) + `ao banir ${user}: ${e}`);
+      console.log(themes.error(`Erro `) + `ao banir ${user}:\n ${e}`);
       logger.error(`Erro ao banir ${user}: ${e}`);
     }
   },

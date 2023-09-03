@@ -5,6 +5,7 @@ ignore.txt
 config.json
 economycfg.json
 package-lock.json
+.vscode
 
 # Windows files
 desktop.ini

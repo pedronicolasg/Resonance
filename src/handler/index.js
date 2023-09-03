@@ -1,6 +1,6 @@
 const fs = require("fs");
-const themes = require('../themes/chalk-themes');
-const { logger } = require('../events/app/logger');
+const themes = require("../themes/chalk-themes");
+const { logger } = require("../events/client/logger");
 
 module.exports = async (client) => {
   const SlashsArray = [];
@@ -18,7 +18,7 @@ module.exports = async (client) => {
         });
       });
     });
-    console.log(themes.success("Sucesso ") + "ao carregar os comandos.")
+    console.log(themes.success("Sucesso ") + "ao carregar os comandos.");
     logger.info(`Sucesso ao carregar os comandos.`);
   });
 
@@ -31,12 +31,17 @@ module.exports = async (client) => {
         });
       });
     });
-    console.log(themes.success("Sucesso ") + "ao carregar os eventos.")
+    console.log(themes.success("Sucesso ") + "ao carregar os eventos.");
     logger.info(`Sucesso ao carregar os eventos.`);
   });
   client.on("ready", async () => {
     client.guilds.cache.forEach((guild) => guild.commands.set(SlashsArray));
-    console.log(themes.success("Sucesso ") + "ao adicionar a lista de comandos no cache do servidor.")
-    logger.info(`Sucesso ao adicionar a lista de comandos no cache do servidor.`);
+    console.log(
+      themes.success("Sucesso ") +
+        "ao adicionar a lista de comandos no cache do servidor."
+    );
+    logger.info(
+      `Sucesso ao adicionar a lista de comandos no cache do servidor.`
+    );
   });
 };

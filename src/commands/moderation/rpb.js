@@ -1,8 +1,8 @@
 const Discord = require("discord.js");
-const ServerSettings = require('../../database/models/servercfg');
-const themes = require('../../themes/chalk-themes');
-const apptheme = require('../../themes/theme.json');
-const { logger } = require('../../events/app/logger');
+const ServerSettings = require("../../database/models/servercfg");
+const themes = require("../../themes/chalk-themes");
+const apptheme = require("../../themes/theme.json");
+const { logger } = require("../../events/client/logger");
 
 module.exports = {
   name: "rpb",
@@ -18,16 +18,24 @@ module.exports = {
   ],
 
   run: async (client, interaction) => {
-    if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.ManageRoles)) {
+    if (
+      !interaction.member.permissions.has(
+        Discord.PermissionFlagsBits.ManageRoles
+      )
+    ) {
       let permembed = new Discord.EmbedBuilder()
         .setColor("Red")
         .setTitle("❌ Você não possui permissão para utilizar este comando.")
-        .setDescription(`Você precisa da permissão "Gerencias Cargos" para usar esse comando`);
+        .setDescription(
+          `Você precisa da permissão "Gerencias Cargos" para usar esse comando`
+        );
 
       return interaction.reply({ embeds: [permembed], ephemeral: true });
     }
 
-    const serverSettings = await ServerSettings.findOne({ serverId: interaction.guild.id });
+    const serverSettings = await ServerSettings.findOne({
+      serverId: interaction.guild.id,
+    });
 
     const role = interaction.options.getRole("cargo");
 
@@ -48,17 +56,16 @@ module.exports = {
         .setStyle(Discord.ButtonStyle.Secondary)
     );
 
-
-
     interaction.reply({ embeds: [embed], components: [botao] }).then(() => {
-
       const channelId = serverSettings.logchannelId;
       const logchannel = client.channels.cache.get(channelId);
       if (logchannel) {
         const logembed = new Discord.EmbedBuilder()
-          .setColor('#48deff')
-          .setDescription(`${interaction.user} criou uma interação de cargo por botão pro cargo ${role} no canal <#${interaction.channel.id}>`)
-        logchannel.send({ embeds: [logembed] })
+          .setColor("#48deff")
+          .setDescription(
+            `${interaction.user} criou uma interação de cargo por botão pro cargo ${role} no canal <#${interaction.channel.id}>`
+          );
+        logchannel.send({ embeds: [logembed] });
       }
 
       let coletor = interaction.channel.createMessageComponentCollector();
@@ -70,12 +77,15 @@ module.exports = {
               content: `Olá **${c.user.username}**, você resgatou o cargo **${role.name}**.`,
               ephemeral: true,
             });
-
           } catch (e) {
-            console.log(themes.error("Erro ") + `ao adicionar o cargo ${role.name} para ${c.user.username} devido à: ${e}`)
-            logger.error(`Erro ao adicionar o cargo ${role.name} para ${c.user.username} devido à: ${e}`);
+            console.log(
+              themes.error("Erro ") +
+                `ao adicionar o cargo ${role.name} para ${c.user.username} devido à:\n ${e}`
+            );
+            logger.error(
+              `Erro ao adicionar o cargo ${role.name} para ${c.user.username} devido à: ${e}`
+            );
           }
-
         } else if (c.member.roles.cache.get(role.id)) {
           try {
             c.member.roles.remove(role.id);
@@ -84,8 +94,13 @@ module.exports = {
               ephemeral: true,
             });
           } catch (e) {
-            console.log(themes.error("Erro ") + `ao remover o cargo ${role.name} de ${c.user.username}`)
-            logger.error(`Erro ao remover o cargo ${role.name} de ${c.user.username}`);
+            console.log(
+              themes.error("Erro ") +
+                `ao remover o cargo ${role.name} de ${c.user.username} devido à:\n ${e}`
+            );
+            logger.error(
+              `Erro ao remover o cargo ${role.name} de ${c.user.username} devido à: ${e}`
+            );
           }
         }
       });

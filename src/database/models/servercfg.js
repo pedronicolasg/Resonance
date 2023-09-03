@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const servercfgSchema = new mongoose.Schema({
   serverId: { type: String, required: true, unique: true },
@@ -10,6 +10,6 @@ const servercfgSchema = new mongoose.Schema({
   suggestionchannelId: { type: String, required: false },
 });
 
-const ServerCfg = mongoose.model('ServerCfg', servercfgSchema);
+const ServerCfg = mongoose.model("ServerCfg", servercfgSchema);
 
 module.exports = ServerCfg;

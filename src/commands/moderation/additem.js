@@ -1,9 +1,9 @@
 const Discord = require("discord.js");
-const StoreItem = require('../../database/models/storeItem');
-const ServerSettings = require('../../database/models/servercfg');
-const themes = require('../../themes/chalk-themes');
-const apptheme = require('../../themes/theme.json');
-const { logger } = require('../../events/app/logger');
+const StoreItem = require("../../database/models/storeItem");
+const ServerSettings = require("../../database/models/servercfg");
+const themes = require("../../themes/chalk-themes");
+const apptheme = require("../../themes/theme.json");
+const { logger } = require("../../events/client/logger");
 
 module.exports = {
   name: "additem",
@@ -37,27 +37,33 @@ module.exports = {
   ],
 
   run: async (client, interaction, args) => {
-    if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.ManageGuild)) {
+    if (
+      !interaction.member.permissions.has(
+        Discord.PermissionFlagsBits.ManageGuild
+      )
+    ) {
       const permembed = new Discord.EmbedBuilder()
         .setColor("Red")
         .setTitle("❌ Permissão Necessária")
-        .setDescription(`Você precisa da permissão de "Gerenciar Guilda" para usar este comando.`);
+        .setDescription(
+          `Você precisa da permissão de "Gerenciar Guilda" para usar este comando.`
+        );
 
       return interaction.reply({ embeds: [permembed], ephemeral: true });
     }
 
-    const serverSettings = await ServerSettings.findOne({ serverId: interaction.guild.id });
+    const serverSettings = await ServerSettings.findOne({
+      serverId: interaction.guild.id,
+    });
 
-    const role = interaction.options.getRole("cargo")
+    const role = interaction.options.getRole("cargo");
 
     const serverId = interaction.guild.id;
     const name = interaction.options.getString("name");
     const description = interaction.options.getString("description");
     const price = interaction.options.getInteger("price");
-    const addedBy = interaction.user.id
+    const addedBy = interaction.user.id;
     const itemId = role.id;
-
-
 
     try {
       const newItem = await StoreItem.create({
@@ -72,7 +78,9 @@ module.exports = {
       const embed = new Discord.EmbedBuilder()
         .setColor(apptheme.maincolor)
         .setTitle("Item Adicionado à Loja!")
-        .setDescription(`O item "${name}" foi adicionado à loja com sucesso.\nID do Item: ${newItem.itemId}`);
+        .setDescription(
+          `O item "${name}" foi adicionado à loja com sucesso.\nID do Item: ${newItem.itemId}`
+        );
 
       interaction.reply({ embeds: [embed] });
 
@@ -82,11 +90,15 @@ module.exports = {
         const logembed = new Discord.EmbedBuilder()
           .setColor(apptheme.maincolor)
           .setTitle("Item Adicionado à Loja!")
-          .setDescription(`O item "${name}" foi adicionado à loja por ${interaction.user}.\nID do Item: ${newItem.itemId}`);
+          .setDescription(
+            `O item "${name}" foi adicionado à loja por ${interaction.user}.\nID do Item: ${newItem.itemId}`
+          );
         logchannel.send({ embeds: [logembed] });
       }
     } catch (e) {
-      console.log(themes.error("Erro ") + `ao adicionar o item à loja devido à: ${e}`)
+      console.log(
+        themes.error("Erro ") + `ao adicionar o item à loja devido à:\n ${e}`
+      );
       logger.error(`Erro ao adicionar o item à loja devido à: ${e}`);
       const errorembed = new Discord.EmbedBuilder()
         .setColor("Red")
