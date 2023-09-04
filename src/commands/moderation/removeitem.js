@@ -24,7 +24,7 @@ module.exports = {
         Discord.PermissionFlagsBits.ManageGuild
       )
     ) {
-      const embed = new Discord.EmbedBuilder()
+      const permembed = new Discord.EmbedBuilder()
         .setColor("Red")
         .setTitle("❌ Permissão Necessária")
         .setDescription(
@@ -71,7 +71,7 @@ module.exports = {
           .setColor(apptheme.maincolor)
           .setTitle("Item Adicionado à Loja!")
           .setDescription(
-            `O item "${name}" foi adicionado à loja por ${interaction.user}.\nID do Item: ${newItem.itemId}`
+            `O item "${item.name}" foi adicionado à loja por ${interaction.user}.\nID do Item: ${newItem.itemId}`
           );
         logchannel.send({ embeds: [logembed] });
       }
