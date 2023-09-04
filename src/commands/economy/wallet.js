@@ -39,7 +39,7 @@ module.exports = {
         )
         .setFooter({
           text: `${ecoCfg.coinname} (${ecoCfg.coinsymb}).`,
-          iconURL: `${ecoCfg.coinicon}`,
+          iconURL: ecoCfg.coinicon,
         });
 
       interaction.reply({

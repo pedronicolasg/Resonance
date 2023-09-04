@@ -85,7 +85,7 @@ module.exports = {
       try {
         await member.roles.remove(role);
       } catch (e) {
-        console.log("Erro ao remover cargo do usuário:", e);
+        console.log("Erro ao remover cargo do usuário: ", e);
         const embed = new Discord.EmbedBuilder()
           .setColor("Red")
           .setTitle("❌ Erro ao Remover Cargo")
