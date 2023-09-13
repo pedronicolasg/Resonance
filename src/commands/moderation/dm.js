@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
-const themes = require("../../themes/chalk-themes");
-const apptheme = require("../../themes/theme.json");
-const { logger } = require("../../events/client/logger");
+const themes = require('../../themes/chalk-themes');
+const apptheme = require('../../themes/theme.json');
+const { logger } = require('../../events/app/logger');
 
 module.exports = {
   name: "dm",
@@ -23,17 +23,11 @@ module.exports = {
   ],
 
   run: async (client, interaction) => {
-    if (
-      !interaction.member.permissions.has(
-        Discord.PermissionFlagsBits.ManageMessages
-      )
-    ) {
+    if (!interaction.member.permissions.has(Discord.PermissionFlagsBits.ManageMessages)) {
       let permembed = new Discord.EmbedBuilder()
         .setColor("Red")
         .setTitle("❌ Você não possui permissão para utilizar este comando.")
-        .setDescription(
-          `Você precisa da permissão "Gerencias Mensagens" para usar esse comando`
-        );
+        .setDescription(`Você precisa da permissão "Gerencias Mensagens" para usar esse comando`);
 
       return interaction.reply({ embeds: [permembed], ephemeral: true });
     }
@@ -53,7 +47,9 @@ module.exports = {
       .then(() => {
         let emb = new Discord.EmbedBuilder()
           .setColor(apptheme.maincolor)
-          .setDescription(`A mensagem foi enviada para ${user} com sucesso!`);
+          .setDescription(
+            `A mensagem foi enviada para ${user} com sucesso!`
+          );
 
         interaction.reply({ embeds: [emb] });
       })
@@ -64,7 +60,7 @@ module.exports = {
             `❌ Erro, a mensagem não foi enviada para ${user}, pois o usuário está com a DM fechada!`
           );
         interaction.reply({ embeds: [emb] });
-        console.log(themes.error("Erro ") + `ao enviar DM:\n ${e}`);
+        console.log(themes.error("Erro ") + "ao enviar DM: " + e)
         logger.error(`Erro ao enviar DM: ${e}`);
       });
   },

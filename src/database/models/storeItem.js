@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const storeItemSchema = new mongoose.Schema({
   serverId: { type: String, required: true },
@@ -9,6 +9,6 @@ const storeItemSchema = new mongoose.Schema({
   addedBy: { type: String, required: true },
 });
 
-const StoreItem = mongoose.model("StoreItem", storeItemSchema);
+const StoreItem = mongoose.model('StoreItem', storeItemSchema);
 
 module.exports = StoreItem;

@@ -1,7 +1,7 @@
 const fs = require("fs");
 const themes = require("./themes/chalk-themes");
 const Discord = require("discord.js");
-const { logger } = require("./events/client/logger");
+const { logger } = require("./events/app/logger");
 const mongoose = require("mongoose");
 
 console.log(
