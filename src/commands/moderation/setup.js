@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const ServerSettings = require('../../database/models/servercfg.js');
 const themes = require('../../themes/chalk-themes.js');
 const apptheme = require('../../themes/theme.json');
-const { logger } = require('../../events/app/logger.js');
+const { logger } = require('../../events/client/logger.js');
 
 module.exports = {
   name: "setup",

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const themes = require('../themes/chalk-themes');
-const { logger } = require('../events/app/logger');
+const { logger } = require('../events/client/logger');
 
 module.exports = async (client) => {
   const SlashsArray = [];

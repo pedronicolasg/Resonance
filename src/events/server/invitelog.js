@@ -1,10 +1,8 @@
-require('../../index')
-
 const Discord = require('discord.js')
 const client = require('../../index')
 const ServerSettings = require('../../database/models/servercfg');
 
-client.on('inviteCreate', (invite) => {
+client.on(Discord.Events.InviteCreate, (invite) => {
     const serverSettings = ServerSettings.findOne({ serverId: interaction.guild.id });
     const logchannelid = serverSettings.logchannelId;
     if (!logchannelid) return;
@@ -57,7 +55,7 @@ client.on('inviteCreate', (invite) => {
     channelLog.send({ embeds: [embed] })
 })
 
-client.on('inviteDelete', (invite) => {
+client.on(Discord.Events.InviteDelete, (invite) => {
     const channelLog = invite.guild.channels.cache.get('')
     const convite = {
         url: invite.url,

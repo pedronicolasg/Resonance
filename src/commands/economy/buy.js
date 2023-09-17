@@ -4,7 +4,7 @@ const StoreItem = require('../../database/models/storeItem');
 const Wallet = require('../../database/models/wallet');
 const themes = require('../../themes/chalk-themes');
 const apptheme = require('../../themes/theme.json');
-const { logger } = require('../../events/app/logger');
+const { logger } = require('../../events/client/logger');
 const ecoCfg = require('./economycfg.json')
 
 module.exports = {

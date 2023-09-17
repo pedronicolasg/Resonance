@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const ecoCfg = require('./economycfg.json')
 const themes = require('../../themes/chalk-themes');
 const apptheme = require('../../themes/theme.json');
-const { logger, logger_economy } = require('../../events/app/logger');
+const { logger, logger_economy } = require('../../events/client/logger');
 const Wallet = require('../../database/models/wallet');
 
 module.exports = {

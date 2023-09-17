@@ -3,7 +3,7 @@ const { ApplicationCommandType } = require("discord.js");
 const { EmbedBuilder } = require("discord.js");
 const themes = require('../../themes/chalk-themes');
 const apptheme = require('../../themes/theme.json');
-const { logger } = require('../../events/app/logger');
+const { logger } = require('../../events/client/logger');
 const API = "https://api.nasa.gov/planetary/apod?api_key=" + process.env.NASAKEY;
 const NASALogo = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/2449px-NASA_logo.svg.png";
 const ErrorImg = "https://www.wallpaperflare.com/static/765/775/653/errors-minimalism-typography-x-wallpaper.jpg";
@@ -24,7 +24,7 @@ module.exports = {
 
     let res, data, date = interaction.options.getString("data");;
     if (date === null) {
-      res = await fetch(`${API}`);
+      res = await fetch(API);
       data = await res.json();
     } else {
       res = await fetch(`${API}&date=${date}`)
@@ -34,23 +34,23 @@ module.exports = {
     try {
       const Embed = new EmbedBuilder()
         .setColor("#105ad9")
-        .setTitle(`${data.title}`)
+        .setTitle(data.title)
         .setURL("https://api.nasa.gov/")
         .setAuthor({
           name: "NASA",
-          iconURL: `${NASALogo}`,
+          iconURL: NASALogo,
           url: "https://api.nasa.gov/",
         })
-        .setDescription(`${data.explanation}`)
+        .setDescription(data.explanation)
         .setImage(data.url)
         .addFields(
-          { name: 'Data', value: `${data.date}`, inline: true },
-          { name: 'Tipo de mídia', value: `${data.media_type}`, inline: true },
-          { name: 'HD', value: `${data.hdurl}`, inline: true },
+          { name: 'Data', value: data.date, inline: true },
+          { name: 'Tipo de mídia', value: data.media_type, inline: true },
+          { name: 'HD', value: data.hdurl, inline: true },
         )
         .setFooter({
           text: `NASA API | APOD ${data.service_version}.`,
-          iconURL: `${NASALogo}`,
+          iconURL: NASALogo,
         });
 
       interaction.reply({ embeds: [Embed] });
@@ -65,14 +65,14 @@ module.exports = {
           url: "https://api.nasa.gov/",
         })
         .setDescription(`Ocorreu um erro inesperado, tente novamente mais tarde.`)
-        .setImage(`${ErrorImg}`)
+        .setImage(ErrorImg)
         .setFooter({
           text: `NASA API | APOD ${data.service_version}.`,
-          iconURL: `${NASALogo}`,
+          iconURL: NASALogo,
         });
 
       interaction.reply({ embeds: [ErrorEmbed], ephemeral: true });
-      console.log(themes.error("Erro ") + "ao executar o comando APOD: " + e)
+      console.log(themes.error("Erro ") + `ao executar o comando APOD:\n ${e}`)
       logger.error(`Erro ao executar o comando APOD: ${e}`);
     }
   },
