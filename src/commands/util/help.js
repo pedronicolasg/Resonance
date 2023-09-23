@@ -1,41 +1,52 @@
-const Discord = require("discord.js");
+const {
+  ApplicationCommandType,
+  PermissionFlagsBits,
+  ActionRowBuilder,
+  StringSelectMenuBuilder,
+  EmbedBuilder,
+} = require("discord.js");
 const config = require("../../config.json");
-const apptheme = require('../../themes/theme.json');
-const themes = require('../../themes/chalk-themes');
-const ecoCfg = require("../economy/economycfg.json");
+const {
+  hxmaincolor,
+  success,
+  error,
+  hxnasaapod,
+} = require("../../themes/main");
 
 module.exports = {
-    name: "help",
-    description: "Painel de comandos do bot.",
-    type: Discord.ApplicationCommandType.ChatInput,
+  name: "help",
+  description: "Painel de comandos do bot.",
+  type: ApplicationCommandType.ChatInput,
 
-    run: async (client, interaction) => {
-        const permissionsArray = [
-            Discord.PermissionFlagsBits.Administrator,
-            Discord.PermissionFlagsBits.ManageRoles,
-            Discord.PermissionFlagsBits.KickMembers,
-            Discord.PermissionFlagsBits.ManageChannels,
-            Discord.PermissionFlagsBits.BanMembers,
-            Discord.PermissionFlagsBits.ManageMessages,
-            Discord.PermissionFlagsBits.ManageGuild,
-        ];
-        const hasPermission = permissionsArray.some((permission) => interaction.member.permissions.has(permission));
+  run: async (client, interaction) => {
+    const permissionsArray = [
+      PermissionFlagsBits.Administrator,
+      PermissionFlagsBits.ManageRoles,
+      PermissionFlagsBits.KickMembers,
+      PermissionFlagsBits.ManageChannels,
+      PermissionFlagsBits.BanMembers,
+      PermissionFlagsBits.ManageMessages,
+      PermissionFlagsBits.ManageGuild,
+    ];
+    const hasPermission = permissionsArray.some((permission) =>
+      interaction.member.permissions.has(permission)
+    );
 
-        const embed_painel = new Discord.EmbedBuilder()
-            .setColor(apptheme.maincolor)
-            .setAuthor({
-                name: interaction.user.username,
-                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-            })
-            .setDescription(`Olá ${interaction.user}, veja meus comandos interagindo com o painel abaixo:`);
+    const embed_painel = new EmbedBuilder()
+      .setColor(hxmaincolor)
+      .setAuthor({
+        name: interaction.user.username,
+        iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+      })
+      .setDescription(
+        `Olá ${interaction.user}, veja meus comandos interagindo com o painel abaixo:`
+      );
 
-        const embed_utilidade = new Discord.EmbedBuilder()
-            .setColor("Blue")
-            .setAuthor({
-                name: interaction.user.username,
-                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-            })
-            .setDescription(`Olá ${interaction.user}, veja meus comandos de **utilidade** abaixo:
+    const embed_utilidade = new EmbedBuilder().setColor("Blue").setAuthor({
+      name: interaction.user.username,
+      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+    })
+      .setDescription(`Olá ${interaction.user}, veja meus comandos de **utilidade** abaixo:
             /botinfo - Fornece informações sobre o bot.
             /help - Mostra a lista de comandos do bot.
             /ping - Mostra o ping do bot.
@@ -43,61 +54,52 @@ module.exports = {
             /suggest - Envia sua sugestão para o canal de sugestões.
         `);
 
-        const embed_diversao = new Discord.EmbedBuilder()
-            .setColor("Yellow")
-            .setAuthor({
-                name: interaction.user.username,
-                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-            })
-            .setDescription(`Olá ${interaction.user}, veja meus comandos de **diversão** abaixo:
+    const embed_diversao = new EmbedBuilder().setColor("Yellow").setAuthor({
+      name: interaction.user.username,
+      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+    })
+      .setDescription(`Olá ${interaction.user}, veja meus comandos de **diversão** abaixo:
             /apod - Envia a imagem astronômica da data escolhida.
             /avatar - Envia o avatar do usuário escolhido.
         `);
 
-        const embed_economia = new Discord.EmbedBuilder()
-            .setColor("Green")
-            .setAuthor({
-                name: interaction.user.username,
-                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-            })
-            .setDescription(`Olá ${interaction.user}, veja meus comandos de **economia** abaixo:
-            /daily - Resgata seus ${ecoCfg.coinname}s diários.
-            /weekly - Resgata seus ${ecoCfg.coinname}s semanais.
-            /monthly - Resgata seus ${ecoCfg.coinname}s mensais.
-            /yearly - Resgata seus ${ecoCfg.coinname}s anuais.
-            /wallet - Mostra quantos ${ecoCfg.coinname}s você ou o usuário marcado tem.
+    const embed_economia = new EmbedBuilder().setColor("Green").setAuthor({
+      name: interaction.user.username,
+      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+    })
+      .setDescription(`Olá ${interaction.user}, veja meus comandos de **economia** abaixo:
+            /daily - Resgata seus ${config.economy.coinname}s diários.
+            /weekly - Resgata seus ${config.economy.coinname}s semanais.
+            /monthly - Resgata seus ${config.economy.coinname}s mensais.
+            /yearly - Resgata seus ${config.economy.coinname}s anuais.
+            /wallet - Mostra quantos ${config.economy.coinname}s você ou o usuário marcado tem.
             /transfer - Transfere dinheiro para o usuário escolhido.
             /store - Abre a loja do servidor atual.
             /buy - Compra itens na loja.
             /sell - Vende um cargo cadastrado na loja, recebendo 25% do valor dele.
         `);
 
-        const embed_debug = new Discord.EmbedBuilder()
-            .setColor("Green")
-            .setAuthor({
-                name: interaction.user.username,
-                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-            })
+    const embed_debug = new EmbedBuilder().setColor("Green").setAuthor({
+      name: interaction.user.username,
+      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+    });
 
-        if (interaction.user.id === config.owner) {
-            embed_debug.setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
+    if (interaction.user.id === config.owner) {
+      embed_debug.setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
             /bugreport - Reporta um bug do bot para o desenvolvedor.
             /setstatus - Define o status do bot.
         `);
-        } else {
-            embed_debug.setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
+    } else {
+      embed_debug.setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
             /bugreport - Reporta um bug do bot para o desenvolvedor.
-            `)
-        }
+            `);
+    }
 
-
-        const embed_mod = new Discord.EmbedBuilder()
-            .setColor("Aqua")
-            .setAuthor({
-                name: interaction.user.username,
-                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-            })
-            .setDescription(`Olá ${interaction.user}, veja meus comandos de **administração** abaixo:
+    const embed_mod = new EmbedBuilder().setColor("Aqua").setAuthor({
+      name: interaction.user.username,
+      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+    })
+      .setDescription(`Olá ${interaction.user}, veja meus comandos de **administração** abaixo:
             /additem - Adiciona o item escolhido à loja.
             /announce - Envia um anúncio em embed para o canal selecionado.
             /antilink - Ativa/Desativa o sistema de bloqueio de links no servidor.
@@ -114,83 +116,105 @@ module.exports = {
             /unlock - Desbloqueia o canal desejado.
         `);
 
-        const painel = new Discord.ActionRowBuilder().addComponents(
-            new Discord.StringSelectMenuBuilder()
-                .setCustomId("painel_help")
-                .setPlaceholder("Clique aqui!")
-                .addOptions(
-                    {
-                        label: "Painel Inicial",
-                        emoji: "📖",
-                        value: "painel",
-                    },
-                    {
-                        label: "Utilidade",
-                        description: "Veja meus comandos de utilidade.",
-                        emoji: "✨",
-                        value: "utilidade",
-                    },
-                    {
-                        label: "Diversão",
-                        description: "Veja meus comandos de diversão.",
-                        emoji: "😅",
-                        value: "diversao",
-                    },
-                    {
-                        label: "Economia",
-                        description: "Veja meus comandos de economia.",
-                        emoji: "💸",
-                        value: "economia",
-                    },
-                    {
-                        label: "Debug",
-                        description: "Veja meus comandos de debug.",
-                        emoji: "📎",
-                        value: "debug",
-                    },
-                    {
-                        label: "Moderação",
-                        description: "Veja meus comandos de moderação.",
-                        emoji: "🔨",
-                        value: "mod",
-                    }
-                )
-        );
+    const painel = new ActionRowBuilder().addComponents(
+      new StringSelectMenuBuilder()
+        .setCustomId("painel_help")
+        .setPlaceholder("Clique aqui!")
+        .addOptions(
+          {
+            label: "Painel Inicial",
+            emoji: "📖",
+            value: "painel",
+          },
+          {
+            label: "Utilidade",
+            description: "Veja meus comandos de utilidade.",
+            emoji: "✨",
+            value: "utilidade",
+          },
+          {
+            label: "Diversão",
+            description: "Veja meus comandos de diversão.",
+            emoji: "😅",
+            value: "diversao",
+          },
+          {
+            label: "Economia",
+            description: "Veja meus comandos de economia.",
+            emoji: "💸",
+            value: "economia",
+          },
+          {
+            label: "Debug",
+            description: "Veja meus comandos de debug.",
+            emoji: "📎",
+            value: "debug",
+          },
+          {
+            label: "Moderação",
+            description: "Veja meus comandos de moderação.",
+            emoji: "🔨",
+            value: "mod",
+          }
+        )
+    );
 
-        interaction.reply({ embeds: [embed_painel], components: [painel], ephemeral: true })
-            .then(() => {
-                interaction.channel.createMessageComponentCollector()
-                    .on("collect", (c) => {
-                        let valor = c.values[0];
+    interaction
+      .reply({ embeds: [embed_painel], components: [painel], ephemeral: true })
+      .then(() => {
+        interaction.channel
+          .createMessageComponentCollector()
+          .on("collect", (c) => {
+            let valor = c.values[0];
 
-                        if (valor === "painel") {
-                            c.deferUpdate();
-                            interaction.editReply({ embeds: [embed_painel], ephemeral: true });
-                        } else if (valor === "utilidade") {
-                            c.deferUpdate();
-                            interaction.editReply({ embeds: [embed_utilidade], ephemeral: true });
-                        } else if (valor === "diversao") {
-                            c.deferUpdate();
-                            interaction.editReply({ embeds: [embed_diversao], ephemeral: true });
-                        } else if (valor === "economia") {
-                            c.deferUpdate();
-                            interaction.editReply({ embeds: [embed_economia], ephemeral: true });
-                        } else if ((valor === "debug" || valor === "mod") && hasPermission) {
-                            if (valor === "debug") {
-                                c.deferUpdate();
-                                interaction.editReply({ embeds: [embed_debug], ephemeral: true });
-                            } else {
-                                c.deferUpdate();
-                                interaction.editReply({ embeds: [embed_mod], ephemeral: true });
-                            }
-                        } else {
-                            const permembed = new Discord.EmbedBuilder()
-                                .setColor("Red")
-                                .setTitle("❌ Você não possui permissão para acessar essa lista.");
+            if (valor === "painel") {
+              c.deferUpdate();
+              interaction.editReply({
+                embeds: [embed_painel],
+                ephemeral: true,
+              });
+            } else if (valor === "utilidade") {
+              c.deferUpdate();
+              interaction.editReply({
+                embeds: [embed_utilidade],
+                ephemeral: true,
+              });
+            } else if (valor === "diversao") {
+              c.deferUpdate();
+              interaction.editReply({
+                embeds: [embed_diversao],
+                ephemeral: true,
+              });
+            } else if (valor === "economia") {
+              c.deferUpdate();
+              interaction.editReply({
+                embeds: [embed_economia],
+                ephemeral: true,
+              });
+            } else if (
+              (valor === "debug" || valor === "mod") &&
+              hasPermission
+            ) {
+              if (valor === "debug") {
+                c.deferUpdate();
+                interaction.editReply({
+                  embeds: [embed_debug],
+                  ephemeral: true,
+                });
+              } else {
+                c.deferUpdate();
+                interaction.editReply({ embeds: [embed_mod], ephemeral: true });
+              }
+            } else {
+              const permembed = new EmbedBuilder()
+                .setColor("Red")
+                .setTitle(
+                  "❌ Você não possui permissão para acessar essa lista."
+                );
 
-                            interaction.reply({ embeds: [permembed], ephemeral: true });
-                        }
-                    });
-            });
-    },
+              interaction.reply({ embeds: [permembed], ephemeral: true });
+            }
+          });
+      });
+  },
 };

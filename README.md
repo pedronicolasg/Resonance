@@ -78,7 +78,7 @@ $ cd resonance
 $ npm install
 ```
 
-Depois disso é necessário criar três arquivos de configuração pro bot, um na pasta raiz do projeto `config.json`
+Depois disso é necessário criar dois arquivos de configuração pro bot, um na pasta ./src do projeto o `config.json`
 
 ```json
 {
@@ -86,16 +86,11 @@ Depois disso é necessário criar três arquivos de configuração pro bot, um n
   "name": "", // Nome do bot
   "owner": "", // Seu ID
   "technologies": "" // Tecnologias usadas no bot
-}
-```
-
-Em seguida outro em .src/commands/economy/`economycfg.json`
-
-```json
-{
-  "coinname": "", // Nome da moeda
-  "coinsymb": "", // Símbolo da moeda
-  "coinicon": "" // Ícone da moeda
+  "economy": {
+    "coinname": "", // Nome da moeda do seu bot
+    "coinsymb": "", // Símbolo da moeda do seu bot
+    "coinicon": "" // Ícone da moeda do seu bot
+  }
 }
 ```
 

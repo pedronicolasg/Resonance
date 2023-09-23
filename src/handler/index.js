@@ -1,13 +1,13 @@
 const fs = require("fs");
-const themes = require('../themes/chalk-themes');
-const { logger } = require('../events/client/logger');
+const { success, error } = require("../themes/main");
+const { logger } = require("../events/client/logger");
 
 module.exports = async (client) => {
   const SlashsArray = [];
 
-  fs.readdir(`./src/commands`, (error, folder) => {
+  fs.readdir(`./src/commands`, (e, folder) => {
     folder.forEach((subfolder) => {
-      fs.readdir(`./src/commands/${subfolder}/`, (error, files) => {
+      fs.readdir(`./src/commands/${subfolder}/`, (e, files) => {
         files.forEach((files) => {
           if (!files?.endsWith(".js")) return;
           files = require(`../commands/${subfolder}/${files}`);
@@ -18,25 +18,30 @@ module.exports = async (client) => {
         });
       });
     });
-    console.log(themes.success("Sucesso ") + "ao carregar os comandos.")
+    console.log(success("Sucesso ") + "ao carregar os comandos.");
     logger.info(`Sucesso ao carregar os comandos.`);
   });
 
-  fs.readdir(`./src/events/`, (erro, folder) => {
+  fs.readdir(`./src/events/`, (e, folder) => {
     folder.forEach((subfolder) => {
-      fs.readdir(`./src/events/${subfolder}/`, (erro, files) => {
+      fs.readdir(`./src/events/${subfolder}/`, (e, files) => {
         files.forEach((file) => {
           if (!file.endsWith(".js")) return;
           require(`../events/${subfolder}/${file}`);
         });
       });
     });
-    console.log(themes.success("Sucesso ") + "ao carregar os eventos.")
+    console.log(success("Sucesso ") + "ao carregar os eventos.");
     logger.info(`Sucesso ao carregar os eventos.`);
   });
   client.on("ready", async () => {
     client.guilds.cache.forEach((guild) => guild.commands.set(SlashsArray));
-    console.log(themes.success("Sucesso ") + "ao adicionar a lista de comandos no cache do servidor.")
-    logger.info(`Sucesso ao adicionar a lista de comandos no cache do servidor.`);
+    console.log(
+      success("Sucesso ") +
+        "ao adicionar a lista de comandos no cache do servidor."
+    );
+    logger.info(
+      `Sucesso ao adicionar a lista de comandos no cache do servidor.`
+    );
   });
 };

@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require("mongoose");
 
-const storeItemSchema = new mongoose.Schema({
+const storeItemSchema = new Schema({
   serverId: { type: String, required: true },
   itemId: { type: String, required: true, unique: true },
   name: { type: String, required: true },
@@ -9,6 +9,6 @@ const storeItemSchema = new mongoose.Schema({
   addedBy: { type: String, required: true },
 });
 
-const StoreItem = mongoose.model('StoreItem', storeItemSchema);
+const StoreItem = model("StoreItem", storeItemSchema);
 
 module.exports = StoreItem;

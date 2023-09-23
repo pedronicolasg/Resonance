@@ -1,17 +1,17 @@
-const fs = require('fs');
+const fs = require("fs");
 const client = require("../../index");
-const config = require("../../config.json");
-const themes = require('../../themes/chalk-themes');
-const { logger } = require('../client/logger');
+const { name, version } = require("../../config.json");
+const { maincolor, secondcolor } = require("../../themes/main");
+const { logger } = require("../client/logger");
 
 client.on("ready", () => {
-    fs.readFile('./src/images/ascii.txt', 'utf8', function (err, data) {
-        if (err) {
-            console.log(err);
-            console.log(`${config.name} online na versão ${config.version}!`);
-        } else {
-            console.log(themes.maincolor(data) + themes.secondcolor(' V' + config.version) + '\n');
-        }
-    });
-    logger.info(`${config.name} online na versão ${config.version}!`);
+  fs.readFile("./src/images/ascii.txt", "utf8", function (e, data) {
+    if (e) {
+      console.log(e);
+      console.log(`${name} online na versão ${version}!`);
+    } else {
+      console.log(maincolor(data) + secondcolor(` V${version}`) + "\n");
+    }
+  });
+  logger.info(`${name} online na versão ${version}!`);
 });
