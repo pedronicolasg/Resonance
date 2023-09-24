@@ -5,7 +5,7 @@
 
 </div>
 
-<h1 align="center">Resonance</h1>
+<h1 align="center"><a href="https://resonancebot.vercel.app/">Resonance</a></h1>
 <p align="center">
   <img alt="Principal linguagem do projeto" src="https://img.shields.io/github/languages/top/pedronicolasg/resonance?color=56BEB8">
 
