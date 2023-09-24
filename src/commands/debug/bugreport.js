@@ -19,6 +19,12 @@ module.exports = {
       type: ApplicationCommandOptionType.String,
       required: true,
     },
+    {
+      name: "image",
+      description: "Print do bug",
+      type: ApplicationCommandOptionType.Attachment,
+      required: false,
+    },
   ],
 
   run: async (client, interaction) => {
@@ -36,6 +42,24 @@ module.exports = {
     }
 
     const bugDescription = interaction.options.getString("bug");
+    const bugImage = interaction.options.getAttachment("image", true);
+    const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif"];
+    const fileName = bugImage.name.toLowerCase();
+
+    if (!allowedExtensions.some((extension) => fileName.endsWith(extension))) {
+      let errorembed = new EmbedBuilder()
+        .setColor("Red")
+        .setTitle("Erro ao enviar a imagem")
+        .setDescription(
+          `Os únicos formatos de arquivos aceitos são os seguintes:\n${allowedExtensions.join(
+            ", "
+          )}`
+        );
+
+      interaction.reply({ embeds: [errorembed], ephemeral: true });
+      return;
+    }
+
     const devUser = await client.users.fetch(owner);
 
     if (!devUser) {
@@ -56,6 +80,7 @@ module.exports = {
       .setColor(hxmaincolor)
       .setTitle("Bug Report")
       .setDescription(`Bug report enviado por ${interaction.user}.`)
+      .setImage(bugImage.url)
       .addFields({
         name: "Descrição do Bug",
         value: bugDescription,

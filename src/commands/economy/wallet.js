@@ -3,7 +3,7 @@ const {
   ApplicationCommandOptionType,
   EmbedBuilder,
 } = require("discord.js");
-const config = require("../../config.json");
+const { economy } = require("../../config.json");
 const { hxmaincolor, success, error } = require("../../themes/main");
 const { logger } = require("../../events/client/logger");
 
@@ -11,7 +11,7 @@ const Wallet = require("../../database/models/wallet");
 
 module.exports = {
   name: "wallet",
-  description: `Verifique a quantidade de ${config.economy.coinname}s em sua carteira.`,
+  description: `Verifique a quantidade de ${economy.coinname}s em sua carteira.`,
   type: ApplicationCommandType.ChatInput,
   options: [
     {
@@ -38,11 +38,11 @@ module.exports = {
             user === interaction.user
               ? "Você tem"
               : `O usuário ${user} (${user.id}) tem`
-          } \`${config.economy.coinsymb}:${quantidade}\` em sua carteira.`
+          } \`${economy.coinsymb}:${quantidade}\` em sua carteira.`
         )
         .setFooter({
-          text: `${config.economy.coinname} (${config.economy.coinsymb}).`,
-          iconURL: `${config.economy.coinicon}`,
+          text: `${economy.coinname} (${economy.coinsymb}).`,
+          iconURL: `${economy.coinicon}`,
         });
 
       interaction.reply({

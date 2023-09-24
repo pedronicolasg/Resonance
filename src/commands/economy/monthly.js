@@ -1,5 +1,5 @@
 const { ApplicationCommandType, EmbedBuilder } = require("discord.js");
-const config = require("../../config.json");
+const { economy } = require("../../config.json");
 const { hxmaincolor, success, error } = require("../../themes/main");
 const { logger } = require("../../events/client/logger");
 const ms = require("ms");
@@ -7,7 +7,7 @@ const Wallet = require("../../database/models/wallet");
 
 module.exports = {
   name: "monthly",
-  description: `Resgate suas ${config.economy.coinname}s mensais.`,
+  description: `Resgate suas ${economy.coinname}s mensais.`,
   type: ApplicationCommandType.ChatInput,
 
   run: async (client, interaction, args) => {
@@ -49,21 +49,21 @@ module.exports = {
         .setColor("Green")
         .setTitle("💰 Monthly Resgatado!")
         .setDescription(
-          `Você resgatou \`${config.economy.coinsymb}:${amount}\` em seu monthly.\nUtilize o comando \`/wallet\` para ver seu total de ${config.economy.coinname}s.`
+          `Você resgatou \`${economy.coinsymb}:${amount}\` em seu monthly.\nUtilize o comando \`/wallet\` para ver seu total de ${economy.coinname}s.`
         )
         .setFooter({
-          text: `${config.economy.coinname} (${config.economy.coinsymb}).`,
-          iconURL: `${config.economy.coinicon}`,
+          text: `${economy.coinname} (${economy.coinsymb}).`,
+          iconURL: `${economy.coinicon}`,
         });
 
       interaction.reply({ embeds: [sucessembed] });
     } catch (e) {
       console.log(
         error("Erro ") +
-          `ao adicionar ${config.economy.coinsymb}:${amount} à carteira de ${interaction.user.id} devido à:\n ${e}`
+          `ao adicionar ${economy.coinsymb}:${amount} à carteira de ${interaction.user.id} devido à:\n ${e}`
       );
       logger.error(
-        `Erro ao adicionar ${config.economy.coinsymb}:${amount} à carteira de ${interaction.user.id} devido à:\n ${e}`
+        `Erro ao adicionar ${economy.coinsymb}:${amount} à carteira de ${interaction.user.id} devido à:\n ${e}`
       );
 
       const errorembed = new EmbedBuilder()

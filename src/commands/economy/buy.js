@@ -8,7 +8,7 @@ const StoreItem = require("../../database/models/storeItem");
 const Wallet = require("../../database/models/wallet");
 const { hxmaincolor, success, error } = require("../../themes/main");
 const { logger } = require("../../events/client/logger");
-const config = require("../../config.json");
+const { economy } = require("../../config.json");
 
 module.exports = {
   name: "buy",
@@ -146,7 +146,7 @@ module.exports = {
           .setColor(hxmaincolor)
           .setTitle("Compra Realizada!")
           .setDescription(
-            `${interaction.user} comprou o item "${item.name}"! @${addedByUserId} ganhou ${config.economy.coinsymb}:${rewardAmount} de comissão.`
+            `${interaction.user} comprou o item "${item.name}"! @${addedByUserId} ganhou ${economy.coinsymb}:${rewardAmount} de comissão.`
           );
         logchannel.send({ embeds: [logembed] });
       }

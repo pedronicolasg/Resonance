@@ -7,7 +7,7 @@ const ServerSettings = require("../../database/models/servercfg");
 const StoreItem = require("../../database/models/storeItem");
 const Wallet = require("../../database/models/wallet");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const config = require("../../config.json");
+const { economy } = require("../../config.json");
 const { logger } = require("../../events/client/logger");
 
 module.exports = {
@@ -112,7 +112,7 @@ module.exports = {
         .setColor(hxmaincolor)
         .setTitle("✅ Venda Realizada!")
         .setDescription(
-          `Você vendeu o item "${item.name}" da loja com sucesso.\nVocê recebeu ${amountGained} ${config.economy.coinname}s.`
+          `Você vendeu o item "${item.name}" da loja com sucesso.\nVocê recebeu ${amountGained} ${economy.coinname}s.`
         );
 
       interaction.reply({ embeds: [embed] });
@@ -124,7 +124,7 @@ module.exports = {
           .setColor(hxmaincolor)
           .setTitle("Compra Realizada!")
           .setDescription(
-            `${interaction.user} vendeu o item "${item.name}" e ganhou ${config.economy.coinsymb}:${amountGained} de volta!`
+            `${interaction.user} vendeu o item "${item.name}" e ganhou ${economy.coinsymb}:${amountGained} de volta!`
           );
         logchannel.send({ embeds: [logembed] });
       }

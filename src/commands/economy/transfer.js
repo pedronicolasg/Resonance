@@ -3,25 +3,25 @@ const {
   ApplicationCommandOptionType,
   EmbedBuilder,
 } = require("discord.js");
-const config = require("../../config.json");
+const { economy } = require("../../config.json");
 const { hxmaincolor, success, error } = require("../../themes/main");
 const { logger, logger_economy } = require("../../events/client/logger");
 const Wallet = require("../../database/models/wallet");
 
 module.exports = {
   name: "transfer",
-  description: `Transfere ${config.economy.coinname}s para outro usuário.`,
+  description: `Transfere ${economy.coinname}s para outro usuário.`,
   type: ApplicationCommandType.ChatInput,
   options: [
     {
       name: "usuário",
-      description: `Mencione o usuário para enviar ${config.economy.coinname}s.`,
+      description: `Mencione o usuário para enviar ${economy.coinname}s.`,
       type: ApplicationCommandOptionType.User,
       required: true,
     },
     {
       name: "quantidade",
-      description: `Quantidade de ${config.economy.coinname}s para enviar.`,
+      description: `Quantidade de ${economy.coinname}s para enviar.`,
       type: ApplicationCommandOptionType.Integer,
       required: true,
     },
@@ -82,20 +82,20 @@ module.exports = {
         .setColor("Green")
         .setTitle("💸 Pagamento realizado!")
         .setDescription(
-          `Você enviou \`${amount} ${config.economy.coinname}s\` para <@${recipientId}>.\nSeu saldo atual: \`${sender.coins} ${config.economy.coinname}s\``
+          `Você enviou \`${amount} ${economy.coinname}s\` para <@${recipientId}>.\nSeu saldo atual: \`${sender.coins} ${economy.coinname}s\``
         );
 
       interaction.reply({ embeds: [embed] });
       logger_economy.info(
-        `${interaction.user.id} transferiu ${config.economy.coinsymb}:${amount} para ${recipientId} no servidor ${interaction.guild.id}`
+        `${interaction.user.id} transferiu ${economy.coinsymb}:${amount} para ${recipientId} no servidor ${interaction.guild.id}`
       );
     } catch (e) {
       console.log(
         error("Erro ") +
-          `ao enviar ${config.economy.coinsymb}:${amount} de ${senderId} para ${recipientId} devido à:\n ${e}`
+          `ao enviar ${economy.coinsymb}:${amount} de ${senderId} para ${recipientId} devido à:\n ${e}`
       );
       logger.error(
-        `Erro ao enviar ${config.economy.coinsymb}:${amount} de ${senderId} para ${recipientId} devido à:\n ${e}`
+        `Erro ao enviar ${economy.coinsymb}:${amount} de ${senderId} para ${recipientId} devido à:\n ${e}`
       );
 
       const errorembed = new EmbedBuilder()

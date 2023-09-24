@@ -12,14 +12,14 @@ const ServerSettings = require("../../database/models/servercfg");
 
 module.exports = {
   name: "transcript",
-  description: "Transcreve o canal desejado em um arquivo html",
+  description: "Transcreve as últimas 200 mensagens canal desejado em uma página html",
   type: ApplicationCommandType.ChatInput,
   options: [
     {
       name: "canal",
       description: "Mencione um canal para o transcrever.",
       type: ApplicationCommandOptionType.Channel,
-      required: true,
+      required: false,
     },
   ],
 
@@ -50,7 +50,7 @@ module.exports = {
     }
     const currentDate = getCurrentDate();
 
-    const channelTrscpt = interaction.options.getChannel("canal");
+    const channelTrscpt = interaction.options.getChannel("canal") || interaction.channel.id;
     if (!channelTrscpt.isTextBased()) {
       let nottextchannelembed = new EmbedBuilder()
         .setColor("Red")
@@ -63,13 +63,13 @@ module.exports = {
     }
     try {
       const embed = new EmbedBuilder()
-        .setColor("#48deff")
+        .setColor(hxmaincolor)
         .setDescription(`Criando transcript do canal ${channelTrscpt}...`);
 
       interaction.reply({ embeds: [embed], ephemeral: true }).then(() => {
         setTimeout(async () => {
-          const attachement = await transcript.createTranscript(channelTrscpt, {
-            limit: -1,
+          const attachement = await createTranscript(channelTrscpt, {
+            limit: 200,
             returnType: "attachement",
             filename: `${channelTrscpt.id}_${currentDate}.html`,
             saveImages: true,
@@ -82,8 +82,7 @@ module.exports = {
           );
           interaction.editReply({ embeds: [embed], files: [attachement] });
 
-          const channelId = serverSettings.logchannelId;
-          const logchannel = client.channels.cache.get(channelId);
+          const logchannel = client.channels.cache.get(serverSettings.logchannelId);
           if (logchannel) {
             const logembed = new EmbedBuilder()
               .setColor("#48deff")

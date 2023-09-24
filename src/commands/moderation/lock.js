@@ -17,7 +17,7 @@ module.exports = {
       name: "canal",
       description: "Mencione um canal para o bloquear o chat.",
       type: ApplicationCommandOptionType.Channel,
-      required: true,
+      required: false,
     },
   ],
 
@@ -39,7 +39,7 @@ module.exports = {
       serverId: interaction.guild.id,
     });
 
-    const channel = interaction.options.getChannel("canal");
+    const channel = interaction.options.getChannel("canal") || interaction.channel.id;
     if (!channel.isTextBased()) {
       let nottextchannelembed = new EmbedBuilder()
         .setColor("Red")

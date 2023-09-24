@@ -2,7 +2,7 @@ const { ApplicationCommandType, EmbedBuilder } = require("discord.js");
 const StoreItem = require("../../database/models/storeItem");
 const { hxmaincolor, success, error } = require("../../themes/main");
 const { logger } = require("../../events/client/logger");
-const config = require("../../config.json");
+const { economy } = require("../../config.json");
 
 module.exports = {
   name: "store",
@@ -36,7 +36,7 @@ module.exports = {
       items.forEach((item) => {
         embed.addFields({
           name: `${item.name} ( ${item.itemId} )`,
-          value: `${item.description} \n Preço: ${config.economy.coinsymb}:${item.price}`,
+          value: `${item.description} \n Preço: ${economy.coinsymb}:${item.price}`,
           inline: true,
         });
       });

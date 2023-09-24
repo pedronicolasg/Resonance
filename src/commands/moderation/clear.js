@@ -4,7 +4,6 @@ const {
   PermissionFlagsBits,
   EmbedBuilder,
 } = require("discord.js");
-const config = require("../../config.json");
 const { hxmaincolor, success, error } = require("../../themes/main");
 const { logger } = require("../../events/client/logger");
 const ServerSettings = require("../../database/models/servercfg");
