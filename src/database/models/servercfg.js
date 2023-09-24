@@ -6,6 +6,7 @@ const servercfgSchema = new Schema({
   adschannelId: { type: String, required: false },
   exitchannelId: { type: String, required: false },
   ruleschannelId: { type: String, required: false },
+  gameschannelId: { type: String, required: false },
   welcomechannelId: { type: String, required: false },
   suggestionchannelId: { type: String, required: false },
 });

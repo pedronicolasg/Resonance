@@ -43,6 +43,12 @@ module.exports = {
       required: false,
     },
     {
+      name: "games_channel_id",
+      description: "ID do canal de jogos",
+      type: ApplicationCommandOptionType.String,
+      required: false,
+    },
+    {
       name: "welcome_channel_id",
       description: "ID do canal de boas-vindas.",
       type: ApplicationCommandOptionType.String,
@@ -75,11 +81,9 @@ module.exports = {
     const adschannelId = interaction.options.getString("ads_channel_id");
     const exitchannelId = interaction.options.getString("exit_channel_id");
     const ruleschannelId = interaction.options.getString("rules_channel_id");
-    const welcomechannelId =
-      interaction.options.getString("welcome_channel_id");
-    const suggestionchannelId = interaction.options.getString(
-      "suggestion_channel_id"
-    );
+    const gameschannelId = interaction.options.getString("games_channel_id");
+    const welcomechannelId = interaction.options.getString("welcome_channel_id");
+    const suggestionchannelId = interaction.options.getString("suggestion_channel_id");
 
     try {
       let serverSettings = await ServerSettings.findOne({ serverId });
@@ -88,7 +92,6 @@ module.exports = {
         serverSettings = new ServerSettings({ serverId });
       }
 
-      // Adicione verificações para cada campo antes de defini-los em serverSettings
       if (logchannelId !== undefined)
         serverSettings.logchannelId = logchannelId;
       if (adschannelId !== undefined)
@@ -97,6 +100,8 @@ module.exports = {
         serverSettings.exitchannelId = exitchannelId;
       if (ruleschannelId !== undefined)
         serverSettings.ruleschannelId = ruleschannelId;
+      if (gameschannelId !== undefined)
+        serverSettings.gameschannelId = gameschannelId;
       if (welcomechannelId !== undefined)
         serverSettings.welcomechannelId = welcomechannelId;
       if (suggestionchannelId !== undefined)

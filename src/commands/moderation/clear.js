@@ -40,14 +40,14 @@ module.exports = {
     });
     let number = interaction.options.getNumber("quantidade");
 
-    if (number <= 0 || number > 99) {
+    /*if (number <= 0 || number > 99) {
       let embed = new EmbedBuilder()
         .setColor("Red")
         .setDescription(`Escolha um número entre 1 e 99!`);
 
       interaction.reply({ embeds: [embed], ephemeral: true });
       return;
-    }
+    }*/
 
     try {
       const messages = await interaction.channel.messages.fetch({

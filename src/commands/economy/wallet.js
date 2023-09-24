@@ -30,7 +30,7 @@ module.exports = {
       let quantidade = userData ? userData.coins : 0;
 
       let embed = new EmbedBuilder()
-        .setColor("Yellow")
+        .setColor(hxmaincolor)
         .setTitle("💸 Carteira")
         .setThumbnail(user.displayAvatarURL({ dynamic: true }))
         .setDescription(
