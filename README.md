@@ -1,7 +1,7 @@
 <div align="center" id="top"> 
   <img src="./src/images/logo.jpg" alt="Resonance" width="250" heigth="250" style="border-radius: 10px;" />
 
-[Convidar](https://discord.com/oauth2/authorize?client_id=1129229235811254362&scope=bot&permissions=8)
+[Convidar](https://discord.com/oauth2/authorize?client_id=1129229235811254362&scope=bot&permissions=406277713111)
 
 </div>
 
@@ -38,15 +38,15 @@
 
 ## :dart: Sobre
 
-Resonance é um bot feito usando como base no meu primeiro bot para Discord o [Nexcenture](https://github.com/pedronicolasg/Nexcenture) mas com grandes melhorias, melhorias essas que incluem utilizar o MongoDB como banco de dados invés do Quick.DB ou BetterSQLite3.
+Resonance é um bot feito usando como base no meu primeiro bot para Discord o [Nexcenture](https://github.com/pedronicolasg/Nexcenture) mas com grandes melhorias!
 
 ## :sparkles: Comandos
 
-:heavy_check_mark: 3 comandos de debug;\
-:heavy_check_mark: 9 comandos de economia;\
-:heavy_check_mark: 2 comandos de diversão;\
-:heavy_check_mark: 12 comandos de moderação/administração;\
-:heavy_check_mark: 6 comandos de utilidade;
+🤖 2 comandos de debug;\
+💸 9 comandos de economia;\
+🥳 5 comandos de diversão;\
+👑 13 comandos de moderação/administração;\
+✅ 5 comandos de utilidade;
 
 ## :rocket: Tecnologias
 
