@@ -55,7 +55,7 @@ module.exports = {
         .setDescription(`Você só pode jogar no canal: ${gameschannel}`);
       interaction.reply({ embeds: [embed], ephemeral: true });
       return;
-    } else {
+    } else { try{
       const subcommand = interaction.options.getSubcommand();
       const playerOnlyMsg = "Só {player} pode usar esses botões.";
       const userId = interaction.user.id;
@@ -189,6 +189,10 @@ module.exports = {
           });
           break;
       }
+    } catch {
+      console.log(error('Erro ') + `ao rodar os jogos devido à:\n ${e}`)
+      logger.error(`Erro ao rodar os jogos devido à: ${e}`) 
+    }
     }
   },
 };
