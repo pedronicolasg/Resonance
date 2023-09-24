@@ -1,6 +1,5 @@
 const {
   ApplicationCommandType,
-  ApplicationCommandOptionType,
   ChannelType,
   PermissionFlagsBits,
   EmbedBuilder,
@@ -72,11 +71,6 @@ module.exports = {
             inline: true,
           },
           {
-            name: `📝 Canais de Texto:`,
-            value: `\`${canais_texto}\``,
-            inline: true,
-          },
-          {
             name: `🔊 Canais de Voz:`,
             value: `\`${canais_voz}\``,
             inline: true,
@@ -98,6 +92,7 @@ module.exports = {
           const adschannelId = serverConfig.adschannelId;
           const exitchannelId = serverConfig.exitchannelId;
           const ruleschannelId = serverConfig.ruleschannelId;
+          const gameschannelId = serverConfig.gameschannelId;
           const welcomechannelId = serverConfig.welcomechannelId;
           const suggestionchannelId = serverConfig.suggestionchannelId;
 
@@ -130,6 +125,11 @@ module.exports = {
             {
               name: "Canal de Sugestões",
               value: `<#${suggestionchannelId}>`,
+              inline: true,
+            },
+            {
+              name: "Canal de Jogos",
+              value: `<#${gameschannelId}>`,
               inline: true,
             }
           );
