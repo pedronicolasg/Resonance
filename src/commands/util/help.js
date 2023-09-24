@@ -61,6 +61,9 @@ module.exports = {
       .setDescription(`Olá ${interaction.user}, veja meus comandos de **diversão** abaixo:
             /apod - Envia a imagem astronômica da data escolhida.
             /avatar - Envia o avatar do usuário escolhido.
+            /game 2048 - Inicia o jogo "2048".
+            /game snake-game - Inicia o jogo da cobrinha.
+            /game minesweeper - Inicia o jogo "Campo Minado"
         `);
 
     const embed_economia = new EmbedBuilder().setColor("Green").setAuthor({
