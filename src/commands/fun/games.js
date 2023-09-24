@@ -177,7 +177,6 @@ module.exports = {
         case "minesweeper":
           minesweeper.startGame();
           minesweeper.on("gameOver", (result) => {
-            console.log(result);
             if (result.result == "lose") {
               if (user.coins == 0) return;
               user.coins = user.coins - 250;
@@ -188,9 +187,6 @@ module.exports = {
               user.save();
             }
           });
-          break;
-
-        default:
           break;
       }
     }
