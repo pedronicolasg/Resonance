@@ -190,6 +190,7 @@ module.exports = {
                 return;
               }
               user.coins = user.coins - 250;
+              user.save();
               return;
             }
             if (result.result == "win") {
