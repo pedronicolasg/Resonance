@@ -33,94 +33,56 @@ module.exports = {
   ],
 
   run: async (client, interaction) => {
-    const serverSettings = await ServerSettings.findOne({
-      serverId: interaction.guild.id,
-    });
-    const gameschannel = client.channels.cache.get(
-      serverSettings.gameschannelId
-    );
-    if (!gameschannel) {
-      let embed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("Canal não configurado")
-        .setDescription(
-          `O canal de jogos ainda não foi configurado nesse servidor.`
-        );
-      interaction.reply({ embeds: [embed], ephemeral: true });
-      return;
-    } else if (interaction.channel.id == !gameschannel) {
-      let embed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("Canal incorreto")
-        .setDescription(`Você só pode jogar no canal: ${gameschannel}`);
-      interaction.reply({ embeds: [embed], ephemeral: true });
-      return;
-    } else { try{
-      const subcommand = interaction.options.getSubcommand();
-      const playerOnlyMsg = "Só {player} pode usar esses botões.";
-      const userId = interaction.user.id;
-      const user = await Wallet.findOne({ userId });
-
-      const tzfe = new TwoZeroFourEight({
-        message: interaction,
-        isSlashGame: true,
-        embed: {
-          title: "2048",
-          color: "#5865F2",
-        },
-        emojis: {
-          up: "⬆️",
-          down: "⬇️",
-          left: "⬅️",
-          right: "➡️",
-        },
-        timeoutTime: 60000,
-        buttonStyle: "PRIMARY",
-        playerOnlyMessage: playerOnlyMsg,
+    try {
+      const serverSettings = await ServerSettings.findOne({
+        serverId: interaction.guild.id,
       });
+      const gameschannel = serverSettings.gameschannelId;
+      if (!gameschannel) {
+        let errorEmbed = new EmbedBuilder()
+          .setColor("Red")
+          .setTitle("Canal não configurado")
+          .setDescription(
+            `O canal de jogos ainda não foi configurado nesse servidor.`
+          );
+        interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+        return;
+      } else if (interaction.channelId !== gameschannel) {
+        let errorEmbed = new EmbedBuilder()
+          .setColor("Red")
+          .setTitle("Comando não permitido neste canal")
+          .setDescription(
+            `Este comando só pode ser usado no canal <#${gameschannel}>`
+          );
+        interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+        return;
+      } else {
+        const subcommand = interaction.options.getSubcommand();
+        const playerOnlyMsg = "Só {player} pode usar esses botões.";
+        const userId = interaction.user.id;
+        var user = await Wallet.findOne({ userId });
 
-      const snake = new Snake({
-        message: interaction,
-        isSlashGame: true,
-        embed: {
-          title: "Jogo da cobrinha",
-          overTitle: "Game Over",
-          color: "#5865F2",
-        },
-        emojis: {
-          board: "⬛",
-          food: "🍎",
-          up: "⬆️",
-          down: "⬇️",
-          left: "⬅️",
-          right: "➡️",
-        },
-        snake: { head: "🟢", body: "🟩", tail: "🟢", skull: "⛔" },
-        foods: ["🍎", "🍇", "🍊", "🥕", "🥝", "🌽"],
-        stopButton: "Stop",
-        timeoutTime: 60000,
-        playerOnlyMessage: playerOnlyMsg,
-      });
+        let tzfe, snake, minesweeper;
 
-      const minesweeper = new Minesweeper({
-        message: interaction,
-        isSlashGame: true,
-        embed: {
-          title: "Campo Minado",
-          color: "#5865F2",
-          description:
-            "Clique nos botões para revelar os blocos, exceto as minas.",
-        },
-        emojis: { flag: "🚩", mine: "💣" },
-        mines: 5,
-        timeoutTime: 65000,
-        winMessage: `Você ganhou o jogo! Você evitou com sucesso todas as minas, como recompensa você recebeu ${economy.coinsymb}:500!`,
-        loseMessage: `Você perdeu o jogo! Cuidado com as minas da próxima vez, e como consequência perdeu ${economy.coinsymb}:250.`,
-        playerOnlyMessage: playerOnlyMsg,
-      });
+        if (subcommand === "2048") {
+          tzfe = new TwoZeroFourEight({
+            message: interaction,
+            isSlashGame: true,
+            embed: {
+              title: "2048",
+              color: hxmaincolor,
+            },
+            emojis: {
+              up: "⬆️",
+              down: "⬇️",
+              left: "⬅️",
+              right: "➡️",
+            },
+            timeoutTime: 60000,
+            buttonStyle: "PRIMARY",
+            playerOnlyMessage: playerOnlyMsg,
+          });
 
-      switch (subcommand) {
-        case "2048":
           tzfe.startGame();
           tzfe.on("gameOver", (result) => {
             let score = result.score;
@@ -141,19 +103,44 @@ module.exports = {
                   inline: true,
                 }
               );
+            user = user || new Wallet({ userId });
             user.coins = (user.coins || 0) + finalAmount;
             user.save();
-            interaction.channel.send({ embeds: [tzfeEmbed], ephemeral: true });
+            interaction.channel.send({
+              embeds: [tzfeEmbed],
+              ephemeral: true,
+            });
           });
-          break;
+        } else if (subcommand === "snake-game") {
+          snake = new Snake({
+            message: interaction,
+            isSlashGame: true,
+            embed: {
+              title: "Jogo da cobrinha",
+              overTitle: "Game Over",
+              color: hxmaincolor,
+            },
+            emojis: {
+              board: "⬛",
+              food: "🍎",
+              up: "⬆️",
+              down: "⬇️",
+              left: "⬅️",
+              right: "➡️",
+            },
+            snake: { head: "🟢", body: "🟩", tail: "🟢", skull: "⛔" },
+            foods: ["🍎", "🍇", "🍊", "🥕", "🥝", "🌽"],
+            stopButton: "Stop",
+            timeoutTime: 60000,
+            playerOnlyMessage: playerOnlyMsg,
+          });
 
-        case "snake-game":
           snake.startGame();
           snake.on("gameOver", (result) => {
             let score = result.score;
             let amount = score / 2;
             let finalAmount = Math.round(amount);
-            const tzfeEmbed = new EmbedBuilder()
+            const snakeEmbed = new EmbedBuilder()
               .setColor(hxmaincolor)
               .setTitle(`**Game Over**`)
               .setFields(
@@ -168,31 +155,63 @@ module.exports = {
                   inline: true,
                 }
               );
+            user = user || new Wallet({ userId });
             user.coins = (user.coins || 0) + finalAmount;
             user.save();
-            interaction.channel.send({ embeds: [tzfeEmbed], ephemeral: true });
+            interaction.channel.send({
+              embeds: [snakeEmbed],
+              ephemeral: true,
+            });
           });
-          break;
+        } else if (subcommand === "minesweeper") {
+          minesweeper = new Minesweeper({
+            message: interaction,
+            isSlashGame: true,
+            embed: {
+              title: "Campo Minado",
+              color: hxmaincolor,
+              description:
+                "Clique nos botões para revelar os blocos, exceto as minas.",
+            },
+            emojis: { flag: "🚩", mine: "💣" },
+            mines: 5,
+            timeoutTime: 65000,
+            winMessage: `Você ganhou o jogo! Você evitou com sucesso todas as minas, como recompensa você recebeu ${economy.coinsymb}:500!`,
+            loseMessage: `Você perdeu o jogo! Cuidado com as minas da próxima vez, e como consequência perdeu ${economy.coinsymb}:250.`,
+            playerOnlyMessage: playerOnlyMsg,
+          });
 
-        case "minesweeper":
           minesweeper.startGame();
           minesweeper.on("gameOver", (result) => {
             if (result.result == "lose") {
-              if (user.coins == 0) return;
+              user = user || new Wallet({ userId });
+              if (user.coins < 250) {
+                user.coins = 0;
+                return;
+              }
               user.coins = user.coins - 250;
               return;
             }
             if (result.result == "win") {
+              user = user || new Wallet({ userId });
               user.coins = (user.coins || 0) + 500;
               user.save();
             }
           });
-          break;
+        }
       }
-    } catch {
-      console.log(error('Erro ') + `ao rodar os jogos devido à:\n ${e}`)
-      logger.error(`Erro ao rodar os jogos devido à: ${e}`) 
-    }
+    } catch (e) {
+      console.log(
+        error("Erro ") + `ao executar o comando de Games devido à:\n ${e}`
+      );
+      logger.error(`Erro ao executar o comando Games devido à: ${e}`);
+      let errorEmbed = new EmbedBuilder()
+        .setColor("Red")
+        .setTitle("Erro na execução.")
+        .setDescription(
+          `Não foi possível executar o comando de games, tente novamente mais tarde.`
+        );
+      interaction.reply({ embeds: [errorEmbed], ephemeral: true });
     }
   },
 };
