@@ -185,6 +185,7 @@ module.exports = {
 
           minesweeper.startGame();
           minesweeper.on("gameOver", async (result) => {
+            user = user || new Wallet({ userId });
             if (result.result === "lose") {
               if (user.coins < lose) {
                 user.coins = 0;
