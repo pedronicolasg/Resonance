@@ -38,7 +38,7 @@
 
 ## :dart: Sobre
 
-Resonance é um bot feito usando como base no meu primeiro bot para Discord o [Nexcenture](https://github.com/pedronicolasg/Nexcenture) mas com grandes melhorias!
+Resonance é o bot multifuncional que leva a harmonia e a eficiência para todo o seu servidor Discord.
 
 ## :sparkles: Comandos
 
