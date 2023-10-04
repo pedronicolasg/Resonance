@@ -27,7 +27,7 @@ module.exports = {
     },
     {
       name: "minesweeper",
-      description: `Evite as minas para ganhar 500 ${economy.coinname}s, se não perde 250!`,
+      description: `Evite as minas para ganhar ${economy.coinname}s, se não perderá eles!`,
       type: ApplicationCommandOptionType.Subcommand,
     },
   ],
@@ -60,7 +60,7 @@ module.exports = {
         const subcommand = interaction.options.getSubcommand();
         const playerOnlyMsg = "Só {player} pode usar esses botões.";
         const userId = interaction.user.id;
-        var user = await Wallet.findOne({ userId });
+        let user = await Wallet.findOne({ userId });
 
         let tzfe, snake, minesweeper;
 
@@ -164,6 +164,8 @@ module.exports = {
             });
           });
         } else if (subcommand === "minesweeper") {
+          let reward = 475;
+          let lose = 250;
           minesweeper = new Minesweeper({
             message: interaction,
             isSlashGame: true,
@@ -176,28 +178,23 @@ module.exports = {
             emojis: { flag: "🚩", mine: "💣" },
             mines: 5,
             timeoutTime: 65000,
-            winMessage: `Você ganhou o jogo! Você evitou com sucesso todas as minas, como recompensa você recebeu ${economy.coinsymb}:500!`,
-            loseMessage: `Você perdeu o jogo! Cuidado com as minas da próxima vez, e como consequência perdeu ${economy.coinsymb}:250.`,
+            winMessage: `Você ganhou o jogo! Você evitou com sucesso todas as minas, como recompensa você recebeu ${economy.coinsymb}:${reward}!`,
+            loseMessage: `Você perdeu o jogo! Cuidado com as minas da próxima vez, e como consequência perdeu ${economy.coinsymb}:${lose}.`,
             playerOnlyMessage: playerOnlyMsg,
           });
 
           minesweeper.startGame();
-          minesweeper.on("gameOver", (result) => {
-            if (result.result == "lose") {
-              user = user || new Wallet({ userId });
-              if (user.coins < 250) {
+          minesweeper.on("gameOver", async (result) => {
+            if (result.result === "lose") {
+              if (user.coins < lose) {
                 user.coins = 0;
-                return;
+              } else {
+                user.coins -= lose;
               }
-              user.coins = user.coins - 250;
-              user.save();
-              return;
+            } else if (result.result === "win") {
+              user.coins += reward;
             }
-            if (result.result == "win") {
-              user = user || new Wallet({ userId });
-              user.coins = (user.coins || 0) + 500;
-              user.save();
-            }
+            await user.save();
           });
         }
       }
