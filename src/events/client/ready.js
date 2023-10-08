@@ -5,7 +5,7 @@ const { maincolor, secondcolor } = require("../../themes/main");
 const { logger } = require("../client/logger");
 
 client.on("ready", () => {
-  fs.readFile("./src/images/ascii.txt", "utf8", function (e, data) {
+  fs.readFile("./src/assets/ascii.txt", "utf8", function (e, data) {
     if (e) {
       console.log(e);
       console.log(`${name} online na versão ${version}!`);

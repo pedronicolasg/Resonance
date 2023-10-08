@@ -18,14 +18,17 @@ const client = new Client({
 
 require("dotenv").config();
 let token = process.env.TOKEN;
-let conn_string = process.env.MONGODB_URI;
+let connString = process.env.MONGODB_URI;
 console.log(success("Sucesso ") + "ao carregar os segredos do bot.");
 logger.info(`Sucesso ao carregar os segredos do bot.`);
 
 (async () => {
   try {
     mongoose.set("strictQuery", false);
-    await mongoose.connect(conn_string);
+    await mongoose.connect(connString, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log(success("Sucesso ") + "ao conectar ao banco de dados.");
     logger.info(`Sucesso ao conectar ao banco de dados.`);
 
