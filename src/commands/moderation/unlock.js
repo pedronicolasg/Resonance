@@ -25,14 +25,14 @@ module.exports = {
     if (
       !interaction.member.permissions.has(PermissionFlagsBits.ManageChannels)
     ) {
-      let permembed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Você não possui permissão para utilizar este comando.")
+      let warnEmbed = new EmbedBuilder()
+        .setColor("Yellow")
+        .setTitle("Você não possui permissão para utilizar este comando.")
         .setDescription(
           `Você precisa da permissão "Gerenciar Canais" para usar esse comando`
         );
 
-      return interaction.reply({ embeds: [permembed], ephemeral: true });
+      return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
     const serverSettings = await ServerSettings.findOne({
@@ -41,12 +41,12 @@ module.exports = {
 
     const channel = interaction.options.getChannel("canal") || interaction.channel.id;
     if (!channel.isTextBased()) {
-      let nottextchannelembed = new EmbedBuilder()
+      let errorEmbed = new EmbedBuilder()
         .setColor("Red")
-        .setTitle("❌ Algo deu errado ao desbloquear o canal.")
+        .setTitle("Algo deu errado ao desbloquear o canal.")
         .setDescription(`O canal não é de texto.`);
       return interaction.reply({
-        embeds: [nottextchannelembed],
+        embeds: [errorEmbed],
         ephemeral: true,
       });
     }
@@ -78,7 +78,7 @@ module.exports = {
       .catch((e) => {
         let error = new EmbedBuilder()
           .setColor("Red")
-          .setTitle("❌ Erro ao desbloquear o canal.")
+          .setTitle("Erro ao desbloquear o canal.")
           .setDescription(
             `Não foi possível desbloquear o canal: ${channel.name}!`
           );

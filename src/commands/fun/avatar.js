@@ -23,18 +23,25 @@ module.exports = {
     const user = interaction.options.getUser("usuário") || interaction.user;
     const avatarURL = user.displayAvatarURL({ dynamic: true, size: 2048 });
 
-    const embed = new EmbedBuilder()
+    let embed = new EmbedBuilder()
       .setColor(hxmaincolor)
       .setTitle(`Avatar de ${user.username}`)
       .setImage(avatarURL);
 
     try {
       interaction.reply({ embeds: [embed], ephemeral: true });
-    } catch (error) {
+    } catch (e) {
+      let errorEmbed = new EmbedBuilder()
+        .setColor("#ff0000")
+        .setTitle("Erro inesperado")
+        .setDescription(
+          `Ocorreu um erro inesperado, tente novamente mais tarde.`
+        )
+      interaction.reply({ embeds: [errorEmbed], ephemeral: true });
       console.log(
-        error("Erro ") + `ao executar o comando /avatar devido à:\n ${error}`
+        error("Erro ") + `ao executar o comando /avatar devido à:\n ${e}`
       );
-      logger.error(`Erro ao executar o comando /avatar devido à:\n ${error}`);
+      logger.error(`Erro ao executar o comando /avatar devido à:\n ${e}`);
     }
   },
 };

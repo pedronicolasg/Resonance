@@ -27,14 +27,14 @@ module.exports = {
     if (
       !interaction.member.permissions.has(PermissionFlagsBits.ManageChannels)
     ) {
-      let permembed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Você não possui permissão para utilizar este comando.")
+      let warnEmbed = new EmbedBuilder()
+        .setColor("Yellow")
+        .setTitle("Você não possui permissão para utilizar este comando.")
         .setDescription(
           `Você precisa da permissão "Gerenciar Canais" para usar esse comando`
         );
 
-      return interaction.reply({ embeds: [permembed], ephemeral: true });
+      return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
     const serverSettings = await ServerSettings.findOne({
@@ -52,17 +52,17 @@ module.exports = {
 
     const channelTrscpt = interaction.options.getChannel("canal") || interaction.channel.id;
     if (!channelTrscpt.isTextBased()) {
-      let nottextchannelembed = new EmbedBuilder()
+      let errorEmbed = new EmbedBuilder()
         .setColor("Red")
-        .setTitle("❌ Algo deu errado ao transcrever o canal.")
+        .setTitle("Algo deu errado ao transcrever o canal.")
         .setDescription(`O canal não é de texto.`);
       return interaction.reply({
-        embeds: [nottextchannelembed],
+        embeds: [errorEmbed],
         ephemeral: true,
       });
     }
     try {
-      const embed = new EmbedBuilder()
+      let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
         .setDescription(`Criando transcript do canal ${channelTrscpt}...`);
 
@@ -84,19 +84,19 @@ module.exports = {
 
           const logchannel = client.channels.cache.get(serverSettings.logchannelId);
           if (logchannel) {
-            const logembed = new EmbedBuilder()
+            let logEmbed = new EmbedBuilder()
               .setColor("#48deff")
               .setDescription(
                 `Um transcript do canal ${channelTrscpt} foi criado por ${interaction.user}`
               );
-            logchannel.send({ embeds: [logembed], files: [attachement] });
+            logchannel.send({ embeds: [logEmbed], files: [attachement] });
           }
         }, 1500);
       });
     } catch (e) {
       let error = new EmbedBuilder()
         .setColor("Red")
-        .setTitle(`❌ Erro ao transcrever o canal`)
+        .setTitle(`Erro ao transcrever o canal`)
         .setDescription(
           `Não foi possível bloquear o canal: ${channelTrscpt.name}.!`
         );

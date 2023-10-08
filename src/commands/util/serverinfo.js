@@ -35,7 +35,7 @@ module.exports = {
         (c) => c.type === ChannelType.GuildCategory
       ).size;
 
-      const embed = new EmbedBuilder()
+      let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
         .setAuthor({ name: nome, iconURL: icon })
         .setThumbnail(icon)

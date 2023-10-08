@@ -209,13 +209,13 @@ module.exports = {
                 interaction.editReply({ embeds: [embed_mod], ephemeral: true });
               }
             } else {
-              const permembed = new EmbedBuilder()
-                .setColor("Red")
+              const warnEmbed = new EmbedBuilder()
+                .setColor("Yellow")
                 .setTitle(
-                  "❌ Você não possui permissão para acessar essa lista."
+                  "Você não possui permissão para acessar essa lista."
                 );
 
-              interaction.reply({ embeds: [permembed], ephemeral: true });
+              interaction.reply({ embeds: [warnEmbed], ephemeral: true });
             }
           });
       });

@@ -29,13 +29,13 @@ module.exports = {
 
   run: async (client, interaction) => {
     if (interaction.user.id !== owner) {
-      const permembed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Você não possui permissão para utilizar este comando.")
+      let warnEmbed = new EmbedBuilder()
+        .setColor("Yellow")
+        .setTitle("Você não possui permissão para utilizar este comando.")
         .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-        .setDescription("Somente meu dono pode usar esse comando!");
+        .setDescription("Somente o dono pode usar esse comando!");
 
-      interaction.reply({ embeds: [permembed], ephemeral: true });
+      interaction.reply({ embeds: [warnEmbed], ephemeral: true });
       return;
     }
 
@@ -53,7 +53,7 @@ module.exports = {
         ],
       });
 
-      const embed = new EmbedBuilder()
+      let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
         .setTitle("Status atualizado!")
         .addFields(

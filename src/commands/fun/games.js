@@ -88,7 +88,7 @@ module.exports = {
             let score = result.score;
             let amount = score / 2;
             let finalAmount = Math.round(amount);
-            const tzfeEmbed = new EmbedBuilder()
+            let tzfeEmbed = new EmbedBuilder()
               .setColor(hxmaincolor)
               .setTitle(`**Game Over**`)
               .setFields(
@@ -140,7 +140,7 @@ module.exports = {
             let score = result.score;
             let amount = score / 2;
             let finalAmount = Math.round(amount);
-            const snakeEmbed = new EmbedBuilder()
+            let snakeEmbed = new EmbedBuilder()
               .setColor(hxmaincolor)
               .setTitle(`**Game Over**`)
               .setFields(
@@ -164,8 +164,8 @@ module.exports = {
             });
           });
         } else if (subcommand === "minesweeper") {
-          let reward = 475;
-          let lose = 250;
+          const reward = 475;
+          const lose = 250;
           minesweeper = new Minesweeper({
             message: interaction,
             isSlashGame: true,

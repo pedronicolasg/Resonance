@@ -66,14 +66,14 @@ module.exports = {
     if (
       !interaction.member.permissions.has(PermissionFlagsBits.Administrator)
     ) {
-      let permembed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Você não possui permissão para utilizar este comando.")
+      let warnEmbed = new EmbedBuilder()
+        .setColor("Yellow")
+        .setTitle("Você não possui permissão para utilizar este comando.")
         .setDescription(
           `Você precisa da permissão "Administrador" para usar esse comando`
         );
 
-      return interaction.reply({ embeds: [permembed], ephemeral: true });
+      return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
     const serverId = interaction.guild.id;
@@ -109,7 +109,7 @@ module.exports = {
 
       await serverSettings.save();
 
-      const embed = new EmbedBuilder()
+      let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
         .setTitle("Sucesso ao definir os IDs")
         .setDescription(
@@ -120,12 +120,12 @@ module.exports = {
     } catch (e) {
       console.log(error("Erro ") + `ao definir os IDs dos canais: `, e);
       logger.error(`Erro ao definir os IDs dos canais: `, e);
-      let errorembed = new EmbedBuilder()
+      let errorEmbed = new EmbedBuilder()
         .setColor("Red")
-        .setTitle("❌ Erro ao definir os IDs.")
+        .setTitle("Erro ao definir os IDs.")
         .setDescription(`Erro ao definir os IDs dos canais.`);
 
-      interaction.reply({ embeds: [errorembed], ephemeral: true });
+      interaction.reply({ embeds: [errorEmbed], ephemeral: true });
     }
   },
 };

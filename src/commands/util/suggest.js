@@ -34,7 +34,7 @@ module.exports = {
         if (!suggestionChannel) {
           let errorchannelembed = new EmbedBuilder()
             .setColor("Red")
-            .setTitle("❌ Canal não configurado.")
+            .setTitle("Canal não configurado.")
             .setDescription(
               `${interaction.user}, o canal de sugestões ainda não foi configurado para este servidor! Peça a um Staff para configurá-lo.`
             );
@@ -42,7 +42,7 @@ module.exports = {
           interaction.reply({ embeds: [errorchannelembed], ephemeral: true });
         } else {
           const suggestion = interaction.options.getString("sugestão");
-          const embed = new EmbedBuilder()
+          let embed = new EmbedBuilder()
             .setColor(hxmaincolor)
             .setAuthor({
               name: interaction.user.username,
@@ -57,13 +57,13 @@ module.exports = {
           suggestionChannel
             .send({ embeds: [embed] })
             .then(() => {
-              let successembed = new EmbedBuilder()
+              let embed = new EmbedBuilder()
                 .setColor(hxmaincolor)
                 .setTitle("✅ Sugestão enviada")
                 .setDescription(
                   `${interaction.user}, sua sugestão foi publicada em ${suggestionChannel} com sucesso!`
                 );
-              interaction.reply({ embeds: [successembed], ephemeral: true });
+              interaction.reply({ embeds: [embed], ephemeral: true });
             })
             .catch((e) => {
               console.log(
@@ -73,14 +73,14 @@ module.exports = {
               logger.error(
                 `Erro ao enviar a sugestão de ${interaction.user} devido a:\n ${e}`
               );
-              let errorembed = new EmbedBuilder()
+              let errorEmbed = new EmbedBuilder()
                 .setColor("Red")
-                .setTitle("❌ Ops...")
+                .setTitle("Ops...")
                 .setDescription(
                   `${interaction.user}, não foi possível enviar sua sugestão! Tente novamente mais tarde ou contate um Staff.`
                 );
 
-              interaction.reply({ embeds: [errorembed], ephemeral: true });
+              interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             });
         }
       } else {

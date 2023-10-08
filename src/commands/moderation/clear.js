@@ -25,14 +25,14 @@ module.exports = {
     if (
       !interaction.member.permissions.has(PermissionFlagsBits.ManageMessages)
     ) {
-      let permembed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Você não possui permissão para utilizar este comando.")
+      let warnEmbed = new EmbedBuilder()
+        .setColor("Yellow")
+        .setTitle("Você não possui permissão para utilizar este comando.")
         .setDescription(
           `Você precisa da permissão "Gerenciar Mensagens" para usar esse comando`
         );
 
-      return interaction.reply({ embeds: [permembed], ephemeral: true });
+      return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
     const serverSettings = await ServerSettings.findOne({
@@ -102,7 +102,7 @@ module.exports = {
           iconURL: interaction.guild.iconURL({ dynamic: true }),
         })
         .setDescription(
-          `❌ Erro ao usuário ${interaction.user.username} tentar deletar ${number} mensagens do canal de texto ${interaction.channel} devido à: \n ${e}`
+          `Erro ao usuário ${interaction.user.username} tentar deletar ${number} mensagens do canal de texto ${interaction.channel} devido à: \n ${e}`
         );
 
       interaction.reply({ embeds: [embed], ephemeral: true });

@@ -26,14 +26,14 @@ module.exports = {
 
   run: async (client, interaction) => {
     if (!interaction.member.permissions.has(PermissionFlagsBits.ManageRoles)) {
-      let permembed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Você não possui permissão para utilizar este comando.")
+      let warnEmbed = new EmbedBuilder()
+        .setColor("Yellow")
+        .setTitle("Você não possui permissão para utilizar este comando.")
         .setDescription(
           `Você precisa da permissão "Gerencias Cargos" para usar esse comando`
         );
 
-      return interaction.reply({ embeds: [permembed], ephemeral: true });
+      return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
     const serverSettings = await ServerSettings.findOne({
@@ -63,12 +63,12 @@ module.exports = {
       const channelId = serverSettings.logchannelId;
       const logchannel = client.channels.cache.get(channelId);
       if (logchannel) {
-        const logembed = new EmbedBuilder()
+        let logEmbed = new EmbedBuilder()
           .setColor("#48deff")
           .setDescription(
             `${interaction.user} criou uma interação de cargo por botão pro cargo ${role} no canal <#${interaction.channel.id}>`
           );
-        logchannel.send({ embeds: [logembed] });
+        logchannel.send({ embeds: [logEmbed] });
       }
 
       let coletor = interaction.channel.createMessageComponentCollector();

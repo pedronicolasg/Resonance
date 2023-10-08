@@ -29,14 +29,14 @@ module.exports = {
 
   run: async (client, interaction) => {
     if (!interaction.member.permissions.has(PermissionFlagsBits.BanMembers)) {
-      let permembed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Você não possui permissão para utilizar este comando.")
+      let warnEmbed = new EmbedBuilder()
+        .setColor("Yellow")
+        .setTitle("Você não possui permissão para utilizar este comando.")
         .setDescription(
           `Você precisa da permissão "Banir Membros" para usar esse comando`
         );
 
-      return interaction.reply({ embeds: [permembed], ephemeral: true });
+      return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
     const serverSettings = await ServerSettings.findOne({
@@ -58,7 +58,7 @@ module.exports = {
 
     let error = new EmbedBuilder()
       .setColor("Red")
-      .setTitle("❌ Erro ao banir um usuário.")
+      .setTitle("Erro ao banir um usuário.")
       .setDescription(
         `Não foi possível banir o usuário ${user} (\`${user.id}\`) do servidor!`
       );

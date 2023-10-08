@@ -30,14 +30,14 @@ module.exports = {
     if (
       !interaction.member.permissions.has(PermissionFlagsBits.ManageMessages)
     ) {
-      let permembed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Você não possui permissão para utilizar este comando.")
+      let warnEmbed = new EmbedBuilder()
+        .setColor("Yellow")
+        .setTitle("Você não possui permissão para utilizar este comando.")
         .setDescription(
           `Você precisa da permissão "Gerencias Mensagens" para usar esse comando`
         );
 
-      return interaction.reply({ embeds: [permembed], ephemeral: true });
+      return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
     let user = interaction.options.getUser("usuário");
     let msg = interaction.options.getString("mensagem");
@@ -63,7 +63,7 @@ module.exports = {
         let emb = new EmbedBuilder()
           .setColor("Red")
           .setDescription(
-            `❌ Erro, a mensagem não foi enviada para ${user}, pois o usuário está com a DM fechada!`
+            `Erro, a mensagem não foi enviada para ${user}, pois o usuário está com a DM fechada!`
           );
         interaction.reply({ embeds: [emb] });
         console.log(error("Erro ") + "ao enviar DM: " + e);

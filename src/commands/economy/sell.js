@@ -35,66 +35,52 @@ module.exports = {
       const item = await StoreItem.findOne({ serverId, itemId });
 
       if (!item) {
-        const embed = new EmbedBuilder()
+        let errorEmbed = new EmbedBuilder()
           .setColor("Red")
-          .setTitle("❌ Item não encontrado")
+          .setTitle("Item não encontrado")
           .setDescription(
             "O item que você deseja vender não foi encontrado na loja."
           );
 
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.reply({ embeds: [errorEmbed], ephemeral: true });
         return;
       }
 
       const member = interaction.guild.members.cache.get(userId);
 
       if (!member) {
-        const embed = new EmbedBuilder()
+        let errorEmbed = new EmbedBuilder()
           .setColor("Red")
-          .setTitle("❌ Usuário não encontrado")
+          .setTitle("Usuário não encontrado")
           .setDescription(
             "Não foi possível encontrar o seu usuário no servidor."
           );
 
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.reply({ embeds: [errorEmbed], ephemeral: true });
         return;
       }
 
       if (!member.roles.cache.has(itemId)) {
-        const embed = new EmbedBuilder()
-          .setColor("Red")
-          .setTitle("❌ Você não possui o Cargo")
+        let warnEmbed = new EmbedBuilder()
+          .setColor("Yellow")
+          .setTitle("Você não possui o Cargo")
           .setDescription("Você não possui o cargo associado a este item.");
 
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.reply({ embeds: [warnEmbed], ephemeral: true });
         return;
       }
 
       const role = interaction.guild.roles.cache.get(itemId);
 
       if (!role) {
-        console.log(`O cargo com ID ${itemId} não foi encontrado no servidor.`);
-        const embed = new EmbedBuilder()
+        let errorEmbed = new EmbedBuilder()
           .setColor("Red")
-          .setTitle("❌ Cargo não encontrado")
+          .setTitle("Cargo não encontrado")
           .setDescription(
             "O cargo associado a este item não foi encontrado no servidor."
           );
 
-        interaction.reply({ embeds: [embed], ephemeral: true });
-        return;
-      }
-
-      try {
-        await member.roles.remove(role);
-      } catch (error) {
-        console.log("Erro ao remover cargo do usuário:", error);
-        const embed = new EmbedBuilder()
-          .setColor("Red")
-          .setTitle("❌ Erro ao Remover Cargo")
-          .setDescription("Não foi possível remover o cargo do seu usuário.");
-
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.reply({ embeds: [errorEmbed], ephemeral: true });
         return;
       }
 
@@ -102,15 +88,32 @@ module.exports = {
       const amountGained = Math.round(item.price * 0.25);
 
       if (user) {
+        try {
+          await member.roles.remove(role);
+        } catch (e) {
+          let errorEmbed = new EmbedBuilder()
+            .setColor("Red")
+            .setTitle("Erro ao Remover Cargo")
+            .setDescription("Não foi possível remover o cargo do seu usuário.");
+
+          interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+          return;
+        }
         user.coins += amountGained;
         await user.save();
       } else {
-        console.log(`Usuário com ID ${userId} não encontrado na carteira.`);
+        let errorEmbed = new EmbedBuilder()
+          .setColor("Red")
+          .setTitle("Usuário não encontrado")
+          .setDescription(
+            `Usuário com ID ${userId} não encontrado na carteira.`
+          );
+        interaction.reply({ embeds: [errorEmbed], ephemeral: true });
       }
 
-      const embed = new EmbedBuilder()
+      let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
-        .setTitle("✅ Venda Realizada!")
+        .setTitle("Venda Realizada!")
         .setDescription(
           `Você vendeu o item "${item.name}" da loja com sucesso.\nVocê recebeu ${amountGained} ${economy.coinname}s.`
         );
@@ -120,24 +123,22 @@ module.exports = {
       const channelId = serverSettings.logchannelId;
       const logchannel = client.channels.cache.get(channelId);
       if (logchannel) {
-        const logembed = new EmbedBuilder()
+        let logEmbed = new EmbedBuilder()
           .setColor(hxmaincolor)
           .setTitle("Compra Realizada!")
           .setDescription(
             `${interaction.user} vendeu o item "${item.name}" e ganhou ${economy.coinsymb}:${amountGained} de volta!`
           );
-        logchannel.send({ embeds: [logembed] });
+        logchannel.send({ embeds: [logEmbed] });
       }
-    } catch (error) {
-      console.log("Erro ao vender o item:", error);
+    } catch (e) {
+      let errorEmbed = new EmbedBuilder()
+        .setColor("Red")
+        .setTitle("Erro ao Vender Item")
+        .setDescription("Ocorreu um erro ao tentar vender o item.");
+      interaction.reply({ embeds: [errorEmbed], ephemeral: true });
       console.log(error("Erro ") + `ao vender o item da loja devido à: ${e}`);
       logger.error(`Erro ao vender o item da loja devido à: ${e}`);
-      const embed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Erro ao Vender Item")
-        .setDescription("Ocorreu um erro ao tentar vender o item.");
-
-      interaction.reply({ embeds: [embed], ephemeral: true });
     }
   },
 };

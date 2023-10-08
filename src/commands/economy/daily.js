@@ -23,15 +23,15 @@ module.exports = {
         Date.now() - user.lastDailyClaim < timeout
       ) {
         const timeLeft = ms(timeout - (Date.now() - user.lastDailyClaim));
-        const embed = new EmbedBuilder()
-          .setColor("Red")
-          .setTitle("❌ Daily já resgatado!")
+        let warnEmbed = new EmbedBuilder()
+          .setColor("Yellow")
+          .setTitle("Daily já resgatado!")
           .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
           .setDescription(
             `Espere \`${timeLeft}\` para resgatar seu daily novamente!`
           );
 
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.reply({ embeds: [warnEmbed], ephemeral: true });
         return;
       }
 
@@ -45,9 +45,9 @@ module.exports = {
       user.lastDailyClaim = Date.now();
       await user.save();
 
-      const sucessembed = new EmbedBuilder()
+      let embed = new EmbedBuilder()
         .setColor("Green")
-        .setTitle("💰 Daily Resgatado!")
+        .setTitle("Daily Resgatado!")
         .setDescription(
           `Você resgatou \`${economy.coinsymb}:${amount}\` em seu daily.\nUtilize o comando \`/wallet\` para ver seu total de ${economy.coinname}s.`
         )
@@ -56,8 +56,17 @@ module.exports = {
           iconURL: `${economy.coinicon}`,
         });
 
-      interaction.reply({ embeds: [sucessembed] });
+      interaction.reply({ embeds: [embed] });
     } catch (e) {
+      let errorEmbed = new EmbedBuilder()
+        .setColor("Red")
+        .setTitle("Erro ao resgatar o Daily!")
+        .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
+        .setDescription(
+          `Não foi possível resgatar seu daily, tente novamente mais tarde.`
+        );
+
+      interaction.reply({ embeds: [errorEmbed] });
       console.log(
         error("Erro ") +
           `ao adicionar ${economy.coinsymb}:${amount} à carteira de ${interaction.user.id} devido à:\n ${e}`
@@ -65,16 +74,6 @@ module.exports = {
       logger.error(
         `Erro ao adicionar ${economy.coinsymb}:${amount} à carteira de ${interaction.user.id} devido à:\n ${e}`
       );
-
-      const errorembed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Erro ao resgatar o Daily!")
-        .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
-        .setDescription(
-          `Não foi possível resgatar seu daily, tente novamente mais tarde.`
-        );
-
-      interaction.reply({ embeds: [errorembed] });
     }
   },
 };

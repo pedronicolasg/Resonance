@@ -23,31 +23,29 @@ module.exports = {
         Date.now() - user.lastMonthlyClaim < timeout
       ) {
         const timeLeft = ms(timeout - (Date.now() - user.lastMonthlyClaim));
-        const embed = new EmbedBuilder()
-          .setColor("Red")
-          .setTitle("❌ Monthly já resgatado!")
+        let warnEmbed = new EmbedBuilder()
+          .setColor("Yellow")
+          .setTitle("Monthly já resgatado!")
           .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
           .setDescription(
             `Espere \`${timeLeft}\` para resgatar seu monthly novamente!`
           );
 
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.reply({ embeds: [warnEmbed], ephemeral: true });
         return;
       }
 
       var amount = Math.ceil(Math.random() * 225);
-      if (amount < 125) {
-        amount = 125;
-      }
+      if (amount < 125) amount = 125;
 
       user = user || new Wallet({ userId });
       user.coins = (user.coins || 0) + amount;
       user.lastMonthlyClaim = Date.now();
       await user.save();
 
-      const sucessembed = new EmbedBuilder()
+      let embed = new EmbedBuilder()
         .setColor("Green")
-        .setTitle("💰 Monthly Resgatado!")
+        .setTitle("Monthly Resgatado!")
         .setDescription(
           `Você resgatou \`${economy.coinsymb}:${amount}\` em seu monthly.\nUtilize o comando \`/wallet\` para ver seu total de ${economy.coinname}s.`
         )
@@ -56,7 +54,7 @@ module.exports = {
           iconURL: `${economy.coinicon}`,
         });
 
-      interaction.reply({ embeds: [sucessembed] });
+      interaction.reply({ embeds: [embed] });
     } catch (e) {
       console.log(
         error("Erro ") +
@@ -66,15 +64,15 @@ module.exports = {
         `Erro ao adicionar ${economy.coinsymb}:${amount} à carteira de ${interaction.user.id} devido à:\n ${e}`
       );
 
-      const errorembed = new EmbedBuilder()
+      let errorEmbed = new EmbedBuilder()
         .setColor("Red")
-        .setTitle("❌ Erro ao resgatar o Monthly!")
+        .setTitle("Erro ao resgatar o Monthly!")
         .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
         .setDescription(
           `Não foi possível resgatar seu monthly, tente novamente mais tarde.`
         );
 
-      interaction.reply({ embeds: [errorembed] });
+      interaction.reply({ embeds: [errorEmbed] });
     }
   },
 };

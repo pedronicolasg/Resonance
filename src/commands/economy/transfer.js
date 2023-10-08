@@ -34,24 +34,24 @@ module.exports = {
     const recipientUser = await interaction.client.users.fetch(recipientId);
 
     if (recipientUser.bot) {
-      const embed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Destinatário é um bot!")
+      let warnEmbed = new EmbedBuilder()
+        .setColor("Yellow")
+        .setTitle("Destinatário é um bot!")
         .setDescription("Você não pode enviar moedas para um bot.");
 
-      interaction.reply({ embeds: [embed], ephemeral: true });
+      interaction.reply({ embeds: [warnEmbed], ephemeral: true });
       return;
     }
 
     const amount = interaction.options.getInteger("quantidade");
 
     if (amount <= 0) {
-      const embed = new EmbedBuilder()
+      let errorEmbed = new EmbedBuilder()
         .setColor("Red")
-        .setTitle("❌ Quantidade inválida!")
+        .setTitle("Quantidade inválida!")
         .setDescription("A quantidade de moedas deve ser maior que 0.");
 
-      interaction.reply({ embeds: [embed], ephemeral: true });
+      interaction.reply({ embeds: [errorEmbed], ephemeral: true });
       return;
     }
 
@@ -60,14 +60,14 @@ module.exports = {
       let recipient = await Wallet.findOne({ userId: recipientId });
 
       if (!sender || sender.coins < amount) {
-        const embed = new EmbedBuilder()
+        let errorEmbed = new EmbedBuilder()
           .setColor("Red")
-          .setTitle("❌ Saldo insuficiente!")
+          .setTitle("Saldo insuficiente!")
           .setDescription(
             "Você não possui moedas suficientes para enviar essa quantidade."
           );
 
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.reply({ embeds: [errorEmbed], ephemeral: true });
         return;
       }
 
@@ -78,9 +78,9 @@ module.exports = {
       await sender.save();
       await recipient.save();
 
-      const embed = new EmbedBuilder()
-        .setColor("Green")
-        .setTitle("💸 Pagamento realizado!")
+      let embed = new EmbedBuilder()
+        .setColor(hxmaincolor)
+        .setTitle("Pagamento realizado!")
         .setDescription(
           `Você enviou \`${amount} ${economy.coinname}s\` para <@${recipientId}>.\nSeu saldo atual: \`${sender.coins} ${economy.coinname}s\``
         );
@@ -98,14 +98,14 @@ module.exports = {
         `Erro ao enviar ${economy.coinsymb}:${amount} de ${senderId} para ${recipientId} devido à:\n ${e}`
       );
 
-      const errorembed = new EmbedBuilder()
+      let errorEmbed = new EmbedBuilder()
         .setColor("Red")
-        .setTitle("❌ Erro ao enviar moedas!")
+        .setTitle("Erro ao enviar moedas!")
         .setDescription(
           "Não foi possível completar a transação, tente novamente mais tarde."
         );
 
-      interaction.reply({ embeds: [errorembed] });
+      interaction.reply({ embeds: [errorEmbed] });
     }
   },
 };

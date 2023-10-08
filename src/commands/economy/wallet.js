@@ -27,18 +27,18 @@ module.exports = {
 
     try {
       const userData = await Wallet.findOne({ userId: user.id });
-      let quantidade = userData ? userData.coins : 0;
+      let amount = userData ? userData.coins : 0;
 
       let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
-        .setTitle("💸 Carteira")
+        .setTitle("Carteira")
         .setThumbnail(user.displayAvatarURL({ dynamic: true }))
         .setDescription(
           `${
             user === interaction.user
               ? "Você tem"
               : `O usuário ${user} (${user.id}) tem`
-          } \`${economy.coinsymb}:${quantidade}\` em sua carteira.`
+          } \`${economy.coinsymb}:${amount}\` em sua carteira.`
         )
         .setFooter({
           text: `${economy.coinname} (${economy.coinsymb}).`,
@@ -58,15 +58,15 @@ module.exports = {
         `Erro ao buscar a carteira de ${user.username}(${user.id}) devido a: ${e}`
       );
 
-      let errorembed = new EmbedBuilder()
+      let errorEmbed = new EmbedBuilder()
         .setColor("Red")
-        .setTitle("❌ Erro ao verificar a carteira!")
+        .setTitle("Erro ao verificar a carteira!")
         .setThumbnail(user.displayAvatarURL({ dynamic: true }))
         .setDescription(
           `Não foi possível verificar a carteira, tente novamente mais tarde.`
         );
 
-      interaction.reply({ embeds: [errorembed] });
+      interaction.reply({ embeds: [errorEmbed] });
     }
   },
 };

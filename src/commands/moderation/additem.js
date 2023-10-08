@@ -42,14 +42,14 @@ module.exports = {
 
   run: async (client, interaction, args) => {
     if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
-      const permembed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Permissão Necessária")
+      let warnEmbed = new EmbedBuilder()
+        .setColor("Yellow")
+        .setTitle("Permissão Necessária")
         .setDescription(
           `Você precisa da permissão de "Gerenciar Guilda" para usar este comando.`
         );
 
-      return interaction.reply({ embeds: [permembed], ephemeral: true });
+      return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
     const serverSettings = await ServerSettings.findOne({
@@ -75,7 +75,7 @@ module.exports = {
         addedBy,
       });
 
-      const embed = new EmbedBuilder()
+      let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
         .setTitle("Item Adicionado à Loja!")
         .setDescription(
@@ -87,23 +87,23 @@ module.exports = {
       const channelId = serverSettings.logchannelId;
       const logchannel = client.channels.cache.get(channelId);
       if (logchannel) {
-        const logembed = new EmbedBuilder()
+        let logEmbed = new EmbedBuilder()
           .setColor(hxmaincolor)
           .setTitle("Item Adicionado à Loja!")
           .setDescription(
             `O item "${name}" foi adicionado à loja por ${interaction.user}.\nID do Item: ${newItem.itemId}`
           );
-        logchannel.send({ embeds: [logembed] });
+        logchannel.send({ embeds: [logEmbed] });
       }
     } catch (e) {
       console.log(error("Erro ") + `ao adicionar o item à loja devido à: ${e}`);
       logger.error(`Erro ao adicionar o item à loja devido à: ${e}`);
-      const errorembed = new EmbedBuilder()
+      let errorEmbed = new EmbedBuilder()
         .setColor("Red")
-        .setTitle("❌ Erro ao Adicionar o Item à Loja")
+        .setTitle("Erro ao Adicionar o Item à Loja")
         .setDescription("Não foi possível adicionar o item à loja.");
 
-      interaction.reply({ embeds: [errorembed], ephemeral: true });
+      interaction.reply({ embeds: [errorEmbed], ephemeral: true });
     }
   },
 };

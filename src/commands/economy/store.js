@@ -15,19 +15,19 @@ module.exports = {
       const items = await StoreItem.find({ serverId });
 
       if (items.length === 0) {
-        const embed = new EmbedBuilder()
-          .setColor(hxmaincolor)
-          .setTitle("Loja vazia!")
+        let warnEmbed = new EmbedBuilder()
+          .setColor("Yellow")
+          .setTitle("Loja vazia.")
           .setThumbnail(interaction.guild.iconURL({ dynamic: true }))
           .setDescription(
-            "A loja do servidor ainda não possui itens disponíveis."
+            "A loja do servidor atual ainda não possui itens disponíveis."
           );
 
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.reply({ embeds: [warnEmbed], ephemeral: true });
         return;
       }
 
-      const embed = new EmbedBuilder()
+      let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
         .setTitle("Loja do servidor")
         .setThumbnail(interaction.guild.iconURL({ dynamic: true }))
@@ -42,15 +42,14 @@ module.exports = {
       });
 
       interaction.reply({ embeds: [embed], ephemeral: true });
-    } catch (error) {
+    } catch (e) {
+      let errorEmbed = new EmbedBuilder()
+        .setColor("Red")
+        .setTitle("Erro ao acessar a loja")
+        .setDescription("Ocorreu um erro ao obter os itens da loja.");
+      interaction.reply({ embeds: [errorEmbed], ephemeral: true });
       console.log(error("Erro ") + `ao obter os itens da loja devido à: ${e}`);
       logger.error(`Erro ao obter os itens da loja devido à: ${e}`);
-      const embed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Erro ao acessar a loja")
-        .setDescription("Ocorreu um erro ao obter os itens da loja.");
-
-      interaction.reply({ embeds: [embed], ephemeral: true });
     }
   },
 };

@@ -40,7 +40,7 @@ module.exports = {
     }
 
     try {
-      const Embed = new EmbedBuilder()
+      let embed = new EmbedBuilder()
         .setColor(hxnasaapod)
         .setTitle(data.title)
         .setURL("https://api.nasa.gov/")
@@ -61,26 +61,16 @@ module.exports = {
           iconURL: NASALogo,
         });
 
-      interaction.reply({ embeds: [Embed] });
+      interaction.reply({ embeds: [embed] });
     } catch (e) {
-      const ErrorEmbed = new EmbedBuilder()
+      let errorEmbed = new EmbedBuilder()
         .setColor("#ff0000")
         .setTitle("Erro inesperado")
-        .setURL("https://api.nasa.gov/")
-        .setAuthor({
-          name: "NASA",
-          iconURL: "https://api.nasa.gov/assets/img/favicons/favicon-192.png",
-          url: "https://api.nasa.gov/",
-        })
         .setDescription(
           `Ocorreu um erro inesperado, tente novamente mais tarde.`
         )
-        .setFooter({
-          text: `NASA API | APOD ${data.service_version}.`,
-          iconURL: NASALogo,
-        });
 
-      interaction.reply({ embeds: [ErrorEmbed], ephemeral: true });
+      interaction.reply({ embeds: [errorEmbed], ephemeral: true });
       console.log(error("Erro ") + `ao executar o comando APOD:\n ${e}`);
       logger.error(`Erro ao executar o comando APOD: ${e}`);
     }

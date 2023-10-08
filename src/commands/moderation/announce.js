@@ -37,14 +37,14 @@ module.exports = {
     if (
       !interaction.member.permissions.has(PermissionFlagsBits.Administrator)
     ) {
-      let permembed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("❌ Você não possui permissão para utilizar este comando.")
+      let warnEmbed = new EmbedBuilder()
+        .setColor("Yellow")
+        .setTitle("Você não possui permissão para utilizar este comando.")
         .setDescription(
           `Você precisa da permissão "Administrador" para usar esse comando`
         );
 
-      return interaction.reply({ embeds: [permembed], ephemeral: true });
+      return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
     let title = interaction.options.getString("título");
@@ -52,7 +52,7 @@ module.exports = {
     let color = interaction.options.getString("cor");
     let error = new EmbedBuilder()
       .setColor("Red")
-      .setTitle("❌ Erro ao enviar o anúncio.")
+      .setTitle("Erro ao enviar o anúncio.")
       .setDescription(
         `O canal de anúncios não foi configurado corretamente para este servidor.`
       );
@@ -70,12 +70,12 @@ module.exports = {
       const channelId = serverSettings.adschannelId;
       const channel = client.channels.cache.get(channelId);
       if (!channel.isTextBased()) {
-        let nottextchannelembed = new EmbedBuilder()
+        let errorEmbed = new EmbedBuilder()
           .setColor("Red")
-          .setTitle("❌ Algo deu errado ao enviar o anúncio.")
+          .setTitle("Algo deu errado ao enviar o anúncio.")
           .setDescription(`O canal não é de texto.`);
         return interaction.reply({
-          embeds: [nottextchannelembed],
+          embeds: [errorEmbed],
           ephemeral: true,
         });
       }
@@ -88,34 +88,34 @@ module.exports = {
       channel
         .send({ embeds: [embed] })
         .then(() => {
-          let successEmbed = new EmbedBuilder()
+          let embed = new EmbedBuilder()
             .setColor(hxmaincolor)
             .setTitle("✅ Anúncio enviado!")
             .setDescription(
               `Seu anúncio foi enviado em ${channel} com sucesso.`
             );
 
-          interaction.reply({ embeds: [successEmbed], ephemeral: true });
+          interaction.reply({ embeds: [embed], ephemeral: true });
           const logchannelId = serverSettings.logchannelId;
           const logchannel = client.channels.cache.get(logchannelId);
           if (logchannel) {
-            const logembed = new EmbedBuilder()
+            let logEmbed = new EmbedBuilder()
               .setColor("#48deff")
               .setDescription(
                 `Um anúncio foi enviado em ${channel} por ${interaction.user}`
               );
-            logchannel.send({ embeds: [logembed] });
+            logchannel.send({ embeds: [logEmbed] });
           }
         })
         .catch((e) => {
-          let errorembed = new EmbedBuilder()
+          let errorEmbed = new EmbedBuilder()
             .setColor("Red")
-            .setTitle("❌ Algo deu errado ao enviar o anúncio.")
+            .setTitle("Algo deu errado ao enviar o anúncio.")
             .setDescription(
               `Não foi possível enviar seu anúncio, tente novamente mais tarde.`
             );
 
-          interaction.reply({ embeds: [errorembed], ephemeral: true });
+          interaction.reply({ embeds: [errorEmbed], ephemeral: true });
           console.log(error("Erro ") + "ao enviar um anúncio: " + e);
           logger.error("Erro ao enviar um anúncio: ", e);
         });
@@ -124,16 +124,16 @@ module.exports = {
         error("Erro ") + "ao buscar as configurações no MongoDB: " + e
       );
       logger.error("Erro ao buscar as configurações no MongoDB: ", e);
-      let errorembed = new EmbedBuilder()
+      let errorEmbed = new EmbedBuilder()
         .setColor("Red")
         .setTitle(
-          "❌ Ocorreu um erro ao buscar as configurações no banco de dados."
+          "Ocorreu um erro ao buscar as configurações no banco de dados."
         )
         .setDescription(
           `Não foi possível enviar seu anúncio, tente novamente mais tarde.`
         );
 
-      interaction.reply({ embeds: [errorembed], ephemeral: true });
+      interaction.reply({ embeds: [errorEmbed], ephemeral: true });
     }
   },
 };

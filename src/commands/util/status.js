@@ -16,7 +16,7 @@ module.exports = {
 
     const cpuUsage = process.cpuUsage().user / process.cpuUsage().system / 100;
 
-    const embed = new EmbedBuilder()
+    let embed = new EmbedBuilder()
       .setColor(`#48deff`)
       .setTitle(`Status do bot:`)
       .addFields(
