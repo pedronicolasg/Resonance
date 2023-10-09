@@ -1,7 +1,7 @@
 <div align="center" id="top"> 
   <img src="./src/assets/logo.jpg" alt="Resonance" width="250" heigth="250" style="border-radius: 10px;" />
 
-[Convidar](https://discord.com/oauth2/authorize?client_id=1129229235811254362&scope=bot&permissions=406277713111)
+[Convidar](https://discord.com/oauth2/authorize?client_id=1129229235811254362&scope=bot&permissions=406277713111&redirect_uri=https%3A%2F%2Fresonancebot.vercel.app)
 
 </div>
 
