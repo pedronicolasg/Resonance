@@ -3,6 +3,7 @@ const { owner } = require("../../config.json");
 const { hxmaincolor, error, info } = require("../../themes/main");
 const { logger } = require("../client/logger");
 const client = require("../../index");
+const { registerCommandsOnGuildCreate } = require("../../handler/");
 
 client.on("guildCreate", async (guild) => {
   let devUser = await client.users.fetch(owner);
@@ -17,7 +18,9 @@ client.on("guildCreate", async (guild) => {
     )
     .setTimestamp(Date.now());
   try {
+    await registerCommandsOnGuildCreate(guild);
     await devUser.send({ embeds: [embed] });
+
     console.log(info("Fui adicionado ") + `no servidor ${guild.name}.`);
     logger.info(`Fui adicionado no servidor: ${guild.name}!`);
   } catch {

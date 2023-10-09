@@ -44,4 +44,30 @@ module.exports = async (client) => {
       `Sucesso ao adicionar a lista de comandos no cache do servidor.`
     );
   });
+  function registerCommandsOnGuildCreate(guild) {
+    return new Promise(async () => {
+      try {
+        await guild.commands.set(SlashsArray);
+        console.log(
+          success("Sucesso ") +
+            `ao registrar comandos no servidor: ${guild.name}.`
+        );
+        logger.info(
+          `Sucesso ao registrar os comandos no servidor: ${guild.name}!`
+        );
+      } catch (e) {
+        console.log(
+          error("Erro ") +
+            `ao registrar comandos no servidor ${guild.name} devido à:\n ${e}`
+        );
+        logger.error(
+          `Erro ao registrar comandos no servidor ${guild.name} devido à: ${e}`
+        );
+      }
+    });
+  }
+
+  module.exports = {
+    registerCommandsOnGuildCreate,
+  };
 };
