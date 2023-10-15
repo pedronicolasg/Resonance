@@ -1,30 +1,57 @@
 const {
   ApplicationCommandType,
+  ApplicationCommandOptionType,
   PermissionFlagsBits,
   ActionRowBuilder,
   StringSelectMenuBuilder,
   EmbedBuilder,
 } = require("discord.js");
 const config = require("../../config.json");
-const {
-  hxmaincolor,
-  success,
-  error,
-  hxnasaapod,
-} = require("../../themes/main");
+const { hxmaincolor, success, error } = require("../../themes/main");
 
 module.exports = {
   name: "help",
   description: "Painel de comandos do bot.",
   type: ApplicationCommandType.ChatInput,
+  options: [
+    {
+      name: "commands",
+      description: ".",
+      type: ApplicationCommandOptionType.SubcommandGroup,
+      options: [
+        {
+          name: "debug",
+          description: "lista de comandos de Debug",
+          type: ApplicationCommandOptionType.Subcommand,
+        },
+        {
+          name: "economy",
+          description: "lista de comandos de Economia",
+          type: ApplicationCommandOptionType.Subcommand,
+        },
+        {
+          name: "fun",
+          description: "lista de comandos de Diversão",
+          type: ApplicationCommandOptionType.Subcommand,
+        },
+        {
+          name: "moderation",
+          description: "lista de comandos de Moderação",
+          type: ApplicationCommandOptionType.Subcommand,
+        },
+        {
+          name: "util",
+          description: "lista de comandos de Utilidade",
+          type: ApplicationCommandOptionType.Subcommand,
+        },
+      ],
+    },
+  ],
 
   run: async (client, interaction) => {
+    const subCommand = interaction.options.getSubcommand();
     const permissionsArray = [
-      PermissionFlagsBits.Administrator,
-      PermissionFlagsBits.ManageRoles,
-      PermissionFlagsBits.KickMembers,
       PermissionFlagsBits.ManageChannels,
-      PermissionFlagsBits.BanMembers,
       PermissionFlagsBits.ManageMessages,
       PermissionFlagsBits.ManageGuild,
     ];
@@ -32,192 +59,104 @@ module.exports = {
       interaction.member.permissions.has(permission)
     );
 
-    const embed_painel = new EmbedBuilder()
-      .setColor(hxmaincolor)
-      .setAuthor({
-        name: interaction.user.username,
-        iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-      })
-      .setDescription(
-        `Olá ${interaction.user}, veja meus comandos interagindo com o painel abaixo:`
-      );
+    const warnEmbed = new EmbedBuilder()
+      .setColor("Yellow")
+      .setTitle("Você não possui permissão para acessar essa lista.");
 
-    const embed_utilidade = new EmbedBuilder().setColor("Blue").setAuthor({
-      name: interaction.user.username,
-      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-    })
-      .setDescription(`Olá ${interaction.user}, veja meus comandos de **utilidade** abaixo:
-            /botinfo - Fornece informações sobre o bot.
-            /help - Mostra a lista de comandos do bot.
-            /ping - Mostra o ping do bot.
-            /serverinfo - Mostra as informações do servidor atual.
-            /suggest - Envia sua sugestão para o canal de sugestões.
-        `);
-
-    const embed_diversao = new EmbedBuilder().setColor("Yellow").setAuthor({
-      name: interaction.user.username,
-      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-    })
-      .setDescription(`Olá ${interaction.user}, veja meus comandos de **diversão** abaixo:
-            /apod - Envia a imagem astronômica da data escolhida.
-            /avatar - Envia o avatar do usuário escolhido.
-            /game 2048 - Inicia o jogo "2048".
-            /game snake-game - Inicia o jogo da cobrinha.
-            /game minesweeper - Inicia o jogo "Campo Minado"
-        `);
-
-    const embed_economia = new EmbedBuilder().setColor("Green").setAuthor({
-      name: interaction.user.username,
-      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-    })
-      .setDescription(`Olá ${interaction.user}, veja meus comandos de **economia** abaixo:
-            /daily - Resgata seus ${config.economy.coinname}s diários.
-            /weekly - Resgata seus ${config.economy.coinname}s semanais.
-            /monthly - Resgata seus ${config.economy.coinname}s mensais.
-            /yearly - Resgata seus ${config.economy.coinname}s anuais.
-            /wallet - Mostra quantos ${config.economy.coinname}s você ou o usuário marcado tem.
-            /transfer - Transfere dinheiro para o usuário escolhido.
-            /store - Abre a loja do servidor atual.
-            /buy - Compra itens na loja.
-            /sell - Vende um cargo cadastrado na loja, recebendo 25% do valor dele.
-        `);
-
-    const embed_debug = new EmbedBuilder().setColor("Green").setAuthor({
+    let embedDebug = new EmbedBuilder().setColor("Green").setAuthor({
       name: interaction.user.username,
       iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
     });
 
     if (interaction.user.id === config.owner) {
-      embed_debug.setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
-            /bugreport - Reporta um bug do bot para o desenvolvedor.
-            /setstatus - Define o status do bot.
-        `);
+      embedDebug.setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
+          /bugreport - Reporta um bug do bot para o desenvolvedor.
+          /setstatus - Define o status do bot.
+    `);
     } else {
-      embed_debug.setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
-            /bugreport - Reporta um bug do bot para o desenvolvedor.
-            `);
+      embedDebug.setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
+          /bugreport - Reporta um bug do bot para o desenvolvedor.
+    `);
     }
 
-    const embed_mod = new EmbedBuilder().setColor("Aqua").setAuthor({
+    let embedEconomy = new EmbedBuilder().setColor("Green").setAuthor({
+      name: interaction.user.username,
+      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+    })
+      .setDescription(`Olá ${interaction.user}, veja meus comandos de **economia** abaixo:
+          /daily - Resgata seus ${config.economy.coinname}s diários.
+          /weekly - Resgata seus ${config.economy.coinname}s semanais.
+          /monthly - Resgata seus ${config.economy.coinname}s mensais.
+          /yearly - Resgata seus ${config.economy.coinname}s anuais.
+          /wallet - Mostra quantos ${config.economy.coinname}s você ou o usuário marcado tem.
+          /transfer - Transfere dinheiro para o usuário escolhido.
+          /store - Abre a loja do servidor atual.
+          /buy - Compra itens na loja.
+          /sell - Vende um cargo cadastrado na loja, recebendo 25% do valor dele.
+    `);
+
+    let embedFun = new EmbedBuilder().setColor("Yellow").setAuthor({
+      name: interaction.user.username,
+      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+    })
+      .setDescription(`Olá ${interaction.user}, veja meus comandos de **diversão** abaixo:
+          /apod - Envia a imagem astronômica da data escolhida.
+          /avatar - Envia o avatar do usuário escolhido.
+          /game 2048 - Inicia o jogo "2048".
+          /game snake-game - Inicia o jogo da cobrinha.
+          /game minesweeper - Inicia o jogo "Campo Minado"
+    `);
+
+    let embedMod = new EmbedBuilder().setColor("Aqua").setAuthor({
       name: interaction.user.username,
       iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
     })
       .setDescription(`Olá ${interaction.user}, veja meus comandos de **administração** abaixo:
-            /additem - Adiciona o item escolhido à loja.
-            /announce - Envia um anúncio em embed para o canal selecionado.
-            /antilink - Ativa/Desativa o sistema de bloqueio de links no servidor.
-            /ban - Bane o usuário selecionado.
-            /clear - Limpa mensagens do canal selecionado.
-            /dm - Manda mensagem na DM do usuário selecionado.
-            /kick - Expulsa o usuário selecionado.
-            /lock - Bloqueia o canal desejado.
-            /removeitem - Remove o item escolhido da loja.
-            /rpb - Entrega cargos clicando nos botões.
-            /setup - Define os IDs dos canais no servidor.
-            /transcript - Exporta as mensagens do canal escolhido.
-            /unban - Revoga o banimento do usuário selecionado.
-            /unlock - Desbloqueia o canal desejado.
-        `);
+          /additem - Adiciona o item escolhido à loja.
+          /announce - Envia um anúncio em embed para o canal selecionado.
+          /antilink - Ativa/Desativa o sistema de bloqueio de links no servidor.
+          /ban - Bane o usuário selecionado.
+          /clear - Limpa mensagens do canal selecionado.
+          /dm - Manda mensagem na DM do usuário selecionado.
+          /kick - Expulsa o usuário selecionado.
+          /lock - Bloqueia o canal desejado.
+          /removeitem - Remove o item escolhido da loja.
+          /rpb - Entrega cargos clicando nos botões.
+          /setup - Define os IDs dos canais no servidor.
+          /transcript - Exporta as mensagens do canal escolhido.
+          /unban - Revoga o banimento do usuário selecionado.
+          /unlock - Desbloqueia o canal desejado.
+    `);
 
-    const painel = new ActionRowBuilder().addComponents(
-      new StringSelectMenuBuilder()
-        .setCustomId("painel_help")
-        .setPlaceholder("Clique aqui!")
-        .addOptions(
-          {
-            label: "Painel Inicial",
-            emoji: "📖",
-            value: "painel",
-          },
-          {
-            label: "Utilidade",
-            description: "Veja meus comandos de utilidade.",
-            emoji: "✨",
-            value: "utilidade",
-          },
-          {
-            label: "Diversão",
-            description: "Veja meus comandos de diversão.",
-            emoji: "😅",
-            value: "diversao",
-          },
-          {
-            label: "Economia",
-            description: "Veja meus comandos de economia.",
-            emoji: "💸",
-            value: "economia",
-          },
-          {
-            label: "Debug",
-            description: "Veja meus comandos de debug.",
-            emoji: "📎",
-            value: "debug",
-          },
-          {
-            label: "Moderação",
-            description: "Veja meus comandos de moderação.",
-            emoji: "🔨",
-            value: "mod",
-          }
-        )
-    );
+    let embedUtils = new EmbedBuilder().setColor("Blue").setAuthor({
+      name: interaction.user.username,
+      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+    })
+      .setDescription(`Olá ${interaction.user}, veja meus comandos de **utilidade** abaixo:
+          /botinfo - Fornece informações sobre o bot.
+          /help - Mostra a lista de comandos do bot.
+          /ping - Mostra o ping do bot.
+          /serverinfo - Mostra as informações do servidor atual.
+          /suggest - Envia sua sugestão para o canal de sugestões.
+    `);
 
-    interaction
-      .reply({ embeds: [embed_painel], components: [painel], ephemeral: true })
-      .then(() => {
-        interaction.channel
-          .createMessageComponentCollector()
-          .on("collect", (c) => {
-            let valor = c.values[0];
-
-            if (valor === "painel") {
-              c.deferUpdate();
-              interaction.editReply({
-                embeds: [embed_painel],
-                ephemeral: true,
-              });
-            } else if (valor === "utilidade") {
-              c.deferUpdate();
-              interaction.editReply({
-                embeds: [embed_utilidade],
-                ephemeral: true,
-              });
-            } else if (valor === "diversao") {
-              c.deferUpdate();
-              interaction.editReply({
-                embeds: [embed_diversao],
-                ephemeral: true,
-              });
-            } else if (valor === "economia") {
-              c.deferUpdate();
-              interaction.editReply({
-                embeds: [embed_economia],
-                ephemeral: true,
-              });
-            } else if (
-              (valor === "debug" || valor === "mod") &&
-              hasPermission
-            ) {
-              if (valor === "debug") {
-                c.deferUpdate();
-                interaction.editReply({
-                  embeds: [embed_debug],
-                  ephemeral: true,
-                });
-              } else {
-                c.deferUpdate();
-                interaction.editReply({ embeds: [embed_mod], ephemeral: true });
-              }
-            } else {
-              const warnEmbed = new EmbedBuilder()
-                .setColor("Yellow")
-                .setTitle(
-                  "Você não possui permissão para acessar essa lista."
-                );
-
-              interaction.reply({ embeds: [warnEmbed], ephemeral: true });
-            }
-          });
-      });
+    if (subCommand === "economy") {
+      interaction.reply({ embeds: [embedEconomy], ephemeral: true });
+    } else if (subCommand === "fun") {
+      interaction.reply({ embeds: [embedFun], ephemeral: true });
+    } else if (subCommand === "util") {
+      interaction.reply({ embeds: [embedUtils], ephemeral: true });
+    } else if (
+      (subCommand === "debug" && hasPermission) ||
+      (subCommand === "moderation" && hasPermission)
+    ) {
+      if (subCommand === "debug") {
+        interaction.reply({ embeds: [embedDebug], ephemeral: true });
+      } else {
+        interaction.reply({ embeds: [embedMod], ephemeral: true });
+      }
+    } else {
+      interaction.reply({ embeds: [warnEmbed], ephemeral: true });
+    }
   },
 };

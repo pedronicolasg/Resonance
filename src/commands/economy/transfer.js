@@ -5,7 +5,7 @@ const {
 } = require("discord.js");
 const { economy } = require("../../config.json");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger, logger_economy } = require("../../events/client/logger");
+const { logger, logger_economy } = require("../../methods/loggers");
 const Wallet = require("../../database/models/wallet");
 
 module.exports = {

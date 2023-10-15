@@ -5,7 +5,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { sendLogEmbed, logger } = require("../../methods/loggers");
 const ServerSettings = require("../../database/models/servercfg");
 
 module.exports = {
@@ -39,10 +39,6 @@ module.exports = {
       return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
-    const serverSettings = await ServerSettings.findOne({
-      serverId: interaction.guild.id,
-    });
-
     const user = interaction.options.getUser("user");
     const reason = interaction.options.getString("motivo") || "Não definido.";
 
@@ -65,15 +61,8 @@ module.exports = {
 
     try {
       await interaction.guild.members.unban(user, { reason });
-
-      const channelId = serverSettings.logchannelId;
-      const channel = client.channels.cache.get(channelId);
-
-      if (channel) {
-        channel.send({ embeds: [embed] });
-      }
-
       interaction.reply({ embeds: [embed], ephemeral: true });
+      sendLogEmbed(client, interaction.guild.id, embed);
     } catch (e) {
       interaction.reply({ embeds: [error], ephemeral: true });
       console.log(error(`Erro `) + `ao revogar banimento de ${user}: ${e}`);

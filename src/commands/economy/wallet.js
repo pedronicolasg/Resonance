@@ -5,7 +5,7 @@ const {
 } = require("discord.js");
 const { economy } = require("../../config.json");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { logger } = require("../../methods/loggers");
 
 const Wallet = require("../../database/models/wallet");
 
@@ -37,8 +37,8 @@ module.exports = {
           `${
             user === interaction.user
               ? "Você tem"
-              : `O usuário ${user} (${user.id}) tem`
-          } \`${economy.coinsymb}:${amount}\` em sua carteira.`
+              : `O usuário ${user} tem`
+          } \`${economy.coinsymb}:${amount}\` na carteira.`
         )
         .setFooter({
           text: `${economy.coinname} (${economy.coinsymb}).`,

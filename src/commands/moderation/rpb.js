@@ -7,9 +7,8 @@ const {
   ButtonBuilder,
   ButtonStyle,
 } = require("discord.js");
-const ServerSettings = require("../../database/models/servercfg");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { sendLogEmbed, logger } = require("../../methods/loggers");
 
 module.exports = {
   name: "rpb",
@@ -36,10 +35,6 @@ module.exports = {
       return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
-    const serverSettings = await ServerSettings.findOne({
-      serverId: interaction.guild.id,
-    });
-
     const role = interaction.options.getRole("cargo");
 
     let embed = new EmbedBuilder()
@@ -60,16 +55,12 @@ module.exports = {
     );
 
     interaction.reply({ embeds: [embed], components: [botao] }).then(() => {
-      const channelId = serverSettings.logchannelId;
-      const logchannel = client.channels.cache.get(channelId);
-      if (logchannel) {
-        let logEmbed = new EmbedBuilder()
-          .setColor("#48deff")
-          .setDescription(
-            `${interaction.user} criou uma interação de cargo por botão pro cargo ${role} no canal <#${interaction.channel.id}>`
-          );
-        logchannel.send({ embeds: [logEmbed] });
-      }
+      let logEmbed = new EmbedBuilder()
+        .setColor(hxmaincolor)
+        .setDescription(
+          `${interaction.user} criou uma interação de cargo por botão pro cargo ${role} no canal <#${interaction.channel.id}>`
+        );
+      sendLogEmbed(client, interaction.guild.id, logEmbed);
 
       let coletor = interaction.channel.createMessageComponentCollector();
       coletor.on("collect", (c) => {

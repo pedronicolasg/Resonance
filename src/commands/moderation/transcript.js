@@ -6,13 +6,14 @@ const {
 } = require("discord.js");
 const { createTranscript } = require("discord-html-transcripts");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { sendLogEmbed, logger } = require("../../methods/loggers");
 const config = require("../../config.json");
 const ServerSettings = require("../../database/models/servercfg");
 
 module.exports = {
   name: "transcript",
-  description: "Transcreve as últimas 200 mensagens canal desejado em uma página html",
+  description:
+    "Transcreve as últimas 200 mensagens canal desejado em uma página html",
   type: ApplicationCommandType.ChatInput,
   options: [
     {
@@ -50,7 +51,8 @@ module.exports = {
     }
     const currentDate = getCurrentDate();
 
-    const channelTrscpt = interaction.options.getChannel("canal") || interaction.channel.id;
+    const channelTrscpt =
+      interaction.options.getChannel("canal") || interaction.channel;
     if (!channelTrscpt.isTextBased()) {
       let errorEmbed = new EmbedBuilder()
         .setColor("Red")
@@ -78,19 +80,16 @@ module.exports = {
           });
 
           embed.setDescription(
-            `Transcript do canal ${channelTrscpt.name} criado:`
+            `Transcript do canal ${channelTrscpt.name} :point_up:`
           );
           interaction.editReply({ embeds: [embed], files: [attachement] });
 
-          const logchannel = client.channels.cache.get(serverSettings.logchannelId);
-          if (logchannel) {
-            let logEmbed = new EmbedBuilder()
-              .setColor("#48deff")
-              .setDescription(
-                `Um transcript do canal ${channelTrscpt} foi criado por ${interaction.user}`
-              );
-            logchannel.send({ embeds: [logEmbed], files: [attachement] });
-          }
+          let logEmbed = new EmbedBuilder()
+            .setColor(hxmaincolor)
+            .setDescription(
+              `Um transcript do canal ${channelTrscpt} foi criado por ${interaction.user} :point_up:`
+            );
+          sendLogEmbed(client, interaction.guild.id, logEmbed, attachement);
         }, 1500);
       });
     } catch (e) {

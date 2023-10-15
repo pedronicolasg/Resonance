@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 const ServerSettings = require("../../database/models/servercfg");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { logger } = require("../../methods/loggers");
 
 module.exports = {
   name: "lock",
@@ -35,10 +35,6 @@ module.exports = {
       return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
-    const serverSettings = await ServerSettings.findOne({
-      serverId: interaction.guild.id,
-    });
-
     const channel = interaction.options.getChannel("canal") || interaction.channel.id;
     if (!channel.isTextBased()) {
       let errorEmbed = new EmbedBuilder()
@@ -50,9 +46,6 @@ module.exports = {
         ephemeral: true,
       });
     }
-    const channelId = serverSettings.logchannelId;
-    const logchannel = client.channels.cache.get(channelId);
-
     channel.permissionOverwrites
       .edit(interaction.guild.id, { SendMessages: false })
       .then(() => {
@@ -62,10 +55,7 @@ module.exports = {
             `🔒 O canal de texto ${channel} foi bloqueado por ${interaction.user}.`
           );
         interaction.reply({ embeds: [embed] });
-
-        if (logchannel) {
-          logchannel.send({ embeds: [embed] });
-        }
+        sendLogEmbed(client, interaction.guild.id, embed)
 
         let channelembed = new EmbedBuilder()
           .setColor(hxmaincolor)

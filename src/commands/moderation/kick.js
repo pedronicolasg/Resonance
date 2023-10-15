@@ -5,8 +5,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
-const ServerSettings = require("../../database/models/servercfg");
+const { sendLogEmbed, logger } = require("../../methods/loggers");
 
 module.exports = {
   name: "kick",
@@ -18,12 +17,6 @@ module.exports = {
       description: "Mencione um usuário para ser expulso.",
       type: ApplicationCommandOptionType.User,
       required: true,
-    },
-    {
-      name: "motivo",
-      description: "Insira um motivo.",
-      type: ApplicationCommandOptionType.String,
-      required: false,
     },
   ],
 
@@ -39,45 +32,32 @@ module.exports = {
       return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
-    const serverSettings = await ServerSettings.findOne({
-      serverId: interaction.guild.id,
-    });
-
     const user = interaction.options.getUser("user");
-    const reason = interaction.options.getString("motivo") || "Não definido.";
 
     let embed = new EmbedBuilder()
       .setColor(hxmaincolor)
       .setAuthor({
-        name: interaction.user,
+        name: interaction.user.username,
         iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
       })
       .setDescription(
-        `O usuário ${user} (\`${user.id}\`) foi expulso com sucesso!`
-      );
-
-    let error = new EmbedBuilder()
-      .setColor("Red")
-      .setTitle("Erro ao expulsar um usuário.")
-      .setDescription(
-        `Não foi possível expulsar o usuário ${user} (\`${user.id}\`) do servidor!`
+        `O usuário ${user.username} (\`${user.id}\`) foi expulso.`
       );
 
     try {
-      await interaction.guild.members.kick(user, { reason });
-
-      const channelId = serverSettings.logchannelId;
-      const channel = client.channels.cache.get(channelId);
-
-      if (channel) {
-        channel.send({ embeds: [embed] });
-      }
-
       interaction.reply({ embeds: [embed], ephemeral: true });
+      await interaction.guild.members.kick(user);
+      sendLogEmbed(client, interaction.guild.id, embed);
     } catch (e) {
-      interaction.reply({ embeds: [error], ephemeral: true });
+      let error = new EmbedBuilder()
+        .setColor("Red")
+        .setTitle("Erro ao expulsar um usuário.")
+        .setDescription(
+          `Não foi possível expulsar o usuário ${user} (\`${user.id}\`) do servidor!`
+        );
       console.log(error(`Erro `) + `ao expulsar ${user}: ${e}`);
       logger.error(`Erro ao expulsar ${user}: ${e}`);
+      interaction.reply({ embeds: [error], ephemeral: true });
     }
   },
 };

@@ -3,11 +3,10 @@ const {
   ApplicationCommandOptionType,
   EmbedBuilder,
 } = require("discord.js");
-const ServerSettings = require("../../database/models/servercfg");
 const StoreItem = require("../../database/models/storeItem");
 const Wallet = require("../../database/models/wallet");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { sendLogEmbed, logger } = require("../../methods/loggers");
 const { economy } = require("../../config.json");
 
 module.exports = {
@@ -24,9 +23,6 @@ module.exports = {
   ],
 
   run: async (client, interaction, args) => {
-    const serverSettings = await ServerSettings.findOne({
-      serverId: interaction.guild.id,
-    });
 
     const userId = interaction.user.id;
     const serverId = interaction.guild.id;
@@ -138,17 +134,13 @@ module.exports = {
 
       interaction.reply({ embeds: [embed] });
 
-      const channelId = serverSettings.logchannelId;
-      const logchannel = client.channels.cache.get(channelId);
-      if (logchannel) {
         let logEmbed = new EmbedBuilder()
           .setColor(hxmaincolor)
           .setTitle("Compra Realizada!")
           .setDescription(
             `${interaction.user} comprou o item "${item.name}"! @${addedByUserId} ganhou ${economy.coinsymb}:${rewardAmount} de comissão.`
           );
-        logchannel.send({ embeds: [logEmbed] });
-      }
+        sendLogEmbed(client, interaction.guild.id, logEmbed);
     } catch (e) {
       let errorEmbed = new EmbedBuilder()
         .setColor("Red")

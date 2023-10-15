@@ -5,7 +5,7 @@ const {
 } = require("discord.js");
 const ServerSettings = require("../../database/models/servercfg");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { logger } = require("../../methods/loggers");
 const config = require("../../config.json");
 
 module.exports = {

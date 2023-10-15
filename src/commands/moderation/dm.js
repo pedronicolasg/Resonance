@@ -5,7 +5,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { logger } = require("../../methods/loggers");
 
 module.exports = {
   name: "dm",

@@ -1,7 +1,7 @@
 const { ApplicationCommandType, EmbedBuilder } = require("discord.js");
 const StoreItem = require("../../database/models/storeItem");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { logger } = require("../../methods/loggers");
 const { economy } = require("../../config.json");
 
 module.exports = {

@@ -1,11 +1,11 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, Events } = require("discord.js");
 const { owner } = require("../../config.json");
 const { hxmaincolor, error, info } = require("../../themes/main");
-const { logger } = require("../client/logger");
+const { logger } = require("../../methods/loggers");
 const client = require("../../index");
 const { registerCommandsOnGuildCreate } = require("../../handler/");
 
-client.on("guildCreate", async (guild) => {
+client.on(Events.GuildCreate, async (guild) => {
   let devUser = await client.users.fetch(owner);
   let embed = new EmbedBuilder()
     .setColor(hxmaincolor)

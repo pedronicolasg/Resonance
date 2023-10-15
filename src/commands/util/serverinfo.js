@@ -1,158 +1,214 @@
 const {
   ApplicationCommandType,
+  ApplicationCommandOptionType,
   ChannelType,
   PermissionFlagsBits,
   EmbedBuilder,
 } = require("discord.js");
 const ServerCfg = require("../../database/models/servercfg.js");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { logger } = require("../../methods/loggers");
 const config = require("../../config.json");
 
 module.exports = {
   name: "serverinfo",
   description: "Envia as informações do atual servidor.",
   type: ApplicationCommandType.ChatInput,
+  options: [
+    {
+      name: "geral",
+      description: "Informações gerais do servidor",
+      type: ApplicationCommandOptionType.Subcommand,
+    },
+    {
+      name: "channels",
+      description: "Mostra a configuração dos IDs dos canais",
+      type: ApplicationCommandOptionType.Subcommand,
+    },
+    {
+      name: "custommessages",
+      description: "Mostra as mensagens customizadas para esse servidor",
+      type: ApplicationCommandOptionType.Subcommand,
+    },
+  ],
 
   run: async (client, interaction) => {
-    try {
-      const nome = interaction.guild.name;
-      const id = interaction.guild.id;
-      const icon = interaction.guild.iconURL({ dynamic: true });
-      const membros = interaction.guild.memberCount;
-      const guildOwner = interaction.guild.ownerId;
+    const subCommand = interaction.options.getSubcommand();
+    const permissionsArray = [
+      PermissionFlagsBits.ManageChannels,
+      PermissionFlagsBits.ManageMessages,
+    ];
+    const hasPermission = permissionsArray.some((permission) =>
+      interaction.member.permissions.has(permission)
+    );
+    const warnEmbed = new EmbedBuilder()
+      .setColor("Yellow")
+      .setTitle("Você não possui permissão para acessar essa lista.");
 
-      const criacao = interaction.guild.createdAt.toLocaleDateString("pt-br");
+    let guildId = interaction.guild.id;
+    let guildName = interaction.guild.name;
+    let guildIcon = interaction.guild.iconURL({ dynamic: true });
 
-      const canais_total = interaction.guild.channels.cache.size;
-      const canais_texto = interaction.guild.channels.cache.filter(
+    let embedPanel = new EmbedBuilder()
+      .setColor(hxmaincolor)
+      .setAuthor({ name: guildName, iconURL: guildIcon })
+      .setThumbnail(guildIcon);
+
+    const serverConfig = await ServerCfg.findOne({ serverId: guildId });
+    let embedChannels = new EmbedBuilder()
+      .setColor(hxmaincolor)
+      .setTitle("Canais")
+      .setAuthor({ name: guildName, iconURL: guildIcon });
+
+    let embedMessages = new EmbedBuilder()
+      .setColor(hxmaincolor)
+      .setTitle("Mensagens customizáveis")
+      .setAuthor({ name: guildName, iconURL: guildIcon });
+
+    if (subCommand === "geral") {
+      let guildMembers = interaction.guild.memberCount;
+      let guildOwner = interaction.guild.ownerId;
+      let guildCreateDay =
+        interaction.guild.createdAt.toLocaleDateString("pt-br");
+
+      let totalChannels = interaction.guild.channels.cache.size;
+      let textChannels = interaction.guild.channels.cache.filter(
         (c) => c.type === ChannelType.GuildText
       ).size;
-      const canais_voz = interaction.guild.channels.cache.filter(
+      let voiceChannels = interaction.guild.channels.cache.filter(
         (c) => c.type === ChannelType.GuildVoice
       ).size;
-      const canais_categoria = interaction.guild.channels.cache.filter(
+      let categories = interaction.guild.channels.cache.filter(
         (c) => c.type === ChannelType.GuildCategory
       ).size;
 
-      let embed = new EmbedBuilder()
-        .setColor(hxmaincolor)
-        .setAuthor({ name: nome, iconURL: icon })
-        .setThumbnail(icon)
-        .addFields(
-          {
-            name: `💻 Nome:`,
-            value: `\`${nome}\``,
-            inline: true,
-          },
-          {
-            name: `🆔 ID:`,
-            value: `\`${id}\``,
-            inline: true,
-          },
-          {
-            name: `👥 Membros:`,
-            value: `\`${membros}\``,
-            inline: true,
-          },
-          {
-            name: `👑 Dono`,
-            value: `<@${guildOwner}>`,
-            inline: true,
-          },
-          {
-            name: `🔧 Criação:`,
-            value: `\`${criacao}\``,
-            inline: true,
-          },
-          {
-            name: `📤 Canais Totais:`,
-            value: `\`${canais_total}\``,
-            inline: true,
-          },
-          {
-            name: `🔊 Canais de Voz:`,
-            value: `\`${canais_voz}\``,
-            inline: true,
-          },
-          {
-            name: `📅 Categorias:`,
-            value: `\`${canais_categoria}\``,
-            inline: true,
-          }
-        );
+      embedPanel.addFields(
+        {
+          name: `💻 Nome:`,
+          value: `\`${guildName}\``,
+          inline: true,
+        },
+        {
+          name: `🆔 ID:`,
+          value: `\`${guildId}\``,
+          inline: true,
+        },
+        {
+          name: `👥 Membros:`,
+          value: `\`${guildMembers}\``,
+          inline: true,
+        },
+        {
+          name: `👑 Dono`,
+          value: `<@${guildOwner}>`,
+          inline: true,
+        },
+        {
+          name: `🔧 Criação:`,
+          value: `\`${guildCreateDay}\``,
+          inline: true,
+        },
+        {
+          name: `📤 Canais Totais:`,
+          value: `\`${totalChannels}\``,
+          inline: true,
+        },
+        {
+          name: `📄 Canais de Texto:`,
+          value: `\`${textChannels}\``,
+          inline: true,
+        },
+        {
+          name: `🔊 Canais de Voz:`,
+          value: `\`${voiceChannels}\``,
+          inline: true,
+        },
+        {
+          name: `📅 Categorias:`,
+          value: `\`${categories}\``,
+          inline: true,
+        }
+      );
 
-      const serverConfig = await ServerCfg.findOne({ serverId: id });
-
-      if (
-        interaction.member.permissions.has(PermissionFlagsBits.Administrator)
-      ) {
+      interaction.reply({ embeds: [embedPanel], ephemeral: true });
+    } else if (
+      (subCommand === "channels" && hasPermission) ||
+      (subCommand === "custommessages" && hasPermission)
+    ) {
+      if (subCommand === "channels") {
         if (serverConfig) {
-          const logchannelId = serverConfig.logchannelId;
-          const adschannelId = serverConfig.adschannelId;
-          const exitchannelId = serverConfig.exitchannelId;
-          const ruleschannelId = serverConfig.ruleschannelId;
-          const gameschannelId = serverConfig.gameschannelId;
-          const welcomechannelId = serverConfig.welcomechannelId;
-          const suggestionchannelId = serverConfig.suggestionchannelId;
+          let logChannelId = serverConfig.logchannelId;
+          let adsChannelId = serverConfig.adschannelId;
+          let exitChannelId = serverConfig.exitchannelId;
+          let rulesChannelId = serverConfig.ruleschannelId;
+          let gamesChannelId = serverConfig.gameschannelId;
+          let welcomeChannelId = serverConfig.welcomechannelId;
+          let suggestionChannelId = serverConfig.suggestionchannelId;
 
-          embed.addFields(
+          embedChannels.addFields(
             {
               name: "Canal de Logs",
-              value: `<#${logchannelId}>`,
+              value: `<#${logChannelId}>`,
               inline: true,
             },
             {
               name: "Canal de Anúncios",
-              value: `<#${adschannelId}>`,
+              value: `<#${adsChannelId}>`,
               inline: true,
             },
             {
               name: "Canal de Saídas",
-              value: `<#${exitchannelId}>`,
+              value: `<#${exitChannelId}>`,
               inline: true,
             },
             {
               name: "Canal de Regras",
-              value: `<#${ruleschannelId}>`,
+              value: `<#${rulesChannelId}>`,
               inline: true,
             },
             {
               name: "Canal de Boas-Vindas",
-              value: `<#${welcomechannelId}>`,
+              value: `<#${welcomeChannelId}>`,
               inline: true,
             },
             {
               name: "Canal de Sugestões",
-              value: `<#${suggestionchannelId}>`,
+              value: `<#${suggestionChannelId}>`,
               inline: true,
             },
             {
               name: "Canal de Jogos",
-              value: `<#${gameschannelId}>`,
+              value: `<#${gamesChannelId}>`,
               inline: true,
             }
           );
         } else {
-          embed.addFields({
-            name: "Configurações",
-            value: `As informações do servidor não foram configuradas ainda.`,
+          embedChannels.addFields({
+            name: "Não configurado",
+            value: "Use **/setup channels** para configurar.",
             inline: true,
           });
         }
+        await interaction.reply({ embeds: [embedChannels], ephemeral: true });
+      } else {
+        let welcomeMessage = serverConfig.welcomeMessage;
+        if (serverConfig?.welcomeMessage) {
+          embedMessages.addFields({
+            name: "Mensagem de boas vindas",
+            value: welcomeMessage,
+            inline: true,
+          });
+        } else {
+          embedMessages.addFields({
+            name: "Não configurado",
+            value: "Use **/setup messages** para configurar.",
+            inline: true,
+          });
+        }
+        await interaction.reply({ embeds: [embedMessages], ephemeral: true });
       }
-
-      interaction.reply({ embeds: [embed], ephemeral: true });
-    } catch (e) {
-      console.log(
-        error("Erro ") + `ao buscar as informações do servidor devido à:\n ${e}`
-      );
-      logger.error(
-        `Erro ao buscar as informações do servidor devido à:\n ${e}`
-      );
-      interaction.reply(
-        "Ocorreu um erro ao buscar as informações do servidor no banco de dados."
-      );
+    } else {
+      await interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
   },
 };

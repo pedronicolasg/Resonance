@@ -2,7 +2,7 @@ const fs = require("fs");
 const client = require("../../index");
 const { name, version } = require("../../config.json");
 const { maincolor, secondcolor } = require("../../themes/main");
-const { logger } = require("../client/logger");
+const { logger } = require("../../methods/loggers");
 
 client.on("ready", () => {
   fs.readFile("./src/assets/ascii.txt", "utf8", function (e, data) {

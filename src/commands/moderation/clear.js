@@ -5,7 +5,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { sendLogEmbed, logger } = require("../../methods/loggers");
 const ServerSettings = require("../../database/models/servercfg");
 
 module.exports = {
@@ -35,19 +35,7 @@ module.exports = {
       return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
-    const serverSettings = await ServerSettings.findOne({
-      serverId: interaction.guild.id,
-    });
     let number = interaction.options.getNumber("quantidade");
-
-    /*if (number <= 0 || number > 99) {
-      let embed = new EmbedBuilder()
-        .setColor("Red")
-        .setDescription(`Escolha um número entre 1 e 99!`);
-
-      interaction.reply({ embeds: [embed], ephemeral: true });
-      return;
-    }*/
 
     try {
       const messages = await interaction.channel.messages.fetch({
@@ -56,9 +44,6 @@ module.exports = {
       const oldMessages = messages.filter(
         (msg) => Date.now() - msg.createdTimestamp >= 1209600000
       );
-
-      const channelId = serverSettings.logchannelId;
-      const channel = client.channels.cache.get(channelId);
 
       if (oldMessages.size > 0) {
         oldMessages.forEach(async (msg) => {
@@ -70,22 +55,19 @@ module.exports = {
         (msg) => !oldMessages.has(msg.id)
       );
       await interaction.channel.bulkDelete(remainingMessages);
-
+      let user = interaction.user;
       let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
         .setAuthor({
-          name: interaction.guild.name,
-          iconURL: interaction.guild.iconURL({ dynamic: true }),
+          name: user.username,
+          iconURL: user.displayAvatarURL({ dynamic: true }),
         })
         .setDescription(
           `O canal de texto ${interaction.channel} teve \`${number}\` mensagens deletadas por ${interaction.user}.`
         );
 
-      if (channel) {
-        channel.send({ embeds: [embed] });
-      }
-
       interaction.reply({ embeds: [embed], ephemeral: true });
+      sendLogEmbed(client, interaction.guild.id, embed)
     } catch (e) {
       console.log(
         error(`Erro `) +

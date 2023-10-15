@@ -1,7 +1,7 @@
 const { ApplicationCommandType, EmbedBuilder } = require("discord.js");
 const { economy } = require("../../config.json");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { logger } = require("../../methods/loggers");
 const ms = require("ms");
 const Wallet = require("../../database/models/wallet");
 

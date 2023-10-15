@@ -5,7 +5,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { sendLogEmbed, logger } = require("../../methods/loggers");
 const ServerSettings = require("../../database/models/servercfg");
 
 module.exports = {
@@ -56,14 +56,14 @@ module.exports = {
       .setDescription(
         `O canal de anúncios não foi configurado corretamente para este servidor.`
       );
-    if (!color) color = "#48deff";
+    if (!color) color = hxmaincolor;
 
     try {
       const serverSettings = await ServerSettings.findOne({
         serverId: interaction.guild.id,
       });
 
-      if (!serverSettings || !serverSettings.adschannelId) {
+      if (!serverSettings?.adschannelId) {
         return interaction.reply({ embeds: [error], ephemeral: true });
       }
 
@@ -96,16 +96,12 @@ module.exports = {
             );
 
           interaction.reply({ embeds: [embed], ephemeral: true });
-          const logchannelId = serverSettings.logchannelId;
-          const logchannel = client.channels.cache.get(logchannelId);
-          if (logchannel) {
-            let logEmbed = new EmbedBuilder()
-              .setColor("#48deff")
-              .setDescription(
-                `Um anúncio foi enviado em ${channel} por ${interaction.user}`
-              );
-            logchannel.send({ embeds: [logEmbed] });
-          }
+          let logEmbed = new EmbedBuilder()
+            .setColor(hxmaincolor)
+            .setDescription(
+              `Um anúncio foi enviado em ${channel} por ${interaction.user}`
+            );
+          sendLogEmbed(client, interaction.guild.id, logEmbed);
         })
         .catch((e) => {
           let errorEmbed = new EmbedBuilder()
@@ -116,12 +112,12 @@ module.exports = {
             );
 
           interaction.reply({ embeds: [errorEmbed], ephemeral: true });
-          console.log(error("Erro ") + "ao enviar um anúncio: " + e);
-          logger.error("Erro ao enviar um anúncio: ", e);
+          console.log(error("Erro ") + `ao enviar um anúncio:\n ${e}`);
+          logger.error(`Erro ao enviar um anúncio: ${e}`);
         });
     } catch (e) {
       console.log(
-        error("Erro ") + "ao buscar as configurações no MongoDB: " + e
+        error("Erro ") + `ao buscar as configurações no MongoDB:\n ${e}`
       );
       logger.error("Erro ao buscar as configurações no MongoDB: ", e);
       let errorEmbed = new EmbedBuilder()

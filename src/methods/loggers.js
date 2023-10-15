@@ -1,9 +1,28 @@
 const winston = require("winston");
 const { format } = winston;
 const path = require("path");
-const logsDirectory = path.join(__dirname, "../../logs");
-const { name } = require("../../config.json");
+const logsDirectory = path.join(__dirname, "../logs");
+const { name } = require("../config.json");
+const ServerSettings = require("../database/models/servercfg");
 
+// LogChannel
+async function sendLogEmbed(client, guildId, embed, files) {
+  let serverSettings = await ServerSettings.findOne({
+    serverId: guildId,
+  });
+  if (!serverSettings?.logchannelId) return;
+
+  let logChannelId = serverSettings.logchannelId;
+  let logChannel = client.channels.cache.get(logChannelId);
+
+  if (logChannel) {
+    if (files) {
+      logChannel.send({ embeds: [embed], files: [files] });
+    } else logChannel.send({ embeds: [embed] });
+  }
+}
+
+// Winston loggers
 const logger = winston.createLogger({
   level: "info",
   format: format.combine(
@@ -59,6 +78,7 @@ const logger_economy = winston.createLogger({
 });
 
 module.exports = {
+  sendLogEmbed,
   logger,
   logger_economy,
 };

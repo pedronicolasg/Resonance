@@ -2,6 +2,8 @@ const { Schema, model } = require("mongoose");
 
 const servercfgSchema = new Schema({
   serverId: { type: String, required: true, unique: true },
+
+  // Channel IDs
   logchannelId: { type: String, required: false },
   adschannelId: { type: String, required: false },
   exitchannelId: { type: String, required: false },
@@ -9,6 +11,10 @@ const servercfgSchema = new Schema({
   gameschannelId: { type: String, required: false },
   welcomechannelId: { type: String, required: false },
   suggestionchannelId: { type: String, required: false },
+
+  // Messages
+  welcomeMessage: { type: String, required: false },
+  exitMessage: { type: String, required: false },
 });
 
 const ServerCfg = model("ServerCfg", servercfgSchema);

@@ -5,7 +5,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { owner } = require("../../config.json");
-const { logger } = require("../../events/client/logger");
+const { logger } = require("../../methods/loggers");
 const { hxmaincolor, success, error } = require("../../themes/main");
 
 module.exports = {
@@ -29,13 +29,15 @@ module.exports = {
 
   run: async (client, interaction) => {
     if (
-      !interaction.member.permissions.has(PermissionFlagsBits.Administrator)
+      !interaction.member.permissions.has(
+        PermissionFlagsBits.PrioritySpeaker || PermissionFlagsBits.ManageGuild
+      )
     ) {
       let warnEmbed = new EmbedBuilder()
         .setColor("Yellow")
         .setTitle("Você não possui permissão para utilizar este comando.")
         .setDescription(
-          `Você precisa da permissão "Administrador" para usar esse comando`
+          `Você precisa da permissão "Voz prioritária" ou "Gerenciar servidor" para usar esse comando!`
         );
 
       return interaction.reply({ embeds: [warnEmbed], ephemeral: true });

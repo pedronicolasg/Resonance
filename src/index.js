@@ -1,6 +1,6 @@
 const { success, error } = require("./themes/main");
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
-const { logger } = require("./events/client/logger");
+const { logger } = require("./methods/loggers");
 const mongoose = require("mongoose");
 
 console.log(success("Sucesso ") + "ao carregar as configurações do bot.");

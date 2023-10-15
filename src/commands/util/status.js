@@ -1,7 +1,7 @@
 const { ApplicationCommandType, EmbedBuilder } = require("discord.js");
 const config = require("../../config.json");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { logger } = require("../../methods/loggers");
 
 module.exports = {
   name: "status",
@@ -17,7 +17,7 @@ module.exports = {
     const cpuUsage = process.cpuUsage().user / process.cpuUsage().system / 100;
 
     let embed = new EmbedBuilder()
-      .setColor(`#48deff`)
+      .setColor(hxmaincolor)
       .setTitle(`Status do bot:`)
       .addFields(
         { name: "🏓 Ping", value: `${ping}ms`, inline: true },

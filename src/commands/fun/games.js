@@ -6,7 +6,7 @@ const {
 const { TwoZeroFourEight, Snake, Minesweeper } = require("discord-gamecord");
 const { hxmaincolor, success, error } = require("../../themes/main");
 const { economy } = require("../../config.json");
-const { logger } = require("../../events/client/logger");
+const { logger } = require("../../methods/loggers");
 const Wallet = require("../../database/models/wallet");
 const ServerSettings = require("../../database/models/servercfg");
 

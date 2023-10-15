@@ -7,7 +7,7 @@ const {
 const StoreItem = require("../../database/models/storeItem");
 const ServerSettings = require("../../database/models/servercfg");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { sendLogEmbed, logger } = require("../../methods/loggers");
 
 module.exports = {
   name: "removeitem",
@@ -64,17 +64,15 @@ module.exports = {
         );
 
       interaction.reply({ embeds: [embed] });
-      const channelId = serverSettings.logchannelId;
-      const logchannel = client.channels.cache.get(channelId);
-      if (logchannel) {
-        let logEmbed = new EmbedBuilder()
-          .setColor(hxmaincolor)
-          .setTitle("Item Adicionado à Loja!")
-          .setDescription(
-            `O item "${name}" foi adicionado à loja por ${interaction.user}.\nID do Item: ${newItem.itemId}`
-          );
-        logchannel.send({ embeds: [logEmbed] });
-      }
+
+      let logEmbed = new EmbedBuilder()
+        .setColor(hxmaincolor)
+        .setTitle("Item Adicionado à Loja!")
+        .setDescription(
+          `O item "${item.name}"(${item.id}) foi removido à da por ${interaction.user}.`
+        );
+      sendLogEmbed(client, interaction.guild.id, logEmbed);
+      
     } catch (e) {
       console.log(error("Erro ") + `ao remover o item da loja devido à: ${e}`);
       logger.error(`Erro ao remover o item da loja devido à: ${e}`);

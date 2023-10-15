@@ -1,19 +1,19 @@
-const { EmbedBuilder } = require("discord.js");
+const { Events } = require("discord.js");
 const { warning, info, error } = require("../../themes/main");
-const { logger } = require("../client/logger");
+const { logger } = require("../../methods/loggers");
 const ServerCfg = require("../../database/models/servercfg");
 const client = require("../../index");
 
-client.on("guildDelete", async (guild) => {
- let guildId = guild.id;
+client.on(Events.GuildDelete, async (guild) => {
+  let guildId = guild.id;
   try {
     const deleteResult = await ServerCfg.deleteMany({ serverId: guildId });
 
     if (deleteResult.deletedCount > 0) {
       console.log(
         info("Fui removido ") +
-          `do servidor ${guild.name} e os documentos relacionados ao servidor foram ` +
-          warning(`excluídos do banco de dados.`)
+        `do servidor ${guild.name} e os documentos relacionados ao servidor foram ` +
+        warning(`excluídos do banco de dados.`)
       );
       logger.info(
         `Fui removido do servidor: ${guild.name} e os documentos relacionados ao servidor foram excluídos do banco de dados.`
@@ -25,7 +25,7 @@ client.on("guildDelete", async (guild) => {
   } catch (e) {
     console.log(
       error("Erro ") +
-        `ao excluir os documentos do servidor ${guild.name} ao sair devido à:\n ${e}`
+      `ao excluir os documentos do servidor ${guild.name} ao sair devido à:\n ${e}`
     );
     logger.error(
       `Erro ao excluir os documentos do servidor ${guild.name} ao sair devido à: ${e}`

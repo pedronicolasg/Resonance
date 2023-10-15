@@ -9,7 +9,7 @@ const {
   error,
   hxnasaapod,
 } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { logger } = require("../../methods/loggers");
 const API =
   "https://api.nasa.gov/planetary/apod?api_key=" + process.env.NASAKEY;
 const NASALogo =

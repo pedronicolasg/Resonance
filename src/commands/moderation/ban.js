@@ -5,7 +5,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../events/client/logger");
+const { sendLogEmbed, logger } = require("../../methods/loggers");
 const ServerSettings = require("../../database/models/servercfg");
 
 module.exports = {
@@ -20,7 +20,7 @@ module.exports = {
       required: true,
     },
     {
-      name: "motivo",
+      name: "reason",
       description: "Insira um motivo.",
       type: ApplicationCommandOptionType.String,
       required: false,
@@ -39,12 +39,8 @@ module.exports = {
       return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
-    const serverSettings = await ServerSettings.findOne({
-      serverId: interaction.guild.id,
-    });
-
     const user = interaction.options.getUser("user");
-    const reason = interaction.options.getString("motivo") || "Não definido.";
+    const reason = interaction.options.getString("reason") || "Não definido.";
 
     let embed = new EmbedBuilder()
       .setColor(hxmaincolor)
@@ -56,28 +52,26 @@ module.exports = {
         `O usuário ${user} (\`${user.id}\`) foi banido com sucesso!`
       );
 
-    let error = new EmbedBuilder()
-      .setColor("Red")
-      .setTitle("Erro ao banir um usuário.")
-      .setDescription(
-        `Não foi possível banir o usuário ${user} (\`${user.id}\`) do servidor!`
-      );
-
     try {
+      interaction.reply({ embeds: [embed], ephemeral: true });
       await interaction.guild.members.ban(user, { reason });
 
-      const channelId = serverSettings.logchannelId;
-      const channel = client.channels.cache.get(channelId);
-
-      if (channel) {
-        channel.send({ embeds: [embed] });
-      }
-
-      interaction.reply({ embeds: [embed], ephemeral: true });
+      sendLogEmbed(client, interaction.guild.id, embed);
     } catch (e) {
-      interaction.reply({ embeds: [error], ephemeral: true });
-      console.log(error(`Erro `) + `ao banir ${user}: ${e}`);
-      logger.error(`Erro ao banir ${user}: ${e}`);
+      let embedError = new EmbedBuilder()
+        .setColor("Red")
+        .setTitle("Erro ao banir um usuário.")
+        .setDescription(
+          `Não foi possível banir o usuário ${user} (\`${user.id}\`) do servidor!`
+        );
+      console.log(
+        error(`Erro `) +
+          `ao banir ${user} no servidor ${interaction.guild.id} devido à:\n ${e}`
+      );
+      logger.error(
+        `Erro ao banir ${user} no servidor ${interaction.guild.id} devido à: ${e}`
+      );
+      interaction.reply({ embeds: [embedError], ephemeral: true });
     }
   },
 };
