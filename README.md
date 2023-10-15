@@ -85,7 +85,7 @@ Depois disso é necessário criar dois arquivos de configuração pro bot, um na
   "name": "", // Nome do bot
   "owner": "", // Seu ID
   "technologies": "", // Tecnologias usadas no bot
-  "webSite": "https://resonancebot.vercel.app/", // Link do site do bot
+  "webSite": "", // Link do site do bot
   "economy": {
     "coinname": "", // Nome da moeda do seu bot
     "coinsymb": "", // Símbolo da moeda do seu bot
