@@ -42,11 +42,10 @@ Resonance é o bot multifuncional que leva a harmonia e a eficiência para todo 
 
 ## :sparkles: Comandos
 
-🤖 2 comandos de debug;\
 💸 9 comandos de economia;\
 🥳 5 comandos de diversão;\
-👑 13 comandos de moderação/administração;\
-✅ 5 comandos de utilidade;
+👑 17 comandos de moderação;\
+✅ 8 comandos de utilidade;
 
 ## :rocket: Tecnologias
 

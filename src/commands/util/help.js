@@ -20,11 +20,6 @@ module.exports = {
       type: ApplicationCommandOptionType.SubcommandGroup,
       options: [
         {
-          name: "debug",
-          description: "lista de comandos de Debug",
-          type: ApplicationCommandOptionType.Subcommand,
-        },
-        {
           name: "economy",
           description: "lista de comandos de Economia",
           type: ApplicationCommandOptionType.Subcommand,
@@ -50,49 +45,21 @@ module.exports = {
 
   run: async (client, interaction) => {
     const subCommand = interaction.options.getSubcommand();
-    const permissionsArray = [
-      PermissionFlagsBits.ManageChannels,
-      PermissionFlagsBits.ManageMessages,
-      PermissionFlagsBits.ManageGuild,
-    ];
-    const hasPermission = permissionsArray.some((permission) =>
-      interaction.member.permissions.has(permission)
-    );
-
-    const warnEmbed = new EmbedBuilder()
-      .setColor("Yellow")
-      .setTitle("Você não possui permissão para acessar essa lista.");
-
-    let embedDebug = new EmbedBuilder().setColor("Green").setAuthor({
-      name: interaction.user.username,
-      iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-    });
-
-    if (interaction.user.id === config.owner) {
-      embedDebug.setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
-          /bugreport - Reporta um bug do bot para o desenvolvedor.
-          /setstatus - Define o status do bot.
-    `);
-    } else {
-      embedDebug.setDescription(`Olá ${interaction.user}, veja meus comandos de **debug** abaixo:
-          /bugreport - Reporta um bug do bot para o desenvolvedor.
-    `);
-    }
 
     let embedEconomy = new EmbedBuilder().setColor("Green").setAuthor({
       name: interaction.user.username,
       iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
     })
       .setDescription(`Olá ${interaction.user}, veja meus comandos de **economia** abaixo:
-          /daily - Resgata seus ${config.economy.coinname}s diários.
-          /weekly - Resgata seus ${config.economy.coinname}s semanais.
-          /monthly - Resgata seus ${config.economy.coinname}s mensais.
-          /yearly - Resgata seus ${config.economy.coinname}s anuais.
-          /wallet - Mostra quantos ${config.economy.coinname}s você ou o usuário marcado tem.
-          /transfer - Transfere dinheiro para o usuário escolhido.
-          /store - Abre a loja do servidor atual.
           /buy - Compra itens na loja.
+          /daily - Resgata seus ${config.economy.coinname}s diários.
+          /monthly - Resgata seus ${config.economy.coinname}s mensais.
           /sell - Vende um cargo cadastrado na loja, recebendo 25% do valor dele.
+          /transfer - Transfere dinheiro para o usuário escolhido.
+          /weekly - Resgata seus ${config.economy.coinname}s semanais.
+          /yearly - Resgata seus ${config.economy.coinname}s anuais.
+          /store - Abre a loja do servidor atual.
+          /wallet - Mostra quantos ${config.economy.coinname}s você ou o usuário marcado tem.
     `);
 
     let embedFun = new EmbedBuilder().setColor("Yellow").setAuthor({
@@ -104,25 +71,28 @@ module.exports = {
           /avatar - Envia o avatar do usuário escolhido.
           /game 2048 - Inicia o jogo "2048".
           /game snake-game - Inicia o jogo da cobrinha.
-          /game minesweeper - Inicia o jogo "Campo Minado"
+          /game minesweeper - Inicia o jogo "Campo Minado".
     `);
 
     let embedMod = new EmbedBuilder().setColor("Aqua").setAuthor({
       name: interaction.user.username,
       iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
     })
-      .setDescription(`Olá ${interaction.user}, veja meus comandos de **administração** abaixo:
+      .setDescription(`Olá ${interaction.user}, veja meus comandos de **moderação** abaixo:
           /additem - Adiciona o item escolhido à loja.
           /announce - Envia um anúncio em embed para o canal selecionado.
-          /antilink - Ativa/Desativa o sistema de bloqueio de links no servidor.
           /ban - Bane o usuário selecionado.
+          /bugreport - Use para reportar um bug do bot.
           /clear - Limpa mensagens do canal selecionado.
           /dm - Manda mensagem na DM do usuário selecionado.
           /kick - Expulsa o usuário selecionado.
           /lock - Bloqueia o canal desejado.
           /removeitem - Remove o item escolhido da loja.
           /rpb - Entrega cargos clicando nos botões.
-          /setup - Define os IDs dos canais no servidor.
+          /setup channels - Define os IDs dos canais no servidor.
+          /setup messages - Define as mensagens customizáveis no servidor.
+          /serverinfo channels - Mostra os IDs dos canais configurados para o servidor atual.
+          /serverinfo messages - Mostra as mensagens customizadas para o servidor atual.
           /transcript - Exporta as mensagens do canal escolhido.
           /unban - Revoga o banimento do usuário selecionado.
           /unlock - Desbloqueia o canal desejado.
@@ -134,9 +104,12 @@ module.exports = {
     })
       .setDescription(`Olá ${interaction.user}, veja meus comandos de **utilidade** abaixo:
           /botinfo - Fornece informações sobre o bot.
-          /help - Mostra a lista de comandos do bot.
-          /ping - Mostra o ping do bot.
-          /serverinfo - Mostra as informações do servidor atual.
+          /help economy - Mostra a lista de comandos de economia do bot.
+          /help fun - Mostra a lista de comandos de diversão do bot.
+          /help moderation - Mostra a lista de comandos de moderação do bot.
+          /help util - Mostra a lista de comandos de utilidades do bot.
+          /serverinfo geral - Mostra as informações do servidor atual.
+          /status - Mostra o status do bot.
           /suggest - Envia sua sugestão para o canal de sugestões.
     `);
 
@@ -146,17 +119,8 @@ module.exports = {
       interaction.reply({ embeds: [embedFun], ephemeral: true });
     } else if (subCommand === "util") {
       interaction.reply({ embeds: [embedUtils], ephemeral: true });
-    } else if (
-      (subCommand === "debug" && hasPermission) ||
-      (subCommand === "moderation" && hasPermission)
-    ) {
-      if (subCommand === "debug") {
-        interaction.reply({ embeds: [embedDebug], ephemeral: true });
-      } else {
-        interaction.reply({ embeds: [embedMod], ephemeral: true });
-      }
-    } else {
-      interaction.reply({ embeds: [warnEmbed], ephemeral: true });
+    } else if (subCommand === "moderation") {
+      interaction.reply({ embeds: [embedMod], ephemeral: true });
     }
   },
 };
