@@ -5,7 +5,7 @@ const {
 } = require("discord.js");
 const StoreItem = require("../../database/models/storeItem");
 const Wallet = require("../../database/models/wallet");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error} = require("../../themes/main");
 const { economy } = require("../../config.json");
 const { sendLogEmbed, logger } = require("../../methods/loggers");
 
@@ -22,7 +22,7 @@ module.exports = {
     },
   ],
 
-  run: async (client, interaction, args) => {
+  run: async (client, interaction) => {
     const userId = interaction.user.id;
     const serverId = interaction.guild.id;
     const itemId = interaction.options.getString("item_id");

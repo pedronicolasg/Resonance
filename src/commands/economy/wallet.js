@@ -4,7 +4,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { economy } = require("../../config.json");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
 
 const Wallet = require("../../database/models/wallet");
@@ -22,7 +22,7 @@ module.exports = {
     },
   ],
 
-  run: async (client, interaction, args) => {
+  run: async (interaction) => {
     let user = interaction.options.getUser("usuário") || interaction.user;
 
     try {

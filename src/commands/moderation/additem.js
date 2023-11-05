@@ -5,8 +5,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const StoreItem = require("../../database/models/storeItem");
-const ServerSettings = require("../../database/models/servercfg");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error } = require("../../themes/main");
 const { sendLogEmbed, logger } = require("../../methods/loggers");
 
 module.exports = {
@@ -40,7 +39,7 @@ module.exports = {
     },
   ],
 
-  run: async (client, interaction, args) => {
+  run: async (client, interaction) => {
     if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
       let warnEmbed = new EmbedBuilder()
         .setColor("Yellow")
@@ -85,9 +84,8 @@ module.exports = {
         .setTitle("Item Adicionado à Loja!")
         .setDescription(
           `O item "${name}" foi adicionado à loja por ${interaction.user}.\nID do Item: ${newItem.itemId}`
-      );
-      sendLogEmbed(client, interaction.guild.id, logEmbed)
-      
+        );
+      sendLogEmbed(client, interaction.guild.id, logEmbed);
     } catch (e) {
       console.log(error("Erro ") + `ao adicionar o item à loja devido à: ${e}`);
       logger.error(`Erro ao adicionar o item à loja devido à: ${e}`);

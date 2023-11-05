@@ -4,7 +4,7 @@ const {
   PermissionFlagsBits,
   EmbedBuilder,
 } = require("discord.js");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
 
 module.exports = {
@@ -26,7 +26,7 @@ module.exports = {
     },
   ],
 
-  run: async (client, interaction) => {
+  run: async (interaction) => {
     if (
       !interaction.member.permissions.has(PermissionFlagsBits.ManageMessages)
     ) {

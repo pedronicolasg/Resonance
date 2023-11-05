@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 const { owner } = require("../../config.json");
 const { logger } = require("../../methods/loggers");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error } = require("../../themes/main");
 
 module.exports = {
   name: "bugreport",

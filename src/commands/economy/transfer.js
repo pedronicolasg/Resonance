@@ -4,7 +4,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { economy } = require("../../config.json");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error } = require("../../themes/main");
 const { logger, logger_economy } = require("../../methods/loggers");
 const Wallet = require("../../database/models/wallet");
 
@@ -27,7 +27,7 @@ module.exports = {
     },
   ],
 
-  run: async (client, interaction, args) => {
+  run: async (interaction) => {
     const senderId = interaction.user.id;
     const recipientId = interaction.options.getUser("usuário").id;
 

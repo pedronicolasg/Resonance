@@ -1,6 +1,6 @@
 const { ApplicationCommandType, EmbedBuilder } = require("discord.js");
 const StoreItem = require("../../database/models/storeItem");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
 const { economy } = require("../../config.json");
 
@@ -8,7 +8,7 @@ module.exports = {
   name: "store",
   description: "Ver os itens disponíveis na loja do servidor.",
   type: ApplicationCommandType.ChatInput,
-  run: async (client, interaction) => {
+  run: async (interaction) => {
     const serverId = interaction.guild.id;
 
     try {

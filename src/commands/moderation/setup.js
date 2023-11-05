@@ -5,7 +5,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const ServerSettings = require("../../database/models/servercfg.js");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error } = require("../../themes/main");
 const { sendLogEmbed, logger } = require("../../methods/loggers.js");
 
 module.exports = {
@@ -108,7 +108,8 @@ module.exports = {
       let exitMessage = interaction.options.getString("exitmsg");
 
       try {
-        if (welcomeMessage !== null) serverSettings.welcomeMessage = welcomeMessage;
+        if (welcomeMessage !== null)
+          serverSettings.welcomeMessage = welcomeMessage;
         if (exitMessage !== null) serverSettings.exitMessage = exitMessage;
         await serverSettings.save();
 
@@ -145,7 +146,9 @@ module.exports = {
       let ruleschannelId = interaction.options.getString("ruleschannelid");
       let gameschannelId = interaction.options.getString("gameschannelid");
       let welcomechannelId = interaction.options.getString("welcomechannelid");
-      let suggestionchannelId = interaction.options.getString("suggestionchannelid");
+      let suggestionchannelId = interaction.options.getString(
+        "suggestionchannelid"
+      );
 
       try {
         if (logchannelId !== null) serverSettings.logchannelId = logchannelId;

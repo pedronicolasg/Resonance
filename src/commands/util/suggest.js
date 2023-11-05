@@ -4,9 +4,8 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const ServerSettings = require("../../database/models/servercfg");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
-const config = require("../../config.json");
 
 module.exports = {
   name: "suggest",
@@ -21,12 +20,12 @@ module.exports = {
     },
   ],
 
-  run: async (client, interaction) => {
+  run: async (interaction) => {
     try {
       const serverId = interaction.guild.id;
       const serverSettings = await ServerSettings.findOne({ serverId });
 
-      if (serverSettings && serverSettings.suggestionchannelId) {
+      if (serverSettings?.suggestionchannelId) {
         const suggestionChannelId = serverSettings.suggestionchannelId;
         const suggestionChannel =
           interaction.guild.channels.cache.get(suggestionChannelId);

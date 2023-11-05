@@ -5,8 +5,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const StoreItem = require("../../database/models/storeItem");
-const ServerSettings = require("../../database/models/servercfg");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error } = require("../../themes/main");
 const { sendLogEmbed, logger } = require("../../methods/loggers");
 
 module.exports = {
@@ -22,7 +21,7 @@ module.exports = {
     },
   ],
 
-  run: async (client, interaction, args) => {
+  run: async (client, interaction) => {
     if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
       let warnEmbed = new EmbedBuilder()
         .setColor("Yellow")
@@ -33,10 +32,6 @@ module.exports = {
 
       return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
-
-    const serverSettings = await ServerSettings.findOne({
-      serverId: interaction.guild.id,
-    });
 
     const serverId = interaction.guild.id;
     const itemId = interaction.options.getString("item_id");
@@ -72,7 +67,6 @@ module.exports = {
           `O item "${item.name}"(${item.id}) foi removido à da por ${interaction.user}.`
         );
       sendLogEmbed(client, interaction.guild.id, logEmbed);
-      
     } catch (e) {
       console.log(error("Erro ") + `ao remover o item da loja devido à: ${e}`);
       logger.error(`Erro ao remover o item da loja devido à: ${e}`);

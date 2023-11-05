@@ -3,7 +3,7 @@ const {
   ApplicationCommandOptionType,
   EmbedBuilder,
 } = require("discord.js");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
 
 module.exports = {
@@ -19,7 +19,7 @@ module.exports = {
     },
   ],
 
-  run: async (client, interaction) => {
+  run: async (interaction) => {
     const user = interaction.options.getUser("usuário") || interaction.user;
     const avatarURL = user.displayAvatarURL({ dynamic: true, size: 2048 });
 
@@ -36,7 +36,7 @@ module.exports = {
         .setTitle("Erro inesperado")
         .setDescription(
           `Ocorreu um erro inesperado, tente novamente mais tarde.`
-        )
+        );
       interaction.reply({ embeds: [errorEmbed], ephemeral: true });
       console.log(
         error("Erro ") + `ao executar o comando /avatar devido à:\n ${e}`

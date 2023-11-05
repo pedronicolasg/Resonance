@@ -1,14 +1,12 @@
 const { ApplicationCommandType, EmbedBuilder } = require("discord.js");
-const config = require("../../config.json");
-const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../methods/loggers");
+const { hxmaincolor } = require("../../themes/main");
 
 module.exports = {
   name: "status",
   description: `Mostra os status do bot.`,
   type: ApplicationCommandType.ChatInput,
 
-  run: async (client, interaction, args) => {
+  run: async (client, interaction) => {
     const ping = client.ws.ping;
 
     const usedRam = process.memoryUsage().heapUsed / 1024 / 1024;

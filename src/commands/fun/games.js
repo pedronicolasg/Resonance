@@ -4,7 +4,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { TwoZeroFourEight, Snake, Minesweeper } = require("discord-gamecord");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error } = require("../../themes/main");
 const { economy } = require("../../config.json");
 const { logger } = require("../../methods/loggers");
 const Wallet = require("../../database/models/wallet");
@@ -32,7 +32,7 @@ module.exports = {
     },
   ],
 
-  run: async (client, interaction) => {
+  run: async (interaction) => {
     try {
       const serverSettings = await ServerSettings.findOne({
         serverId: interaction.guild.id,

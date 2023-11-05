@@ -1,11 +1,12 @@
+const { ApplicationCommandType, EmbedBuilder } = require("discord.js");
+const { hxmaincolor } = require("../../themes/main");
 const {
-  ApplicationCommandType,
-  ApplicationCommandOptionType,
-  EmbedBuilder,
-} = require("discord.js");
-const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../methods/loggers");
-const { owner, technologies, webSite } = require("../../config.json");
+  name,
+  version,
+  owner,
+  technologies,
+  webSite,
+} = require("../../config.json");
 
 module.exports = {
   name: "botinfo",
@@ -24,14 +25,15 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(hxmaincolor)
-      .setAuthor({ name: bot.tag, iconURL: avatarBot, url: webSite })
+      .setTitle(name)
       .setThumbnail(avatarBot)
       .setDescription(
         `Olá ${interaction.user}, abaixo estão as informações sobre mim:\n\n`
       )
       .addFields(
         { name: "🤖 Nome", value: `\`${bot.tag}\``, inline: true },
-        { name: "🤖 Dono", value: `${botOwner}`, inline: true },
+        { name: ":man_technologist: Dono", value: `${botOwner}`, inline: true },
+        { name: "🌐 Site", value: webSite, inline: true },
         { name: "⚙️ Membros", value: `\`${members}\``, inline: true },
         { name: "⚙️ Servidores", value: `\`${servers}\``, inline: true },
         { name: "⚙️ Canais", value: `\`${channels}\``, inline: true },
@@ -42,7 +44,7 @@ module.exports = {
           inline: true,
         }
       )
-      .setFooter({ text: bot.tag, iconURL: avatarBot })
+      .setFooter({ text: `${name} V${version}`, iconURL: avatarBot })
       .setTimestamp();
 
     interaction.reply({ embeds: [embed], ephemeral: true });

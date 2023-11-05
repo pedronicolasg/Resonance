@@ -4,8 +4,7 @@ const {
   PermissionFlagsBits,
   EmbedBuilder,
 } = require("discord.js");
-const ServerSettings = require("../../database/models/servercfg");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
 
 module.exports = {
@@ -35,7 +34,8 @@ module.exports = {
       return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
-    const channel = interaction.options.getChannel("canal") || interaction.channel.id;
+    const channel =
+      interaction.options.getChannel("canal") || interaction.channel.id;
     if (!channel.isTextBased()) {
       let errorEmbed = new EmbedBuilder()
         .setColor("Red")
@@ -55,7 +55,7 @@ module.exports = {
             `🔒 O canal de texto ${channel} foi bloqueado por ${interaction.user}.`
           );
         interaction.reply({ embeds: [embed] });
-        sendLogEmbed(client, interaction.guild.id, embed)
+        sendLogEmbed(client, interaction.guild.id, embed);
 
         let channelembed = new EmbedBuilder()
           .setColor(hxmaincolor)

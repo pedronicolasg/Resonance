@@ -1,6 +1,6 @@
 const { ApplicationCommandType, EmbedBuilder } = require("discord.js");
 const { economy } = require("../../config.json");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { error } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
 const ms = require("ms");
 const Wallet = require("../../database/models/wallet");
@@ -10,18 +10,14 @@ module.exports = {
   description: `Resgate suas ${economy.coinname}s semanais.`,
   type: ApplicationCommandType.ChatInput,
 
-  run: async (client, interaction, args) => {
+  run: async (interaction) => {
     const userId = interaction.user.id;
     const timeout = ms("7 days");
 
     try {
       let user = await Wallet.findOne({ userId });
 
-      if (
-        user &&
-        user.lastWeeklyClaim &&
-        Date.now() - user.lastWeeklyClaim < timeout
-      ) {
+      if (user?.lastWeeklyClaim && Date.now() - user.lastWeeklyClaim < timeout) {
         const timeLeft = ms(timeout - (Date.now() - user.lastWeeklyClaim));
         let warnEmbed = new EmbedBuilder()
           .setColor("Yellow")

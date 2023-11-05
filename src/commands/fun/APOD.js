@@ -3,12 +3,7 @@ const {
   ApplicationCommandOptionType,
   EmbedBuilder,
 } = require("discord.js");
-const {
-  hxmaincolor,
-  success,
-  error,
-  hxnasaapod,
-} = require("../../themes/main");
+const { error, hxnasaapod } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
 const API =
   "https://api.nasa.gov/planetary/apod?api_key=" + process.env.NASAKEY;
@@ -27,7 +22,7 @@ module.exports = {
       required: false,
     },
   ],
-  run: async (client, interaction) => {
+  run: async (interaction) => {
     let res,
       data,
       date = interaction.options.getString("data");
@@ -68,7 +63,7 @@ module.exports = {
         .setTitle("Erro inesperado")
         .setDescription(
           `Ocorreu um erro inesperado, tente novamente mais tarde.`
-        )
+        );
 
       interaction.reply({ embeds: [errorEmbed], ephemeral: true });
       console.log(error("Erro ") + `ao executar o comando APOD:\n ${e}`);

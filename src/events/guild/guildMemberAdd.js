@@ -1,7 +1,5 @@
 const { EmbedBuilder, Events } = require("discord.js");
-const { owner } = require("../../config.json");
-const { hxmaincolor, error, info } = require("../../themes/main");
-const { logger } = require("../../methods/loggers");
+const { hxmaincolor } = require("../../themes/main");
 const client = require("../../index");
 
 const ServerSettings = require("../../database/models/servercfg");

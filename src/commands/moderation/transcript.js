@@ -5,10 +5,8 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { createTranscript } = require("discord-html-transcripts");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor } = require("../../themes/main");
 const { sendLogEmbed, logger } = require("../../methods/loggers");
-const config = require("../../config.json");
-const ServerSettings = require("../../database/models/servercfg");
 
 module.exports = {
   name: "transcript",
@@ -37,10 +35,6 @@ module.exports = {
 
       return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
-
-    const serverSettings = await ServerSettings.findOne({
-      serverId: interaction.guild.id,
-    });
 
     function getCurrentDate() {
       const date = new Date();

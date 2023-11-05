@@ -4,10 +4,8 @@ const {
   PermissionFlagsBits,
   EmbedBuilder,
 } = require("discord.js");
-const { hxmaincolor, success, error } = require("../../themes/main");
+const { hxmaincolor, error } = require("../../themes/main");
 const { sendLogEmbed, logger } = require("../../methods/loggers");
-const ServerSettings = require("../../database/models/servercfg");
-
 module.exports = {
   name: "clear",
   description: "Limpa o canal de texto",
@@ -67,7 +65,7 @@ module.exports = {
         );
 
       interaction.reply({ embeds: [embed], ephemeral: true });
-      sendLogEmbed(client, interaction.guild.id, embed)
+      sendLogEmbed(client, interaction.guild.id, embed);
     } catch (e) {
       console.log(
         error(`Erro `) +

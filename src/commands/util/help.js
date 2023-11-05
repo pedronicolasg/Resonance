@@ -1,13 +1,9 @@
 const {
   ApplicationCommandType,
   ApplicationCommandOptionType,
-  PermissionFlagsBits,
-  ActionRowBuilder,
-  StringSelectMenuBuilder,
   EmbedBuilder,
 } = require("discord.js");
 const config = require("../../config.json");
-const { hxmaincolor, success, error } = require("../../themes/main");
 
 module.exports = {
   name: "help",
@@ -43,7 +39,7 @@ module.exports = {
     },
   ],
 
-  run: async (client, interaction) => {
+  run: async (interaction) => {
     const subCommand = interaction.options.getSubcommand();
 
     let embedEconomy = new EmbedBuilder().setColor("Green").setAuthor({

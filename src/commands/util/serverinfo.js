@@ -6,9 +6,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const ServerCfg = require("../../database/models/servercfg.js");
-const { hxmaincolor, success, error } = require("../../themes/main");
-const { logger } = require("../../methods/loggers");
-const config = require("../../config.json");
+const { hxmaincolor } = require("../../themes/main");
 
 module.exports = {
   name: "serverinfo",
@@ -32,7 +30,7 @@ module.exports = {
     },
   ],
 
-  run: async (client, interaction) => {
+  run: async (interaction) => {
     const subCommand = interaction.options.getSubcommand();
     const permissionsArray = [
       PermissionFlagsBits.ManageChannels,
