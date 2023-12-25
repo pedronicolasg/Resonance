@@ -39,7 +39,7 @@ module.exports = {
     },
   ],
 
-  run: async (interaction) => {
+  run: async (client, interaction) => {
     const subCommand = interaction.options.getSubcommand();
 
     let embedEconomy = new EmbedBuilder().setColor("Green").setAuthor({

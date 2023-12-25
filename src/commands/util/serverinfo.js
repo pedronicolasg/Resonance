@@ -30,7 +30,7 @@ module.exports = {
     },
   ],
 
-  run: async (interaction) => {
+  run: async (client, interaction) => {
     const subCommand = interaction.options.getSubcommand();
     const permissionsArray = [
       PermissionFlagsBits.ManageChannels,
@@ -190,12 +190,20 @@ module.exports = {
         await interaction.reply({ embeds: [embedChannels], ephemeral: true });
       } else {
         let welcomeMessage = serverConfig.welcomeMessage;
-        if (serverConfig?.welcomeMessage) {
-          embedMessages.addFields({
-            name: "Mensagem de boas vindas",
-            value: welcomeMessage,
-            inline: true,
-          });
+        let exitMessage = serverConfig.exitMessage;
+        if (serverConfig?.welcomeMessage && serverConfig?.exitMessage) {
+          embedMessages.addFields(
+            {
+              name: "Mensagem de boas vindas",
+              value: welcomeMessage,
+              inline: true,
+            },
+            {
+              name: "Mensagem de saída",
+              value: exitMessage,
+              inline: true,
+            }
+          );
         } else {
           embedMessages.addFields({
             name: "Não configurado",
