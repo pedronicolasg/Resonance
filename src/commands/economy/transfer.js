@@ -27,7 +27,7 @@ module.exports = {
     },
   ],
 
-  run: async (interaction) => {
+  run: async (client, interaction) => {
     const senderId = interaction.user.id;
     const recipientId = interaction.options.getUser("usuário").id;
 

@@ -26,7 +26,7 @@ module.exports = {
     },
   ],
 
-  run: async (interaction) => {
+  run: async (client, interaction) => {
     if (
       !interaction.member.permissions.has(PermissionFlagsBits.ManageMessages)
     ) {

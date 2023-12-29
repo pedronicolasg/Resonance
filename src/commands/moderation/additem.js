@@ -51,19 +51,33 @@ module.exports = {
       return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
-    const role = interaction.options.getRole("cargo");
-
     const serverId = interaction.guild.id;
+    const currentItemCount = await StoreItem.countDocuments({
+      serverId: serverId,
+    });
+
+    if (currentItemCount >= 25) {
+      let limitEmbed = new EmbedBuilder()
+        .setColor("Red")
+        .setTitle("Limite Atingido")
+        .setDescription("A loja atingiu o limite máximo de 25 itens.");
+
+      return interaction.reply({ embeds: [limitEmbed], ephemeral: true });
+    }
+
+    const role = interaction.options.getRole("cargo");
     const name = interaction.options.getString("name");
     const description = interaction.options.getString("description");
     const price = interaction.options.getInteger("price");
     const addedBy = interaction.user.id;
     const itemId = role.id;
+    const buyItemId = Math.floor(Math.random() * 900) + 100;
 
     try {
       const newItem = await StoreItem.create({
         serverId,
         itemId,
+        buyItemId,
         name,
         description,
         price,

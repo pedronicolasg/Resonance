@@ -16,7 +16,7 @@ module.exports = {
       required: true,
     },
   ],
-  run: async (interaction) => {
+  run: async (client, interaction) => {
     const url = interaction.options.getString("url");
     const qrcode = `https://qrtag.net/api/qr_7.png?url=${url}`;
 

@@ -14,8 +14,9 @@ module.exports = {
   type: ApplicationCommandType.ChatInput,
   options: [
     {
-      name: "item_id",
-      description: "ID do item que você deseja remover.",
+      name: "item_ids",
+      description:
+        "IDs dos itens que você deseja remover (separados por vírgula)",
       type: ApplicationCommandOptionType.String,
       required: true,
     },
@@ -34,17 +35,20 @@ module.exports = {
     }
 
     const serverId = interaction.guild.id;
-    const itemId = interaction.options.getString("item_id");
+    const itemIds = interaction.options.getString("item_ids").split(",");
 
     try {
-      const item = await StoreItem.findOneAndDelete({ serverId, itemId });
+      const items = await StoreItem.deleteMany({
+        serverId,
+        buyItemId: { $in: buyItemId },
+      });
 
-      if (!item) {
+      if (items.deletedCount === 0) {
         let embed = new EmbedBuilder()
           .setColor("Red")
-          .setTitle("Item não Encontrado")
+          .setTitle("Itens não Encontrados")
           .setDescription(
-            "O item com o ID especificado não foi encontrado na loja."
+            "Nenhum dos itens com os IDs especificados foi encontrado na loja."
           );
 
         interaction.reply({ embeds: [embed], ephemeral: true });
@@ -53,27 +57,33 @@ module.exports = {
 
       let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
-        .setTitle("Item Removido da Loja!")
+        .setTitle("Itens Removidos da Loja!")
         .setDescription(
-          `O item "${item.name}" foi removido da loja com sucesso.`
+          `Os itens com os IDs ${itemIds.join(
+            ", "
+          )} foram removidos da loja com sucesso.`
         );
 
       interaction.reply({ embeds: [embed] });
 
       let logEmbed = new EmbedBuilder()
         .setColor(hxmaincolor)
-        .setTitle("Item Adicionado à Loja!")
+        .setTitle("Itens Removidos da Loja!")
         .setDescription(
-          `O item "${item.name}"(${item.id}) foi removido à da por ${interaction.user}.`
+          `Os itens com os IDs ${itemIds.join(
+            ", "
+          )} foram removidos da loja por ${interaction.user}.`
         );
       sendLogEmbed(client, interaction.guild.id, logEmbed);
     } catch (e) {
-      console.log(error("Erro ") + `ao remover o item da loja devido à: ${e}`);
-      logger.error(`Erro ao remover o item da loja devido à: ${e}`);
+      console.log(
+        error("Erro ") + `ao remover os itens da loja devido à: ${e}`
+      );
+      logger.error(`Erro ao remover os itens da loja devido à: ${e}`);
       let errorEmbed = new EmbedBuilder()
         .setColor("Red")
-        .setTitle("Erro ao Remover o Item da Loja")
-        .setDescription("Não foi possível remover o item da loja.");
+        .setTitle("Erro ao Remover os Itens da Loja")
+        .setDescription("Não foi possível remover os itens da loja.");
 
       interaction.reply({ embeds: [errorEmbed], ephemeral: true });
     }

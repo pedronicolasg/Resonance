@@ -8,7 +8,7 @@ module.exports = {
   name: "store",
   description: "Ver os itens disponíveis na loja do servidor.",
   type: ApplicationCommandType.ChatInput,
-  run: async (interaction) => {
+  run: async (client, interaction) => {
     const serverId = interaction.guild.id;
 
     try {
@@ -35,8 +35,8 @@ module.exports = {
 
       items.forEach((item) => {
         embed.addFields({
-          name: `${item.name} ( ${item.itemId} )`,
-          value: `${item.description} \n Preço: ${economy.coinsymb}:${item.price}`,
+          name: `${item.name} ( ${item.buyItemId} )`,
+          value: `${item.description} \n **${economy.coinsymb}:**${item.price}`,
           inline: true,
         });
       });

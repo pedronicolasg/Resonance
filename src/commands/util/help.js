@@ -115,7 +115,7 @@ module.exports = {
       interaction.reply({ embeds: [embedFun], ephemeral: true });
     } else if (subCommand === "util") {
       interaction.reply({ embeds: [embedUtils], ephemeral: true });
-    } else if (subCommand === "moderation") {
+    } else {
       interaction.reply({ embeds: [embedMod], ephemeral: true });
     }
   },

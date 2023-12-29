@@ -20,7 +20,7 @@ module.exports = {
     },
   ],
 
-  run: async (interaction) => {
+  run: async (client, interaction) => {
     try {
       const serverId = interaction.guild.id;
       const serverSettings = await ServerSettings.findOne({ serverId });

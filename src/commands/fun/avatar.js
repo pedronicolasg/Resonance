@@ -19,7 +19,7 @@ module.exports = {
     },
   ],
 
-  run: async (interaction) => {
+  run: async (client, interaction) => {
     const user = interaction.options.getUser("usuário") || interaction.user;
     const avatarURL = user.displayAvatarURL({ dynamic: true, size: 2048 });
 

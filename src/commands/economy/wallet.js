@@ -22,7 +22,7 @@ module.exports = {
     },
   ],
 
-  run: async (interaction) => {
+  run: async (client, interaction) => {
     let user = interaction.options.getUser("usuário") || interaction.user;
 
     try {

@@ -22,7 +22,7 @@ module.exports = {
       required: false,
     },
   ],
-  run: async (interaction) => {
+  run: async (client, interaction) => {
     let res,
       data,
       date = interaction.options.getString("data");
