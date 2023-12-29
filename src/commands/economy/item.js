@@ -262,7 +262,7 @@ module.exports = {
 
         const itemId = item.itemId;
 
-        if (member && member.roles.cache.has(itemId)) {
+        if (member?.roles.cache.has(itemId)) {
           const role = interaction.guild.roles.cache.get(itemId);
 
           if (role) {

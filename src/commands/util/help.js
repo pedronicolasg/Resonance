@@ -107,6 +107,7 @@ module.exports = {
           /serverinfo geral - Mostra as informações do servidor atual.
           /status - Mostra o status do bot.
           /suggest - Envia sua sugestão para o canal de sugestões.
+          /userinfo - Mostra as informações do usuário desejado.
     `);
 
     if (subCommand === "economy") {
