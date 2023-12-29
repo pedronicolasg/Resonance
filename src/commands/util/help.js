@@ -47,13 +47,14 @@ module.exports = {
       iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
     })
       .setDescription(`Olá ${interaction.user}, veja meus comandos de **economia** abaixo:
-          /buy - Compra itens na loja.
-          /daily - Resgata seus ${config.economy.coinname}s diários.
-          /monthly - Resgata seus ${config.economy.coinname}s mensais.
-          /sell - Vende um cargo cadastrado na loja, recebendo 25% do valor dele.
+          /claim daily - Resgata seus ${config.economy.coinname}s diários.
+          /claim monthly - Resgata seus ${config.economy.coinname}s mensais.
+          /claim weekly - Resgata seus ${config.economy.coinname}s semanais.
+          /claim yearly - Resgata seus ${config.economy.coinname}s anuais.
+          /item buy - Compra itens na loja.
+          /item sell - Vende um cargo cadastrado na loja, recebendo 25% do valor dele.
+          /item inventory - Mostra seu inventário com todos os itens comprados.
           /transfer - Transfere dinheiro para o usuário escolhido.
-          /weekly - Resgata seus ${config.economy.coinname}s semanais.
-          /yearly - Resgata seus ${config.economy.coinname}s anuais.
           /store - Abre a loja do servidor atual.
           /wallet - Mostra quantos ${config.economy.coinname}s você ou o usuário marcado tem.
     `);
@@ -84,7 +85,6 @@ module.exports = {
           /kick - Expulsa o usuário selecionado.
           /lock - Bloqueia o canal desejado.
           /removeitem - Remove o item escolhido da loja.
-          /rpb - Entrega cargos clicando nos botões.
           /setup channels - Define os IDs dos canais no servidor.
           /setup messages - Define as mensagens customizáveis no servidor.
           /serverinfo channels - Mostra os IDs dos canais configurados para o servidor atual.

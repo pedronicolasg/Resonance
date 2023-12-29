@@ -7,6 +7,9 @@ economycfg.json
 package-lock.json
 .vscode
 
+# Project Folders
+src/maintenance/
+
 # Windows files
 desktop.ini
 

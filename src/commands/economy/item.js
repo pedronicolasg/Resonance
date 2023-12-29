@@ -56,7 +56,57 @@ module.exports = {
     const member = interaction.guild.members.cache.get(userId);
 
     if (subCommand === "inventory") {
-      return interaction.reply("soon...");
+      try {
+        const user = await Wallet.findOne({ userId });
+
+        if (user) {
+          if (user.items.length === 0) {
+            let embed = new EmbedBuilder()
+              .setColor("Blue")
+              .setTitle("Você não possui nenhum item.")
+              .setDescription("Você ainda não comprou nenhum item na loja.");
+
+            interaction.reply({ embeds: [embed] });
+          } else {
+            let itemDescriptions = [];
+            for (const buyItemId of user.items) {
+              const item = await StoreItem.findOne({
+                serverId: interaction.guild.id,
+                buyItemId,
+              });
+
+              if (item) {
+                itemDescriptions.push(`**${item.name}**: ${item.description}`);
+              }
+            }
+
+            let embed = new EmbedBuilder()
+              .setColor("Green")
+              .setTitle("Itens que você possui:")
+              .setDescription(itemDescriptions.join("\n"));
+
+            interaction.reply({ embeds: [embed] });
+          }
+        } else {
+          let embed = new EmbedBuilder()
+            .setColor("Red")
+            .setTitle("Erro ao obter informações")
+            .setDescription(
+              "Não foi possível encontrar suas informações na carteira."
+            );
+
+          interaction.reply({ embeds: [embed] });
+        }
+      } catch (e) {
+        let embed = new EmbedBuilder()
+          .setColor("Red")
+          .setTitle("Erro ao processar o comando")
+          .setDescription(
+            "Ocorreu um erro ao processar o comando."
+          );
+
+        interaction.reply({ embeds: [embed] });
+      }
     } else if (subCommand === "buy") {
       try {
         const item = await StoreItem.findOne({
@@ -129,6 +179,11 @@ module.exports = {
 
         try {
           await member.roles.add(role);
+
+          if (!user.items.includes(buyItemId)) {
+            user.items.push(buyItemId);
+            await user.save();
+          }
         } catch (e) {
           console.log("Erro ao adicionar cargo ao usuário:", e);
           let errorEmbed = new EmbedBuilder()
