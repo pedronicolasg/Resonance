@@ -34,6 +34,7 @@ module.exports = async (client) => {
     console.log(success("Sucesso ") + "ao carregar os eventos.");
     logger.info(`Sucesso ao carregar os eventos.`);
   });
+  
   client.on("ready", async () => {
     client.guilds.cache.forEach((guild) => guild.commands.set(SlashsArray));
     console.log(
@@ -44,6 +45,7 @@ module.exports = async (client) => {
       `Sucesso ao adicionar a lista de comandos no cache do servidor.`
     );
   });
+
   function registerCommandsOnGuildCreate(guild) {
     return new Promise(async () => {
       try {

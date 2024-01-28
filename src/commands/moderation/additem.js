@@ -88,7 +88,7 @@ module.exports = {
         .setColor(hxmaincolor)
         .setTitle("Item Adicionado à Loja!")
         .setDescription(
-          `O item "${name}" foi adicionado à loja com sucesso.\nID do Item: ${newItem.itemId}`
+          `O item "${name}" foi adicionado à loja com sucesso.\nID do Item: ${newItem.buyItemId}`
         );
 
       interaction.reply({ embeds: [embed] });
@@ -97,7 +97,7 @@ module.exports = {
         .setColor(hxmaincolor)
         .setTitle("Item Adicionado à Loja!")
         .setDescription(
-          `O item "${name}" foi adicionado à loja por ${interaction.user}.\nID do Item: ${newItem.itemId}`
+          `O item "${name}" foi adicionado à loja por ${interaction.user}.\nID do Item: ${newItem.buyItemId}`
         );
       sendLogEmbed(client, interaction.guild.id, logEmbed);
     } catch (e) {

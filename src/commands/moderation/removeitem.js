@@ -5,8 +5,10 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const StoreItem = require("../../database/models/storeItem");
+const Wallet = require("../../database/models/wallet");
 const { hxmaincolor, error } = require("../../themes/main");
 const { sendLogEmbed, logger } = require("../../methods/loggers");
+const { formatItemID } = require("../../methods/idFormater");
 
 module.exports = {
   name: "removeitem",
@@ -35,12 +37,18 @@ module.exports = {
     }
 
     const serverId = interaction.guild.id;
-    const itemIds = interaction.options.getString("item_ids").split(",");
+    const buyitemIds = interaction.options.getString("item_ids").split(",");
+    const trimmedIds = buyitemIds.map((id) => id.trim());
 
     try {
+      const deletedItems = await StoreItem.find({
+        serverId,
+        buyItemId: { $in: trimmedIds },
+      });
+
       const items = await StoreItem.deleteMany({
         serverId,
-        buyItemId: { $in: buyItemId },
+        buyItemId: { $in: trimmedIds },
       });
 
       if (items.deletedCount === 0) {
@@ -55,13 +63,41 @@ module.exports = {
         return;
       }
 
+      for (let deletedItem of deletedItems) {
+        let users = await Wallet.find({ "items": formatItemID(serverId, deletedItem.buyItemId) });
+
+        for (let user of users) {
+          user.items = user.items.filter((item) => item !== formatItemID(serverId, deletedItem.buyItemId));
+          await user.save();
+
+          let memberId = user.userId;
+          let member = interaction.guild.members.cache.get(memberId);
+
+          if (member) {
+            let roleId = deletedItem.itemId;
+            let role = interaction.guild.roles.cache.get(roleId);
+
+            if (role) {
+              try {
+                await member.roles.remove(role);
+              } catch (e) {
+                console.log(
+                  error("Erro ") +
+                  `ao remover o cargo do usuário ${memberId} devido à: ${e}`
+                );
+              }
+            }
+          }
+        }
+      }
+      
       let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
         .setTitle("Itens Removidos da Loja!")
         .setDescription(
-          `Os itens com os IDs ${itemIds.join(
+          `Os itens com os IDs ${buyitemIds.join(
             ", "
-          )} foram removidos da loja com sucesso.`
+          )} foram removidos da loja e das carteiras dos usuários com sucesso.`
         );
 
       interaction.reply({ embeds: [embed] });
@@ -70,9 +106,9 @@ module.exports = {
         .setColor(hxmaincolor)
         .setTitle("Itens Removidos da Loja!")
         .setDescription(
-          `Os itens com os IDs ${itemIds.join(
+          `Os itens com os IDs ${buyitemIds.join(
             ", "
-          )} foram removidos da loja por ${interaction.user}.`
+          )} foram removidos da loja e das carteiras dos usuários por ${interaction.user}.`
         );
       sendLogEmbed(client, interaction.guild.id, logEmbed);
     } catch (e) {

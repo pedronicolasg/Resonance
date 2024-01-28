@@ -7,6 +7,7 @@ const StoreItem = require("../../database/models/storeItem");
 const Wallet = require("../../database/models/wallet");
 const { hxmaincolor, error } = require("../../themes/main");
 const { sendLogEmbed, logger } = require("../../methods/loggers");
+const { parseItemID, formatItemID } = require("../../methods/idFormater");
 const { economy } = require("../../config.json");
 
 module.exports = {
@@ -60,30 +61,32 @@ module.exports = {
         const user = await Wallet.findOne({ userId });
 
         if (user) {
-          if (user.items.length === 0) {
+          let itemDescriptions = [];
+
+          for (let formattedItem of user.items) {
+            let pItemId = parseItemID(formattedItem).itemId;
+            let item = await StoreItem.findOne({
+              serverId: serverId,
+              buyItemId: pItemId,
+            });
+
+            if (item) {
+              itemDescriptions.push(`**${item.name}**: ${item.description}`);
+            }
+          }
+
+          if (itemDescriptions.length > 0) {
+            let embed = new EmbedBuilder()
+              .setColor("Green")
+              .setTitle("Itens que você possui neste servidor:")
+              .setDescription(itemDescriptions.join("\n"));
+
+            interaction.reply({ embeds: [embed] });
+          } else {
             let embed = new EmbedBuilder()
               .setColor("Blue")
               .setTitle("Você não possui nenhum item.")
               .setDescription("Você ainda não comprou nenhum item na loja.");
-
-            interaction.reply({ embeds: [embed] });
-          } else {
-            let itemDescriptions = [];
-            for (const buyItemId of user.items) {
-              const item = await StoreItem.findOne({
-                serverId: interaction.guild.id,
-                buyItemId,
-              });
-
-              if (item) {
-                itemDescriptions.push(`**${item.name}**: ${item.description}`);
-              }
-            }
-
-            let embed = new EmbedBuilder()
-              .setColor("Green")
-              .setTitle("Itens que você possui:")
-              .setDescription(itemDescriptions.join("\n"));
 
             interaction.reply({ embeds: [embed] });
           }
@@ -101,12 +104,12 @@ module.exports = {
         let embed = new EmbedBuilder()
           .setColor("Red")
           .setTitle("Erro ao processar o comando")
-          .setDescription(
-            "Ocorreu um erro ao processar o comando."
-          );
+          .setDescription("Ocorreu um erro ao processar o comando.");
 
         interaction.reply({ embeds: [embed] });
+        console.log(e);
       }
+
     } else if (subCommand === "buy") {
       try {
         const item = await StoreItem.findOne({
@@ -180,8 +183,9 @@ module.exports = {
         try {
           await member.roles.add(role);
 
-          if (!user.items.includes(buyItemId)) {
-            user.items.push(buyItemId);
+          let formatedItem = formatItemID(serverId, buyItemId);
+          if (!user.items.includes(formatedItem)) {
+            user.items.push(formatedItem);
             await user.save();
           }
         } catch (e) {
@@ -262,29 +266,28 @@ module.exports = {
 
         const itemId = item.itemId;
 
-        if (member?.roles.cache.has(itemId)) {
-          const role = interaction.guild.roles.cache.get(itemId);
+        const user = await Wallet.findOne({ userId });
 
-          if (role) {
-            try {
-              await member.roles.remove(role);
-            } catch (e) {
-              let errorEmbed = new EmbedBuilder()
-                .setColor("Red")
-                .setTitle("Erro ao Remover Cargo")
-                .setDescription(
-                  "Não foi possível remover o cargo do seu usuário."
-                );
+        if (user?.items.includes(formatItemID(serverId, buyItemId))) {
+          if (member?.roles.cache.has(itemId)) {
+            const role = interaction.guild.roles.cache.get(itemId);
 
-              interaction.reply({ embeds: [errorEmbed], ephemeral: true });
-              return;
-            }
+            if (role) {
+              try {
+                await member.roles.remove(role);
+              } catch (e) {
+                let errorEmbed = new EmbedBuilder()
+                  .setColor("Red")
+                  .setTitle("Erro ao Remover Cargo")
+                  .setDescription("Não foi possível remover o cargo do seu usuário.");
 
-            const user = await Wallet.findOne({ userId });
+                interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+                return;
+              }
 
-            if (user) {
               const amountGained = Math.round(item.price * 0.25);
 
+              user.items = user.items.filter((itemId) => itemId !== formatItemID(serverId, buyItemId));
               user.coins += amountGained;
               await user.save();
 
@@ -307,27 +310,26 @@ module.exports = {
             } else {
               let errorEmbed = new EmbedBuilder()
                 .setColor("Red")
-                .setTitle("Usuário não encontrado")
+                .setTitle("Cargo não encontrado")
                 .setDescription(
-                  `Usuário com ID ${userId} não encontrado na carteira.`
+                  "O cargo associado a este item não foi encontrado no servidor."
                 );
+
               interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             }
           } else {
-            let errorEmbed = new EmbedBuilder()
-              .setColor("Red")
-              .setTitle("Cargo não encontrado")
-              .setDescription(
-                "O cargo associado a este item não foi encontrado no servidor."
-              );
+            let warnEmbed = new EmbedBuilder()
+              .setColor("Yellow")
+              .setTitle("Você não possui o Cargo")
+              .setDescription("Você não possui o cargo associado a este item.");
 
-            interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            interaction.reply({ embeds: [warnEmbed], ephemeral: true });
           }
         } else {
           let warnEmbed = new EmbedBuilder()
             .setColor("Yellow")
-            .setTitle("Você não possui o Cargo")
-            .setDescription("Você não possui o cargo associado a este item.");
+            .setTitle("Item não está na Carteira")
+            .setDescription("Você não possui o item na sua carteira para venda.");
 
           interaction.reply({ embeds: [warnEmbed], ephemeral: true });
         }
