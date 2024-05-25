@@ -1,12 +1,12 @@
 const { EmbedBuilder, Events } = require("discord.js");
-const { owner } = require("../../config.json");
+require('dotenv').config();
 const { hxmaincolor, error, info } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
 const client = require("../../index");
-const { registerCommandsOnGuildCreate } = require("../../handler/");
+const { registerCommandsOnGuildCreate } = require("../../methods/handler");
 
 client.on(Events.GuildCreate, async (guild) => {
-  let devUser = await client.users.fetch(owner);
+  let devUser = await client.users.fetch(process.env.OWNER);
   let embed = new EmbedBuilder()
     .setColor(hxmaincolor)
     .setAuthor({

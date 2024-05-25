@@ -3,7 +3,7 @@ const {
   ApplicationCommandOptionType,
   EmbedBuilder,
 } = require("discord.js");
-const config = require("../../config.json");
+require('dotenv').config();
 
 module.exports = {
   name: "help",
@@ -47,16 +47,16 @@ module.exports = {
       iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
     })
       .setDescription(`Olá ${interaction.user}, veja meus comandos de **economia** abaixo:
-          /claim daily - Resgata seus ${config.economy.coinname}s diários.
-          /claim monthly - Resgata seus ${config.economy.coinname}s mensais.
-          /claim weekly - Resgata seus ${config.economy.coinname}s semanais.
-          /claim yearly - Resgata seus ${config.economy.coinname}s anuais.
+          /claim daily - Resgata seus ${process.env.ECONOMY_COINNAME}s diários.
+          /claim monthly - Resgata seus ${process.env.ECONOMY_COINNAME}s mensais.
+          /claim weekly - Resgata seus ${process.env.ECONOMY_COINNAME}s semanais.
+          /claim yearly - Resgata seus ${process.env.ECONOMY_COINNAME}s anuais.
           /item buy - Compra itens na loja.
           /item sell - Vende um cargo cadastrado na loja, recebendo 25% do valor dele.
           /item inventory - Mostra seu inventário com todos os itens comprados.
           /transfer - Transfere dinheiro para o usuário escolhido.
           /store - Abre a loja do servidor atual.
-          /wallet - Mostra quantos ${config.economy.coinname}s você ou o usuário marcado tem.
+          /wallet - Mostra quantos ${process.env.ECONOMY_COINNAME}s você ou o usuário marcado tem.
     `);
 
     let embedFun = new EmbedBuilder().setColor("Yellow").setAuthor({

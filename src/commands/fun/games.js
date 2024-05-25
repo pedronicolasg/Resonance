@@ -5,10 +5,10 @@ const {
 } = require("discord.js");
 const { TwoZeroFourEight, Snake, Minesweeper } = require("discord-gamecord");
 const { hxmaincolor, error } = require("../../themes/main");
-const { economy } = require("../../config.json");
+require('dotenv').config();
 const { logger } = require("../../methods/loggers");
-const Wallet = require("../../database/models/wallet");
-const ServerSettings = require("../../database/models/servercfg");
+const Wallet = require("../../methods/DB/models/wallet");
+const ServerSettings = require("../../methods/DB/models/servercfg");
 
 module.exports = {
   name: "game",
@@ -17,17 +17,17 @@ module.exports = {
   options: [
     {
       name: "2048",
-      description: `Aumente os números para ganhar ${economy.coinname}s!`,
+      description: `Aumente os números para ganhar ${process.env.ECONOMY_COINNAME}s!`,
       type: ApplicationCommandOptionType.Subcommand,
     },
     {
       name: "snake-game",
-      description: `Coma as frutas sem bater nas bordas para ganhar ${economy.coinname}s!`,
+      description: `Coma as frutas sem bater nas bordas para ganhar ${process.env.ECONOMY_COINNAME}s!`,
       type: ApplicationCommandOptionType.Subcommand,
     },
     {
       name: "minesweeper",
-      description: `Evite as minas para ganhar ${economy.coinname}s, se não perderá eles!`,
+      description: `Evite as minas para ganhar ${process.env.ECONOMY_COINNAME}s, se não perderá eles!`,
       type: ApplicationCommandOptionType.Subcommand,
     },
   ],
@@ -98,7 +98,7 @@ module.exports = {
                   inline: true,
                 },
                 {
-                  name: `${economy.coinname}s:`,
+                  name: `${process.env.ECONOMY_COINNAME}s:`,
                   value: `${finalAmount}`,
                   inline: true,
                 }
@@ -150,7 +150,7 @@ module.exports = {
                   inline: true,
                 },
                 {
-                  name: `${economy.coinname}s:`,
+                  name: `${process.env.ECONOMY_COINNAME}s:`,
                   value: `${finalAmount}`,
                   inline: true,
                 }
@@ -178,8 +178,8 @@ module.exports = {
             emojis: { flag: "🚩", mine: "💣" },
             mines: 5,
             timeoutTime: 65000,
-            winMessage: `Você ganhou o jogo! Você evitou com sucesso todas as minas, como recompensa você recebeu ${economy.coinsymb}:${reward}!`,
-            loseMessage: `Você perdeu o jogo! Cuidado com as minas da próxima vez, e como consequência perdeu ${economy.coinsymb}:${lose}.`,
+            winMessage: `Você ganhou o jogo! Você evitou com sucesso todas as minas, como recompensa você recebeu ${process.env.ECONOMY_COINSYMB}:${reward}!`,
+            loseMessage: `Você perdeu o jogo! Cuidado com as minas da próxima vez, e como consequência perdeu ${process.env.ECONOMY_COINSYMB}:${lose}.`,
             playerOnlyMessage: playerOnlyMsg,
           });
 

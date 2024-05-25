@@ -3,7 +3,7 @@ const {
   ApplicationCommandOptionType,
   EmbedBuilder,
 } = require("discord.js");
-const ServerSettings = require("../../database/models/servercfg");
+const ServerSettings = require("../../methods/DB/models/servercfg");
 const { hxmaincolor, error } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
 

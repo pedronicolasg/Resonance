@@ -77,29 +77,23 @@ $ cd resonance
 $ npm install
 ```
 
-Depois disso é necessário criar dois arquivos de configuração pro bot, um na pasta ./src do projeto o `config.json`
-
-```json
-{
-  "version": "", // Versão do seu bot
-  "name": "", // Nome do bot
-  "owner": "", // Seu ID
-  "technologies": "", // Tecnologias usadas no bot
-  "webSite": "", // Link do site do bot
-  "economy": {
-    "coinname": "", // Nome da moeda do seu bot
-    "coinsymb": "", // Símbolo da moeda do seu bot
-    "coinicon": "" // Ícone da moeda do seu bot
-  }
-}
-```
-
-Em seguida é necessário criar um arquivo `.env` na pasta raiz do projeto para colocar as configurações secretas do bot
+Depois disso é necessário criar o arquivo de configuração do bot `.env` no diretório raiz do projeto:
 
 ```env
-TOKEN=Token do bot
-NASAKEY=Sua chave da API da NASA para o comando /apod
-MONGODB_URI=URI do MongoDB para conexão
+NAME= #Nome do bot.
+VERSION= #Versão do bot.
+OWNER= #ID do dono do bot.
+
+TOKEN= #Token do bot.
+MONGODB_URI= #URI de conexão com o MongoDB.
+NASAKEY= #Chave de API da NASA, necessária para o funcionamento do comando /apod.
+
+TECHNOLOGIES= #Tecnologias usadas no bot.
+WEBSITE= #URL do site do bot.
+
+ECONOMY_COINNAME= #Nome da moeda do seu bot.
+ECONOMY_COINSYMB= #Símbolo da moeda do bot.
+ECONOMY_COINICON= #URL do ícone da moeda do bot.
 ```
 
 Agora basta inicializar o bot usando o comando:

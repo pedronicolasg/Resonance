@@ -1,7 +1,7 @@
 const { success, error } = require("./themes/main");
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const { logger } = require("./methods/loggers");
-const mongoose = require("mongoose");
+const { conn } = require("./methods/DB/conn")
 
 console.log(success("Sucesso ") + "ao carregar as configurações do bot.");
 logger.info(`Sucesso ao carregar as configurações do bot.`);
@@ -18,21 +18,13 @@ const client = new Client({
 
 require("dotenv").config();
 let token = process.env.TOKEN;
-let connString = process.env.MONGODB_URI;
 console.log(success("Sucesso ") + "ao carregar os segredos do bot.");
 logger.info(`Sucesso ao carregar os segredos do bot.`);
 
 (async () => {
   try {
-    mongoose.set("strictQuery", false);
-    await mongoose.connect(connString, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log(success("Sucesso ") + "ao conectar ao banco de dados.");
-    logger.info(`Sucesso ao conectar ao banco de dados.`);
-
-    require("./handler")(client);
+    conn(process.env.MONGODB_URI);
+    require("./methods/handler.js")(client);
     console.log(success("Sucesso ") + "ao carregar a Command handler.");
     logger.info(`Sucesso ao carregar a Command handler.`);
 

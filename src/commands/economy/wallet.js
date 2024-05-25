@@ -3,15 +3,14 @@ const {
   ApplicationCommandOptionType,
   EmbedBuilder,
 } = require("discord.js");
-const { economy } = require("../../config.json");
+require('dotenv').config();
 const { hxmaincolor, error } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
-
-const Wallet = require("../../database/models/wallet");
+const { getWallet } = require("../../methods/DB/economy");
 
 module.exports = {
   name: "wallet",
-  description: `Verifique a quantidade de ${economy.coinname}s em sua carteira.`,
+  description: `Verifique a quantidade de ${process.env.ECONOMY_COINNAME}s em sua carteira.`,
   type: ApplicationCommandType.ChatInput,
   options: [
     {
@@ -26,23 +25,22 @@ module.exports = {
     let user = interaction.options.getUser("usuário") || interaction.user;
 
     try {
-      const userData = await Wallet.findOne({ userId: user.id });
-      let amount = userData ? userData.coins : 0;
+      const userWallet = await getWallet(user.id);
+      let amount = userWallet ? userWallet.coins : 0;
 
       let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
         .setTitle("Carteira")
         .setThumbnail(user.displayAvatarURL({ dynamic: true }))
         .setDescription(
-          `${
-            user === interaction.user
-              ? "Você tem"
-              : `O usuário ${user} tem`
-          } \`${economy.coinsymb}:${amount}\` na carteira.`
+          `${user === interaction.user
+            ? "Você tem"
+            : `O usuário ${user} tem`
+          } \`${process.env.ECONOMY_COINSYMB}:${amount}\` na carteira.`
         )
         .setFooter({
-          text: `${economy.coinname} (${economy.coinsymb}).`,
-          iconURL: `${economy.coinicon}`,
+          text: `${process.env.ECONOMY_COINNAME} (${process.env.ECONOMY_COINSYMB}).`,
+          iconURL: `${process.env.ECONOMY_COINICON}`,
         });
 
       interaction.reply({
@@ -52,7 +50,7 @@ module.exports = {
     } catch (e) {
       console.log(
         error("Erro ") +
-          `ao buscar a carteira de ${user.username}(${user.id}) devido a: ${e}`
+        `ao buscar a carteira de ${user.username}(${user.id}) devido a: ${e}`
       );
       logger.error(
         `Erro ao buscar a carteira de ${user.username}(${user.id}) devido a: ${e}`

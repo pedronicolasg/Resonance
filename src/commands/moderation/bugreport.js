@@ -4,7 +4,7 @@ const {
   PermissionFlagsBits,
   EmbedBuilder,
 } = require("discord.js");
-const { owner } = require("../../config.json");
+require('dotenv').config();
 const { logger } = require("../../methods/loggers");
 const { hxmaincolor, error } = require("../../themes/main");
 
@@ -62,7 +62,7 @@ module.exports = {
       return;
     }
 
-    const devUser = await client.users.fetch(owner);
+    const devUser = await client.users.fetch(process.env.OWNER);
 
     if (!devUser) {
       let errorEmbed = new EmbedBuilder()

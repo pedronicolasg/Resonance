@@ -4,7 +4,7 @@ const {
   PermissionFlagsBits,
   EmbedBuilder,
 } = require("discord.js");
-const StoreItem = require("../../database/models/storeItem");
+const StoreItem = require("../../methods/DB/models/storeItem");
 const { hxmaincolor, error } = require("../../themes/main");
 const { sendLogEmbed, logger } = require("../../methods/loggers");
 

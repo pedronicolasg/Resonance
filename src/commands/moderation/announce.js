@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 const { hxmaincolor } = require("../../themes/main");
 const { sendLogEmbed, logger } = require("../../methods/loggers");
-const ServerSettings = require("../../database/models/servercfg");
+const ServerSettings = require("../../methods/DB/models/servercfg");
 
 module.exports = {
   name: "announce",
@@ -31,6 +31,12 @@ module.exports = {
       type: ApplicationCommandOptionType.String,
       required: false,
     },
+    {
+      name: "mention",
+      description: "Marque o cargo que deve ser notificado",
+      type: ApplicationCommandOptionType.Role,
+      required: false,
+    },
   ],
 
   run: async (client, interaction) => {
@@ -50,6 +56,7 @@ module.exports = {
     let title = interaction.options.getString("título");
     let description = interaction.options.getString("descrição");
     let color = interaction.options.getString("cor");
+    let mention = interaction.options.getRole("mention");
     let error = new EmbedBuilder()
       .setColor("Red")
       .setTitle("Erro ao enviar o anúncio.")
@@ -117,7 +124,7 @@ module.exports = {
         });
     } catch (e) {
       console.log(
-        error("Erro ") + `ao buscar as configurações no MongoDB:\n ${e}`
+        `Erro ao buscar as configurações no MongoDB:\n ${e}`
       );
       logger.error("Erro ao buscar as configurações no MongoDB: ", e);
       let errorEmbed = new EmbedBuilder()

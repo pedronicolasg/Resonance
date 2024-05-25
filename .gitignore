@@ -6,6 +6,7 @@ config.json
 economycfg.json
 package-lock.json
 .vscode
+./.idea/
 
 # Project Folders
 src/maintenance/

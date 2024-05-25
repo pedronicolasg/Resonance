@@ -1,24 +1,20 @@
+require('dotenv').config();
 const winston = require("winston");
 const { format } = winston;
 const path = require("path");
 const logsDirectory = path.join(__dirname, "../logs");
-const { name } = require("../config.json");
-const ServerSettings = require("../database/models/servercfg");
+const { getServerConfig } = require("../methods/DB/server");
 
-// LogChannel
 async function sendLogEmbed(client, guildId, embed, files) {
-  let serverSettings = await ServerSettings.findOne({
-    serverId: guildId,
-  });
-  if (!serverSettings?.logchannelId) return;
-
-  let logChannelId = serverSettings.logchannelId;
-  let logChannel = client.channels.cache.get(logChannelId);
+  const logChannelId = await getServerConfig(guildId, 'logchannelId');
+  const logChannel = client.channels.cache.get(logChannelId);
 
   if (logChannel) {
     if (files) {
       logChannel.send({ embeds: [embed], files: [files] });
-    } else logChannel.send({ embeds: [embed] });
+    } else {
+      logChannel.send({ embeds: [embed] });
+    }
   }
 }
 
@@ -31,7 +27,7 @@ const logger = winston.createLogger({
     }),
     format.json()
   ),
-  defaultMeta: { service: name },
+  defaultMeta: { service: process.env.NAME },
   transports: [
     new winston.transports.File({
       filename: path.join(logsDirectory, "error.json"),
@@ -63,7 +59,7 @@ const logger_economy = winston.createLogger({
     }),
     format.json()
   ),
-  defaultMeta: { service: name },
+  defaultMeta: { service: process.env.NAME },
   transports: [
     new winston.transports.File({
       filename: path.join(logsDirectory, "economy.json"),

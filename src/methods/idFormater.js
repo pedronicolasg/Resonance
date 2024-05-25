@@ -7,7 +7,4 @@ function parseItemID(formattedItem) {
   return { serverId, itemId };
 }
 
-module.exports = {
-  formatItemID,
-  parseItemID,
-};
+module.exports = { formatItemID, parseItemID };

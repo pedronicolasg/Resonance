@@ -1,13 +1,13 @@
 const { Events } = require("discord.js");
 const { warning, info, error } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
-const ServerCfg = require("../../database/models/servercfg");
+//const ServerCfg = require("../../methods/DB/models/servercfg");
+const { dumpServerSettings } = require("../../methods/DB/server");
 const client = require("../../index");
 
 client.on(Events.GuildDelete, async (guild) => {
-  let guildId = guild.id;
   try {
-    const deleteResult = await ServerCfg.deleteMany({ serverId: guildId });
+    const deleteResult = dumpServerSettings(guild.id);
 
     if (deleteResult.deletedCount > 0) {
       console.log(

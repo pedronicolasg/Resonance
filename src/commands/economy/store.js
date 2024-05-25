@@ -1,8 +1,8 @@
 const { ApplicationCommandType, EmbedBuilder } = require("discord.js");
-const StoreItem = require("../../database/models/storeItem");
+const { getItemsByServerId } = require("../../methods/DB/economy");
 const { hxmaincolor, error } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
-const { economy } = require("../../config.json");
+require('dotenv').config();
 
 module.exports = {
   name: "store",
@@ -12,7 +12,7 @@ module.exports = {
     const serverId = interaction.guild.id;
 
     try {
-      const items = await StoreItem.find({ serverId });
+      const items = await getItemsByServerId(serverId);
 
       if (items.length === 0) {
         let warnEmbed = new EmbedBuilder()
@@ -36,7 +36,7 @@ module.exports = {
       items.forEach((item) => {
         embed.addFields({
           name: `${item.name} ( ${item.buyItemId} )`,
-          value: `${item.description} \n **${economy.coinsymb}:**${item.price}`,
+          value: `${item.description} \n **${process.env.ECONOMY_COINSYMB}:**${item.price}`,
           inline: true,
         });
       });

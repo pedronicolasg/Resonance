@@ -4,9 +4,9 @@ const {
   PermissionFlagsBits,
   EmbedBuilder,
 } = require("discord.js");
-const ServerSettings = require("../../database/models/servercfg.js");
 const { hxmaincolor, error } = require("../../themes/main");
 const { sendLogEmbed, logger } = require("../../methods/loggers.js");
+const { updateMessage, updateChannel } = require("../../methods/DB/server.js");
 
 module.exports = {
   name: "setup",
@@ -75,7 +75,7 @@ module.exports = {
         },
         {
           name: "exitmsg",
-          description: "Configure a mensagem de boas-vindas.",
+          description: "Configure a mensagem de saída.",
           type: ApplicationCommandOptionType.String,
           required: false,
         },
@@ -84,23 +84,18 @@ module.exports = {
   ],
 
   run: async (client, interaction) => {
-    if (
-      !interaction.member.permissions.has(PermissionFlagsBits.Administrator)
-    ) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild || PermissionFlagsBits.ManageChannels)) {
       let warnEmbed = new EmbedBuilder()
         .setColor("Yellow")
         .setTitle("Você não possui permissão para utilizar este comando.")
         .setDescription(
-          `Você precisa da permissão "Administrador" para usar esse comando`
+          `Você precisa da permissão "Gerenciar Guilda" ou "Gerenciar Canais" para usar esse comando`
         );
 
       return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
     }
 
     const serverId = interaction.guild.id;
-    let serverSettings = await ServerSettings.findOne({ serverId });
-    if (!serverSettings) serverSettings = new ServerSettings({ serverId });
-
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === "messages") {
@@ -108,10 +103,8 @@ module.exports = {
       let exitMessage = interaction.options.getString("exitmsg");
 
       try {
-        if (welcomeMessage !== null)
-          serverSettings.welcomeMessage = welcomeMessage;
-        if (exitMessage !== null) serverSettings.exitMessage = exitMessage;
-        await serverSettings.save();
+        if (welcomeMessage !== null) await updateMessage(serverId, "welcomeMessage", welcomeMessage);
+        if (exitMessage !== null) await updateMessage(serverId, "exitMessage", exitMessage);
 
         let embed = new EmbedBuilder()
           .setColor(hxmaincolor)
@@ -126,16 +119,12 @@ module.exports = {
 
         interaction.reply({ embeds: [embed], ephemeral: true });
       } catch (e) {
-        console.log(
-          error("Erro ") + `ao customizar as mensagens devido à:\n ${e}`
-        );
+        console.log(error("Erro ") + `ao customizar as mensagens devido à:\n ${e}`);
         logger.error(`Erro ao customizar as mensagens devido à: ${e}`);
         let errorEmbed = new EmbedBuilder()
           .setColor("Red")
           .setTitle("Erro ao customizar mensagem!")
-          .setDescription(
-            `Erro ao customizar mensagem de boas-vindas, tente novamente mais tarde!`
-          );
+          .setDescription(`Erro ao customizar mensagem de boas-vindas, tente novamente mais tarde!`);
 
         interaction.reply({ embeds: [errorEmbed], ephemeral: true });
       }
@@ -146,45 +135,31 @@ module.exports = {
       let ruleschannelId = interaction.options.getString("ruleschannelid");
       let gameschannelId = interaction.options.getString("gameschannelid");
       let welcomechannelId = interaction.options.getString("welcomechannelid");
-      let suggestionchannelId = interaction.options.getString(
-        "suggestionchannelid"
-      );
+      let suggestionchannelId = interaction.options.getString("suggestionchannelid");
 
       try {
-        if (logchannelId !== null) serverSettings.logchannelId = logchannelId;
-        if (adschannelId !== null) serverSettings.adschannelId = adschannelId;
-        if (exitchannelId !== null)
-          serverSettings.exitchannelId = exitchannelId;
-        if (ruleschannelId !== null)
-          serverSettings.ruleschannelId = ruleschannelId;
-        if (gameschannelId !== null)
-          serverSettings.gameschannelId = gameschannelId;
-        if (welcomechannelId !== null)
-          serverSettings.welcomechannelId = welcomechannelId;
-        if (suggestionchannelId !== null)
-          serverSettings.suggestionchannelId = suggestionchannelId;
+        if (logchannelId !== null) await updateChannel(serverId, "logchannelId", logchannelId);
+        if (adschannelId !== null) await updateChannel(serverId, "adschannelId", adschannelId);
+        if (exitchannelId !== null) await updateChannel(serverId, "exitchannelId", exitchannelId);
+        if (ruleschannelId !== null) await updateChannel(serverId, "ruleschannelId", ruleschannelId);
+        if (gameschannelId !== null) await updateChannel(serverId, "gameschannelId", gameschannelId);
+        if (welcomechannelId !== null) await updateChannel(serverId, "welcomechannelId", welcomechannelId);
+        if (suggestionchannelId !== null) await updateChannel(serverId, "suggestionchannelId", suggestionchannelId);
 
-        await serverSettings.save();
         let embed = new EmbedBuilder()
           .setColor(hxmaincolor)
           .setTitle("Sucesso ao definir os IDs")
-          .setDescription(
-            `IDs dos canais foram definidos com sucesso! Use /serverinfo para ver as configurações`
-          );
+          .setDescription(`IDs dos canais foram definidos com sucesso! Use /serverinfo para ver as configurações`);
 
         let logEmbed = new EmbedBuilder()
           .setColor(hxmaincolor)
           .setTitle("Alteração nos Ids dos canais")
-          .setDescription(
-            `O usuário ${interaction.user} mudou os IDs dos canais.`
-          );
+          .setDescription(`O usuário ${interaction.user} mudou os IDs dos canais.`);
         sendLogEmbed(client, interaction.guild.id, logEmbed);
 
         interaction.reply({ embeds: [embed], ephemeral: true });
       } catch (e) {
-        console.log(
-          error("Erro ") + `ao definir os IDs dos canais devido à:\n ${e}`
-        );
+        console.log(error("Erro ") + `ao definir os IDs dos canais devido à:\n ${e}`);
         logger.error(`Erro ao definir os IDs dos canais devido à: ${e}`);
         let errorEmbed = new EmbedBuilder()
           .setColor("Red")

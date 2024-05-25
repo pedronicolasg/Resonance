@@ -5,7 +5,7 @@ const {
   PermissionFlagsBits,
   EmbedBuilder,
 } = require("discord.js");
-const ServerCfg = require("../../database/models/servercfg.js");
+const { getServerConfig } = require("../../methods/DB/server");
 const { hxmaincolor } = require("../../themes/main");
 
 module.exports = {
@@ -52,7 +52,6 @@ module.exports = {
       .setAuthor({ name: guildName, iconURL: guildIcon })
       .setThumbnail(guildIcon);
 
-    const serverConfig = await ServerCfg.findOne({ serverId: guildId });
     let embedChannels = new EmbedBuilder()
       .setColor(hxmaincolor)
       .setTitle("Canais")
@@ -134,83 +133,67 @@ module.exports = {
       (subCommand === "custommessages" && hasPermission)
     ) {
       if (subCommand === "channels") {
-        if (serverConfig) {
-          let logChannelId = serverConfig.logchannelId;
-          let adsChannelId = serverConfig.adschannelId;
-          let exitChannelId = serverConfig.exitchannelId;
-          let rulesChannelId = serverConfig.ruleschannelId;
-          let gamesChannelId = serverConfig.gameschannelId;
-          let welcomeChannelId = serverConfig.welcomechannelId;
-          let suggestionChannelId = serverConfig.suggestionchannelId;
+        let logChannelId = await getServerConfig(guildId, 'logchannelId');
+        let adsChannelId = await getServerConfig(guildId, 'adschannelId');
+        let exitChannelId = await getServerConfig(guildId, 'exitchannelId');
+        let rulesChannelId = await getServerConfig(guildId, 'ruleschannelId');
+        let gamesChannelId = await getServerConfig(guildId, 'gameschannelId');
+        let welcomeChannelId = await getServerConfig(guildId, 'welcomechannelId');
+        let suggestionChannelId = await getServerConfig(guildId, 'suggestionchannelId');
 
-          embedChannels.addFields(
-            {
-              name: "Canal de Logs",
-              value: `<#${logChannelId}>`,
-              inline: true,
-            },
-            {
-              name: "Canal de Anúncios",
-              value: `<#${adsChannelId}>`,
-              inline: true,
-            },
-            {
-              name: "Canal de Saídas",
-              value: `<#${exitChannelId}>`,
-              inline: true,
-            },
-            {
-              name: "Canal de Regras",
-              value: `<#${rulesChannelId}>`,
-              inline: true,
-            },
-            {
-              name: "Canal de Boas-Vindas",
-              value: `<#${welcomeChannelId}>`,
-              inline: true,
-            },
-            {
-              name: "Canal de Sugestões",
-              value: `<#${suggestionChannelId}>`,
-              inline: true,
-            },
-            {
-              name: "Canal de Jogos",
-              value: `<#${gamesChannelId}>`,
-              inline: true,
-            }
-          );
-        } else {
-          embedChannels.addFields({
-            name: "Não configurado",
-            value: "Use **/setup channels** para configurar.",
+        embedChannels.addFields(
+          {
+            name: "Canal de Logs",
+            value: `<#${logChannelId}>`,
             inline: true,
-          });
-        }
+          },
+          {
+            name: "Canal de Anúncios",
+            value: `<#${adsChannelId}>`,
+            inline: true,
+          },
+          {
+            name: "Canal de Saídas",
+            value: `<#${exitChannelId}>`,
+            inline: true,
+          },
+          {
+            name: "Canal de Regras",
+            value: `<#${rulesChannelId}>`,
+            inline: true,
+          },
+          {
+            name: "Canal de Boas-Vindas",
+            value: `<#${welcomeChannelId}>`,
+            inline: true,
+          },
+          {
+            name: "Canal de Sugestões",
+            value: `<#${suggestionChannelId}>`,
+            inline: true,
+          },
+          {
+            name: "Canal de Jogos",
+            value: `<#${gamesChannelId}>`,
+            inline: true,
+          }
+        );
         await interaction.reply({ embeds: [embedChannels], ephemeral: true });
       } else {
-        let welcomeMessage = serverConfig.welcomeMessage;
-        let exitMessage = serverConfig.exitMessage;
-        if (serverConfig?.welcomeMessage && serverConfig?.exitMessage) {
-          embedMessages.addFields(
-            {
-              name: "Mensagem de boas vindas",
-              value: welcomeMessage,
-              inline: true,
-            },
-            {
-              name: "Mensagem de saída",
-              value: exitMessage,
-              inline: true,
-            }
-          );
-        } else {
-          embedMessages.addFields({
-            name: "Não configurado",
-            value: "Use **/setup messages** para configurar.",
+        let welcomeMessage = await getServerConfig(guildId, 'welcomeMessage');
+        let exitMessage = await getServerConfig(guildId, 'exitMessage');
+        embedMessages.addFields(
+          {
+            name: "Mensagem de boas vindas",
+            value: welcomeMessage,
             inline: true,
-          });
-        }
+          },
+          {
+            name: "Mensagem de saída",
+            value: exitMessage,
+            inline: true,
+          }
+        )
         await interaction.reply({ embeds: [embedMessages], ephemeral: true });
       }
     } else {
