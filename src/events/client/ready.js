@@ -3,8 +3,13 @@ const client = require("../../index");
 require('dotenv').config();
 const { maincolor, secondcolor } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
+const { success } = require("../../themes/main");
+const { reloadInteractions } = require("../../methods/DB/server")
 
-client.on("ready", () => {
+client.on("ready", async () => {
+  await reloadInteractions(client);
+  console.log(success("Sucesso ") + "ao recarregar as interações.");
+  logger.info(`Sucesso ao recarregar as interações.`);
   fs.readFile("./src/assets/ascii.txt", "utf8", function (e, data) {
     if (e) {
       console.log(e);

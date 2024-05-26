@@ -1,6 +1,6 @@
 {
   "name": "resonance",
-  "version": "5.0.2",
+  "version": "5.1.0",
   "description": "",
   "main": "./src/index.js",
   "scripts": {

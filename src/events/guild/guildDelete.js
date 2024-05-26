@@ -1,7 +1,6 @@
 const { Events } = require("discord.js");
 const { warning, info, error } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
-//const ServerCfg = require("../../methods/DB/models/servercfg");
 const { dumpServerSettings } = require("../../methods/DB/server");
 const client = require("../../index");
 

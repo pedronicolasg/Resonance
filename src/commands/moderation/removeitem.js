@@ -4,11 +4,9 @@ const {
   PermissionFlagsBits,
   EmbedBuilder,
 } = require("discord.js");
-const StoreItem = require("../../methods/DB/models/storeItem");
-const Wallet = require("../../methods/DB/models/wallet");
-const { hxmaincolor, error } = require("../../themes/main");
+const { hxmaincolor } = require("../../themes/main");
 const { sendLogEmbed, logger } = require("../../methods/loggers");
-const { formatItemID } = require("../../methods/idFormater");
+const { removeItemsFromStore, updateUserItems } = require("../../methods/DB/economy");
 
 module.exports = {
   name: "removeitem",
@@ -17,8 +15,7 @@ module.exports = {
   options: [
     {
       name: "item_ids",
-      description:
-        "IDs dos itens que você deseja remover (separados por vírgula)",
+      description: "IDs dos itens que você deseja remover (separados por vírgula)",
       type: ApplicationCommandOptionType.String,
       required: true,
     },
@@ -38,20 +35,11 @@ module.exports = {
 
     const serverId = interaction.guild.id;
     const buyitemIds = interaction.options.getString("item_ids").split(",");
-    const trimmedIds = buyitemIds.map((id) => id.trim());
 
     try {
-      const deletedItems = await StoreItem.find({
-        serverId,
-        buyItemId: { $in: trimmedIds },
-      });
+      const { deletedItems, deletedCount } = await removeItemsFromStore(serverId, buyitemIds);
 
-      const items = await StoreItem.deleteMany({
-        serverId,
-        buyItemId: { $in: trimmedIds },
-      });
-
-      if (items.deletedCount === 0) {
+      if (deletedCount === 0) {
         let embed = new EmbedBuilder()
           .setColor("Red")
           .setTitle("Itens não Encontrados")
@@ -63,34 +51,8 @@ module.exports = {
         return;
       }
 
-      for (let deletedItem of deletedItems) {
-        let users = await Wallet.find({ "items": formatItemID(serverId, deletedItem.buyItemId) });
+      await updateUserItems(serverId, deletedItems, interaction.guild);
 
-        for (let user of users) {
-          user.items = user.items.filter((item) => item !== formatItemID(serverId, deletedItem.buyItemId));
-          await user.save();
-
-          let memberId = user.userId;
-          let member = interaction.guild.members.cache.get(memberId);
-
-          if (member) {
-            let roleId = deletedItem.itemId;
-            let role = interaction.guild.roles.cache.get(roleId);
-
-            if (role) {
-              try {
-                await member.roles.remove(role);
-              } catch (e) {
-                console.log(
-                  error("Erro ") +
-                  `ao remover o cargo do usuário ${memberId} devido à: ${e}`
-                );
-              }
-            }
-          }
-        }
-      }
-      
       let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
         .setTitle("Itens Removidos da Loja!")
@@ -112,9 +74,7 @@ module.exports = {
         );
       sendLogEmbed(client, interaction.guild.id, logEmbed);
     } catch (e) {
-      console.log(
-        error("Erro ") + `ao remover os itens da loja devido à: ${e}`
-      );
+      console.log(`Erro ao remover os itens da loja devido à: ${e}`);
       logger.error(`Erro ao remover os itens da loja devido à: ${e}`);
       let errorEmbed = new EmbedBuilder()
         .setColor("Red")

@@ -146,4 +146,70 @@ async function getItemsByServerId(serverId) {
   }
 }
 
-module.exports = { getWallet, claim, purchase, sell, inventory, transferCoins, getItemsByServerId };
+async function addItemToStore(serverId, itemId, buyItemId, name, description, price, addedBy) {
+  const currentItemCount = await StoreItem.countDocuments({ serverId });
+
+  if (currentItemCount >= 25) {
+    return { success: false, message: "Limite máximo de 25 itens atingido." };
+  }
+
+  const newItem = await StoreItem.create({
+    serverId,
+    itemId,
+    buyItemId,
+    name,
+    description,
+    price,
+    addedBy,
+  });
+
+  return { success: true, newItem };
+}
+
+module.exports = {
+  addItemToStore,
+};
+
+async function removeItemsFromStore(serverId, buyitemIds) {
+  const trimmedIds = buyitemIds.map((id) => id.trim());
+  const deletedItems = await StoreItem.find({
+    serverId,
+    buyItemId: { $in: trimmedIds },
+  });
+
+  const items = await StoreItem.deleteMany({
+    serverId,
+    buyItemId: { $in: trimmedIds },
+  });
+
+  return { deletedItems, deletedCount: items.deletedCount };
+}
+
+async function updateUserItems(serverId, deletedItems, guild) {
+  for (let deletedItem of deletedItems) {
+    let users = await Wallet.find({ "items": formatItemID(serverId, deletedItem.buyItemId) });
+
+    for (let user of users) {
+      user.items = user.items.filter((item) => item !== formatItemID(serverId, deletedItem.buyItemId));
+      await user.save();
+
+      let memberId = user.userId;
+      let member = guild.members.cache.get(memberId);
+
+      if (member) {
+        let roleId = deletedItem.itemId;
+        let role = guild.roles.cache.get(roleId);
+
+        if (role) {
+          try {
+            await member.roles.remove(role);
+          } catch (e) {
+            console.log(`Erro ao remover o cargo do usuário ${memberId} devido à: ${e}`);
+          }
+        }
+      }
+    }
+  }
+}
+
+module.exports = { getWallet, claim, purchase, sell, inventory, transferCoins, getItemsByServerId, addItemToStore, removeItemsFromStore, updateUserItems, };

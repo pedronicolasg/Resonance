@@ -4,9 +4,10 @@ const {
   PermissionFlagsBits,
   EmbedBuilder,
 } = require("discord.js");
-const StoreItem = require("../../methods/DB/models/storeItem");
 const { hxmaincolor, error } = require("../../themes/main");
 const { sendLogEmbed, logger } = require("../../methods/loggers");
+
+const { addItemToStore } = require("../../methods/DB/economy");
 
 module.exports = {
   name: "additem",
@@ -52,19 +53,6 @@ module.exports = {
     }
 
     const serverId = interaction.guild.id;
-    const currentItemCount = await StoreItem.countDocuments({
-      serverId: serverId,
-    });
-
-    if (currentItemCount >= 25) {
-      let limitEmbed = new EmbedBuilder()
-        .setColor("Red")
-        .setTitle("Limite Atingido")
-        .setDescription("A loja atingiu o limite máximo de 25 itens.");
-
-      return interaction.reply({ embeds: [limitEmbed], ephemeral: true });
-    }
-
     const role = interaction.options.getRole("cargo");
     const name = interaction.options.getString("name");
     const description = interaction.options.getString("description");
@@ -74,15 +62,16 @@ module.exports = {
     const buyItemId = Math.floor(Math.random() * 900) + 100;
 
     try {
-      const newItem = await StoreItem.create({
-        serverId,
-        itemId,
-        buyItemId,
-        name,
-        description,
-        price,
-        addedBy,
-      });
+      const { success, newItem, message } = await addItemToStore(serverId, itemId, buyItemId, name, description, price, addedBy);
+
+      if (!success) {
+        let limitEmbed = new EmbedBuilder()
+          .setColor("Red")
+          .setTitle("Limite Atingido")
+          .setDescription(message);
+
+        return interaction.reply({ embeds: [limitEmbed], ephemeral: true });
+      }
 
       let embed = new EmbedBuilder()
         .setColor(hxmaincolor)
