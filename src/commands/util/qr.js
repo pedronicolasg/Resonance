@@ -2,7 +2,6 @@ const Discord = require("discord.js");
 const { ApplicationCommandType } = require("discord.js");
 const { EmbedBuilder } = require("discord.js");
 const { hxmaincolor } = require("../../themes/main");
-const qrtaglogo = "https://www.qrtag.net/favicon-32x32.png";
 
 module.exports = {
   name: "qr",
@@ -18,17 +17,16 @@ module.exports = {
   ],
   run: async (client, interaction) => {
     const url = interaction.options.getString("url");
-    const qrcode = `https://qrtag.net/api/qr_7.png?url=${url}`;
 
     const Embed = new EmbedBuilder()
       .setColor(hxmaincolor)
       .setTitle(`QR Code gerado com sucesso:`)
-      .setThumbnail(qrcode)
-      .setURL(qrcode)
+      .setThumbnail(`https://qrtag.net/api/qr_7.png?url=${url}`)
+      .setURL(`https://qrtag.net/api/qr_7.png?url=${url}`)
       .setDescription("O QR Code expira em 72 horas.")
       .setAuthor({
         name: "QR tag",
-        iconURL: qrtaglogo,
+        iconURL: "https://www.qrtag.net/favicon-32x32.png",
         url: "https://www.qrtag.net/",
       });
 
