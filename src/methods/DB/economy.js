@@ -58,24 +58,41 @@ async function purchase(userId, serverId, guild, buyItemId, member) {
 }
 
 async function sell(userId, serverId, guild, buyItemId, member) {
-  let item = await StoreItem.findOne({ serverId, buyItemId: buyItemId, });
-  if (!item) return 'itemNotFound'
+  try {
+    let item = await StoreItem.findOne({ serverId, buyItemId });
+    if (!item) return 'itemNotFound';
 
-  let itemId = item.itemId;
-  let user = await Wallet.findOne({ userId });
+    let itemId = item.itemId;
+    let user = await getWallet(userId);
 
-  if (user?.items.includes(formatItemID(serverId, buyItemId))) {
-    if (member?.roles.cache.has(itemId)) {
-      let role = guild.roles.cache.get(itemId)
-      if (role) { await member.roles.remove(role) } else { return 'errorRemovingTheRole' }
+    if (user?.items.includes(formatItemID(serverId, buyItemId))) {
+      if (member && member.roles && member.roles.cache) {
+        if (member.roles.cache.has(itemId)) {
+          let role = guild.roles.cache.get(itemId);
+          if (role) {
+            await member.roles.remove(role);
+          } else {
+            return 'errorRemovingTheRole';
+          }
 
-      user.items = user.items.filter((itemId) => itemId !== formatItemID(serverId, buyItemId))
-      const amountGained = Math.round(item.price * 0.25);
-      user.coins += amountGained;
-      await user.save();
-      return 'saleSuccessfull'
-    } else { return 'userDontHaveTheRole' }
-  } else { return 'userDontHaveTheItem' }
+          user.items = user.items.filter(itemId => itemId !== formatItemID(serverId, buyItemId));
+          const amountGained = Math.round(item.price * 0.25);
+          user.coins += amountGained;
+          await user.save();
+          return { status: 'saleSuccessfull', amountGained };
+        } else {
+          return 'userDontHaveTheRole';
+        }
+      } else {
+        return 'invalidMember';
+      }
+    } else {
+      return 'userDontHaveTheItem';
+    }
+  } catch (error) {
+    console.error("Erro ao vender o item:", error);
+    return 'internalError';
+  }
 }
 
 async function inventory(userId, serverId) {

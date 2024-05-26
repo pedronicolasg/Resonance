@@ -109,9 +109,9 @@ module.exports = {
 
     } else if (subCommand === "sell") {
       try {
-        const result = await sell(userId, serverId, interaction.guild.id, buyItemId, member);
+        const result = await sell(userId, serverId, interaction.guild, buyItemId, member);
 
-        if (result === 'saleSuccessfull') {
+        if (result.status === 'saleSuccessfull') {
           const embed = new EmbedBuilder()
             .setColor(hxmaincolor)
             .setTitle("Venda Realizada!")
