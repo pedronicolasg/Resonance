@@ -5,10 +5,10 @@ const {
 } = require("discord.js");
 const { error, hxnasaapod } = require("../../themes/main");
 const { logger } = require("../../methods/loggers");
-const API =
-  "https://api.nasa.gov/planetary/apod?api_key=" + process.env.NASAKEY;
-const NASALogo =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/2449px-NASA_logo.svg.png";
+const fetch = require("node-fetch");
+
+const API = `https://api.nasa.gov/planetary/apod?api_key=${process.env.NASAKEY}`;
+const NASALogo = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/2449px-NASA_logo.svg.png";
 
 module.exports = {
   name: "apod",
@@ -23,19 +23,14 @@ module.exports = {
     },
   ],
   run: async (client, interaction) => {
-    let res,
-      data,
-      date = interaction.options.getString("data");
-    if (date === null) {
-      res = await fetch(API);
-      data = await res.json();
-    } else {
-      res = await fetch(`${API}&date=${date}`);
-      data = await res.json();
-    }
+    const date = interaction.options.getString("data");
+    const url = date ? `${API}&date=${date}` : API;
 
     try {
-      let embed = new EmbedBuilder()
+      const res = await fetch(url);
+      const data = await res.json();
+
+      const embed = new EmbedBuilder()
         .setColor(hxnasaapod)
         .setTitle(data.title)
         .setURL("https://api.nasa.gov/")
@@ -49,7 +44,7 @@ module.exports = {
         .addFields(
           { name: "Data", value: data.date, inline: true },
           { name: "Tipo de mídia", value: data.media_type, inline: true },
-          { name: "HD", value: data.hdurl, inline: true }
+          { name: "HD", value: data.hdurl || "Não disponível", inline: true }
         )
         .setFooter({
           text: `NASA API | APOD ${data.service_version}.`,
@@ -58,12 +53,10 @@ module.exports = {
 
       interaction.reply({ embeds: [embed] });
     } catch (e) {
-      let errorEmbed = new EmbedBuilder()
+      const errorEmbed = new EmbedBuilder()
         .setColor("#ff0000")
         .setTitle("Erro inesperado")
-        .setDescription(
-          `Ocorreu um erro inesperado, tente novamente mais tarde.`
-        );
+        .setDescription("Ocorreu um erro inesperado, tente novamente mais tarde.");
 
       interaction.reply({ embeds: [errorEmbed], ephemeral: true });
       console.log(error("Erro ") + `ao executar o comando APOD:\n ${e}`);

@@ -1,5 +1,7 @@
 # Project Files
+src/maintenance/
 squarecloud.app
+discloud.config
 json.sqlite
 ignore.txt
 config.json
@@ -7,9 +9,6 @@ economycfg.json
 package-lock.json
 .vscode
 ./.idea/
-
-# Project Folders
-src/maintenance/
 
 # Windows files
 desktop.ini

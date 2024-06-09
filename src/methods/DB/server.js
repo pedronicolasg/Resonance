@@ -1,5 +1,5 @@
 const ServerSettings = require("../../methods/DB/models/servercfg.js");
-const InteractionModel = require("./models/interaction.js")
+const InteractionModel = require("./models/interaction.js");
 const StoreItem = require("./models/storeItem");
 
 async function getServerSettings(serverId) {
@@ -17,30 +17,35 @@ async function getServerConfig(serverId, configName) {
 }
 
 async function dumpServerSettings(serverId) {
-  let result = await ServerSettings.deleteMany({ serverId: serverId }) && StoreItem.deleteMany({ serverId: serverId }) && InteractionModel.deleteMany({ guildId: serverId });
-  return result;
-}
-
-async function updateMessage(serverId, msg, content) {
   try {
-    const serverSettings = await getServerSettings(serverId);
-    serverSettings[msg] = content;
-    await serverSettings.save();
-    return { success: true };
+    const result = await Promise.all([
+      ServerSettings.deleteMany({ serverId }),
+      StoreItem.deleteMany({ serverId }),
+      InteractionModel.deleteMany({ guildId: serverId })
+    ]);
+    return result;
   } catch (error) {
-    console.error(`Erro ao atualizar a mensagem ${msg} para o servidor ${serverId}:`, error);
-    return { success: false, error };
+    console.error(`Erro ao deletar configurações do servidor ${serverId}:`, error);
+    throw error;
   }
 }
 
+async function updateMessage(serverId, msg, content) {
+  return await updateServerSettings(serverId, { [msg]: content });
+}
+
 async function updateChannel(serverId, channelName, channelId) {
+  return await updateServerSettings(serverId, { [channelName]: channelId });
+}
+
+async function updateServerSettings(serverId, updates) {
   try {
     const serverSettings = await getServerSettings(serverId);
-    serverSettings[channelName] = channelId;
+    Object.assign(serverSettings, updates);
     await serverSettings.save();
     return { success: true };
   } catch (error) {
-    console.error(`Erro ao atualizar o canal ${channelName} para o servidor ${serverId}:`, error);
+    console.error(`Erro ao atualizar configurações para o servidor ${serverId}:`, error);
     return { success: false, error };
   }
 }
@@ -51,17 +56,21 @@ async function reloadInteractions(client) {
     interactions.forEach(interaction => {
       const { customId, roleId, channelId, guildId } = interaction;
       const guild = client.guilds.cache.get(guildId);
-      const channel = guild?.channels.cache.get(channelId);
-      const role = guild?.roles.cache.get(roleId);
+      if (!guild) {
+        console.log(`Guild ${guildId} não encontrado`);
+        return;
+      }
 
-      if (guild && channel && role) {
+      const channel = guild.channels.cache.get(channelId);
+      const role = guild.roles.cache.get(roleId);
+      if (channel && role) {
         const coletor = channel.createMessageComponentCollector({ filter: i => i.customId === customId });
         coletor.on("collect", async (c) => {
           const command = require("../../commands/moderation/rpb.js");
           await command.handleInteraction(c, role);
         });
       } else {
-        console.log(`Não foi possível recriar a interação: guild, canal ou cargo não encontrado`);
+        console.log(`Canal ou cargo não encontrado no guild ${guildId}`);
       }
     });
   } catch (error) {
@@ -74,10 +83,18 @@ async function saveInteraction(interactionData) {
   try {
     const interaction = new InteractionModel(interactionData);
     await interaction.save();
+    return { success: true };
   } catch (error) {
     console.error("Erro ao salvar a interação:", error);
     throw error;
   }
 }
 
-module.exports = { getServerConfig, dumpServerSettings, updateMessage, updateChannel, reloadInteractions, saveInteraction };
+module.exports = {
+  getServerConfig,
+  dumpServerSettings,
+  updateMessage,
+  updateChannel,
+  reloadInteractions,
+  saveInteraction
+};
